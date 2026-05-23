@@ -23,6 +23,7 @@ import {
 } from '../auctionLogic';
 import { getFirebaseDatabase, isFirebaseConfigured } from '../firebase';
 import { getClientId } from '../../utils/clientId';
+import { compactPlayersForRoom, compactTeamsForRoom } from './compactPlayers';
 import {
   ClientPlayer,
   FirebaseRoomRecord,
@@ -319,8 +320,8 @@ class FirebaseMultiplayerService implements IMultiplayerService {
         started: false,
         isPaused: true,
         auctionStatus: 'idle',
-        players,
-        teams,
+        players: compactPlayersForRoom(players),
+        teams: compactTeamsForRoom(teams),
         currentPlayerIndex: 0,
         currentBid: 0,
         currentBidderId: null,

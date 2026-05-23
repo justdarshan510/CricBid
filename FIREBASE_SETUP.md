@@ -1,6 +1,17 @@
 # Firebase multiplayer setup (CricBid)
 
-Multiplayer uses **Firebase Realtime Database** so rooms work on Vercel without a Socket.io server.
+**Room codes on your Vercel URL require this setup.** Localhost can use `npm run dev` (Socket.io) without Firebase.
+
+Multiplayer uses **Firebase Realtime Database** on Vercel (Socket.io does not run on Vercel).
+
+## Quick: Vercel (5 minutes)
+
+1. [Firebase Console](https://console.firebase.google.com) → **Create project** → **Realtime Database** → **Create** (start in **test mode** for now).
+2. Project **Settings** (gear) → **Your apps** → **Web** (`</>`) → copy the config values.
+3. [Vercel Dashboard](https://vercel.com) → your **CricBid** project → **Settings** → **Environment Variables**.
+4. Add each variable from `.env.example` (all `NEXT_PUBLIC_FIREBASE_*`). Apply to **Production** and **Preview**.
+5. **Deployments** → **Redeploy** the latest `main` branch (must rebuild after env changes).
+6. Open `/lobby` on your live URL → **Create Room** — you should get a 6-digit code.
 
 ## 1. Create Firebase project
 

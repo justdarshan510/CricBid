@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import { Player } from '../../data/players';
 import { Team } from '../../data/teams';
+import { LOCAL_SOCKET_SETUP_MESSAGE } from './host';
 import {
   IMultiplayerService,
   MultiplayerEvent,
@@ -122,7 +123,7 @@ export class SocketMultiplayerService implements IMultiplayerService {
   }
 
   private connectionErrorMessage(): string {
-    return 'Cannot reach game server. Use "npm run dev" (starts Socket.io + Next.js), not "npm run dev:next". For Vercel, add Firebase env vars — see FIREBASE_SETUP.md.';
+    return LOCAL_SOCKET_SETUP_MESSAGE;
   }
 
   async createRoom(hostName: string, players: Player[], teams: Team[]): Promise<void> {
