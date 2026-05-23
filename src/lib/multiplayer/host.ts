@@ -13,7 +13,7 @@ export function isDeployedProduction(): boolean {
 }
 
 export const PRODUCTION_FIREBASE_SETUP_MESSAGE =
-  'Live multiplayer needs Firebase. In the Firebase Console create a project and enable Realtime Database, then add all NEXT_PUBLIC_FIREBASE_* variables in Vercel → Settings → Environment Variables (see .env.example in the repo) and redeploy.';
+  'Multiplayer storage not ready. In Vercel open your project → Storage → Create Database → KV → connect to CricBid → Redeploy. (Optional: add Firebase env vars instead — see FIREBASE_SETUP.md.)';
 
 export const LOCAL_SOCKET_SETUP_MESSAGE =
   'Cannot reach the game server. Run npm run dev (starts Socket.io and Next.js). Do not use npm run dev:next for multiplayer.';
