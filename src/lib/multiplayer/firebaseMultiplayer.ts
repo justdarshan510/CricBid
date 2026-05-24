@@ -4,7 +4,6 @@ import {
   onValue,
   ref,
   remove,
-  runTransaction,
   set,
   update,
   type Unsubscribe,
@@ -464,36 +463,31 @@ class FirebaseMultiplayerService implements IMultiplayerService {
   }
 
   async placeBid(roomCode: string, teamId: string): Promise<void> {
-    const db = getFirebaseDatabase();
-    const roomReference = roomRef(roomCode);
-
-    const result = await runTransaction(roomReference, (current) => {
-      if (!current) return current;
-      const record = current as FirebaseRoomRecord;
-      const me = record.clients?.[this.clientId];
-      if (!me) return;
-
-      const validation = validateBid(record.game, teamId, me.teamId);
-      if (!validation.ok) {
+    try {
+      const record = await this.readRoom(roomCode);
+      if (!record) {
+        this.emit('bid_error', 'Room not found.');
         return;
       }
 
-      const team = record.game.teams.find((t) => t.id === teamId)!;
-      record.game = applyBid(record.game, teamId, validation.nextBid, me.name);
-      return sanitizeForFirebase(record);
-    });
-
-    if (!result.committed) {
-      const record = await this.readRoom(roomCode);
-      const me = record?.clients[this.clientId];
-      if (record && me) {
-        const validation = validateBid(record.game, teamId, me.teamId);
-        if (!validation.ok) {
-          this.emit('bid_error', validation.error);
-          return;
-        }
+      const clients = Object.values(record.clients || {}).filter(Boolean);
+      const me = clients.find((c) => c.id === this.clientId);
+      if (!me) {
+        this.emit('bid_error', 'You are not in this room. Rejoin from the lobby.');
+        return;
       }
-      this.emit('bid_error', 'Bid could not be placed. Try again.');
+
+      const validation = validateBid(record.game, teamId, me.teamId);
+      if (!validation.ok) {
+        this.emit('bid_error', validation.error);
+        return;
+      }
+
+      const game = applyBid(record.game, teamId, validation.nextBid, me.name);
+      await this.writeGame(roomCode, game);
+    } catch (err) {
+      console.error('[multiplayer] placeBid failed:', err);
+      this.emit('bid_error', firebaseErrorMessage(err));
     }
   }
 

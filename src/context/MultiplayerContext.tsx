@@ -113,7 +113,10 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const isHost = clients.find(c => c.id === clientId)?.isHost || false;
 
   const activePool = players.filter(p => p.status === 'pool' || p.status === 'active');
-  const currentPlayer = activePool[currentPlayerIndex] || null;
+  const currentPlayer =
+    players.find((p) => p.status === 'active') ||
+    activePool[currentPlayerIndex] ||
+    null;
   const soldHistory = players.filter(p => p.status === 'sold');
   const unsoldHistory = players.filter(p => p.status === 'unsold');
 
@@ -179,7 +182,8 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     mp.on('room_joined', applyRoomSnapshot);
     mp.on('join_error', onJoinError);
     mp.on('claim_error', onJoinError);
-    mp.on('bid_error', onJoinError);
+    const onBidError = (msg: string) => setError(msg);
+    mp.on('bid_error', onBidError);
 
     mp.on('player_joined', (data) => {
       setClients(data.clients);
@@ -225,7 +229,8 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       }
 
       const pool = (data.players ?? []).filter((pl) => pl.status === 'pool' || pl.status === 'active');
-      const p = pool[0];
+      const p =
+        (data.players ?? []).find((pl) => pl.status === 'active') ?? pool[0];
       if (p && data.currentBid === 0 && data.auctionStatus === 'bidding' && lastSpokenPlayerIdRef.current !== p.id) {
         lastSpokenPlayerIdRef.current = p.id;
         voiceAuctioneer.speakNextPlayer(p.name, `${p.base_price} crore`);
@@ -233,6 +238,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     });
 
     mp.on('bid_placed', (data) => {
+      setError(null);
       setCurrentBid(data.currentBid);
       setCurrentBidderId(data.currentBidderId);
       setTimer(data.timer);
@@ -315,7 +321,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       mp.off('room_joined', applyRoomSnapshot);
       mp.off('join_error', onJoinError);
       mp.off('claim_error', onJoinError);
-      mp.off('bid_error', onJoinError);
+      mp.off('bid_error', onBidError);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -356,7 +362,15 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const placeUserBid = () => {
-    if (!roomCode || !userTeamId) return;
+    if (!roomCode || !userTeamId) {
+      setError('Claim a team in the lobby before bidding.');
+      return;
+    }
+    if (auctionStatus !== 'bidding' || isPaused) {
+      setError('Auction is not accepting bids right now.');
+      return;
+    }
+    setError(null);
     void mp.placeBid(roomCode, userTeamId);
   };
 

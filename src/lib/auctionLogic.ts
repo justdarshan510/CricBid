@@ -46,9 +46,25 @@ export function getActivePool(players: Player[]): Player[] {
   return players.filter((p) => p.status === 'pool' || p.status === 'active');
 }
 
+/** Player currently on the block (status `active`), with index fallback. */
+export function getCurrentAuctionPlayer(
+  players: Player[],
+  currentPlayerIndex: number
+): Player | null {
+  const onBlock = players.find((p) => p.status === 'active');
+  if (onBlock) return onBlock;
+  const pool = getActivePool(players);
+  return pool[currentPlayerIndex] ?? pool[0] ?? null;
+}
+
+export function activePlayerIndex(players: Player[], playerId: string): number {
+  const pool = getActivePool(players);
+  const idx = pool.findIndex((p) => p.id === playerId);
+  return idx >= 0 ? idx : 0;
+}
+
 export function handleTimerEnd(room: RoomGameState): RoomGameState {
-  const activePool = getActivePool(room.players);
-  const p = activePool[room.currentPlayerIndex];
+  const p = getCurrentAuctionPlayer(room.players, room.currentPlayerIndex);
   if (!p) return room;
 
   const next: RoomGameState = { ...room, logs: [...room.logs] };
@@ -106,8 +122,7 @@ export function validateBid(
     return { ok: false, error: 'Auction is not accepting bids.' };
   }
 
-  const activePool = getActivePool(room.players);
-  const p = activePool[room.currentPlayerIndex];
+  const p = getCurrentAuctionPlayer(room.players, room.currentPlayerIndex);
   if (!p) return { ok: false, error: 'No player on the block.' };
 
   const nextBid = getNextBidAmount(room.currentBid, p.base_price);
@@ -166,12 +181,14 @@ export function startAuctionState(room: RoomGameState): RoomGameState {
     logs.unshift(`Player under the hammer: ${p.name} (Base Price: ${p.base_price} Cr)`);
   }
 
+  const hammerPlayer = p ? getCurrentAuctionPlayer(players, 0) : null;
+
   return {
     ...room,
     started: true,
     auctionStatus: 'bidding',
     isPaused: false,
-    currentPlayerIndex: 0,
+    currentPlayerIndex: hammerPlayer ? activePlayerIndex(players, hammerPlayer.id) : 0,
     currentBid: 0,
     currentBidderId: null,
     timer: 10,
@@ -182,8 +199,7 @@ export function startAuctionState(room: RoomGameState): RoomGameState {
 }
 
 export function skipPlayerState(room: RoomGameState): RoomGameState {
-  const activePool = getActivePool(room.players);
-  const p = activePool[room.currentPlayerIndex];
+  const p = getCurrentAuctionPlayer(room.players, room.currentPlayerIndex);
   if (!p) return room;
 
   return {
@@ -247,6 +263,8 @@ export function nextPlayerState(
     );
   }
 
+  const hammerPlayer = nextP ? getCurrentAuctionPlayer(players, 0) : null;
+
   return {
     ...room,
     players,
@@ -257,6 +275,7 @@ export function nextPlayerState(
     auctionStatus: 'bidding',
     isPaused: false,
     lastWinner: null,
+    currentPlayerIndex: hammerPlayer ? activePlayerIndex(players, hammerPlayer.id) : 0,
   };
 }
 
