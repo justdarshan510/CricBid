@@ -3,7 +3,7 @@ import { isFirebaseConfigured } from '@/lib/firebase';
 import { roomStoreCreate } from '@/lib/multiplayer/roomStore';
 
 const FIREBASE_MISSING =
-  'Firebase is not configured. Add all NEXT_PUBLIC_FIREBASE_* variables in Vercel → Settings → Environment Variables, then redeploy. See FIREBASE_SETUP.md.';
+  'Firebase is not configured on the server. In Vercel → Settings → Environment Variables, add NEXT_PUBLIC_FIREBASE_DATABASE_URL, NEXT_PUBLIC_FIREBASE_API_KEY, and NEXT_PUBLIC_FIREBASE_PROJECT_ID (see .env.example), then Redeploy without cache.';
 
 export async function POST(request: Request) {
   if (!isFirebaseConfigured()) {

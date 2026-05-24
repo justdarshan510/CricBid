@@ -1,21 +1,42 @@
-import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
+import { FirebaseApp, getApp, getApps, initializeApp, type FirebaseOptions } from 'firebase/app';
 import { Database, getDatabase } from 'firebase/database';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
+function readFirebaseConfig(): FirebaseOptions {
+  return {
+    apiKey:
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
+    authDomain:
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
+      process.env.FIREBASE_AUTH_DOMAIN,
+    databaseURL:
+      process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ||
+      process.env.FIREBASE_DATABASE_URL,
+    projectId:
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID,
+    storageBucket:
+      process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+      process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId:
+      process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ||
+      process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.env.FIREBASE_APP_ID,
+  };
+}
+
+const firebaseConfig = readFirebaseConfig();
 
 export function isFirebaseConfigured(): boolean {
   return Boolean(
-    firebaseConfig.apiKey &&
-      firebaseConfig.databaseURL &&
-      firebaseConfig.projectId
+    firebaseConfig.apiKey && firebaseConfig.databaseURL && firebaseConfig.projectId
+  );
+}
+
+/** True when browser has Firebase config baked in at build time (NEXT_PUBLIC_*). */
+export function isFirebaseConfiguredOnClient(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+      process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL &&
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
   );
 }
 
@@ -25,11 +46,11 @@ let database: Database | null = null;
 export function getFirebaseApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
     throw new Error(
-      'Firebase is not configured. Add NEXT_PUBLIC_FIREBASE_* variables (see .env.example).'
+      'Firebase is not configured. Add NEXT_PUBLIC_FIREBASE_* (or FIREBASE_*) in Vercel Environment Variables and redeploy.'
     );
   }
   if (!app) {
-    app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    app = getApps().length ? getApp() : initializeApp(readFirebaseConfig());
   }
   return app;
 }
