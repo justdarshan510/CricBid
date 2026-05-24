@@ -9,8 +9,8 @@ export type { IMultiplayerService, MultiplayerEvent, MultiplayerEventMap, RoomSn
 export { PRODUCTION_FIREBASE_SETUP_MESSAGE, LOCAL_SOCKET_SETUP_MESSAGE } from './host';
 
 export function getMultiplayerMode(): 'firebase' | 'socket' {
-  if (typeof window !== 'undefined' && isDeployedProduction()) return 'firebase';
   if (isFirebaseConfiguredOnClient()) return 'firebase';
+  if (typeof window !== 'undefined' && isDeployedProduction()) return 'firebase';
   return 'socket';
 }
 
@@ -19,16 +19,16 @@ export function isMultiplayerConfigured(): boolean {
 }
 
 /**
- * Live Vercel: API routes → Firebase on server (works with runtime env vars).
- * Local + NEXT_PUBLIC Firebase: direct Realtime Database client.
+ * Prefer direct Firebase client when NEXT_PUBLIC_* are in the build (after Vercel env + redeploy).
+ * Fall back to API routes on live deploy only if client config is missing.
  * Local without Firebase: Socket.io via npm run dev.
  */
 export function getMultiplayerService(): IMultiplayerService {
-  if (typeof window !== 'undefined' && isDeployedProduction()) {
-    return getApiMultiplayerService();
-  }
   if (isFirebaseConfiguredOnClient()) {
     return getFirebaseMultiplayerService();
+  }
+  if (typeof window !== 'undefined' && isDeployedProduction()) {
+    return getApiMultiplayerService();
   }
   return getSocketMultiplayerService();
 }

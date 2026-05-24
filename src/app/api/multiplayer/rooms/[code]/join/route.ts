@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
-import { isFirebaseConfigured } from '@/lib/firebase';
+import { getFirebaseConfigErrorMessage, isFirebaseConfigured } from '@/lib/firebase';
 import { roomStoreJoin } from '@/lib/multiplayer/roomStore';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ code: string }> }
 ) {
   if (!isFirebaseConfigured()) {
-    return NextResponse.json({ error: 'Firebase not configured' }, { status: 503 });
+    return NextResponse.json({ error: getFirebaseConfigErrorMessage() }, { status: 503 });
   }
 
   try {

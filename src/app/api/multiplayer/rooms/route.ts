@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { isFirebaseConfigured } from '@/lib/firebase';
+import { getFirebaseConfigErrorMessage, isFirebaseConfigured } from '@/lib/firebase';
 import { roomStoreCreate } from '@/lib/multiplayer/roomStore';
 
-const FIREBASE_MISSING =
-  'Firebase is not configured on the server. In Vercel → Settings → Environment Variables, add NEXT_PUBLIC_FIREBASE_DATABASE_URL, NEXT_PUBLIC_FIREBASE_API_KEY, and NEXT_PUBLIC_FIREBASE_PROJECT_ID (see .env.example), then Redeploy without cache.';
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   if (!isFirebaseConfigured()) {
-    return NextResponse.json({ error: FIREBASE_MISSING }, { status: 503 });
+    return NextResponse.json({ error: getFirebaseConfigErrorMessage() }, { status: 503 });
   }
 
   try {
