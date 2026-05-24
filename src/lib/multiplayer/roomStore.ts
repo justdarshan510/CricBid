@@ -1,3 +1,4 @@
+import { get, ref, remove, set } from 'firebase/database';
 import { Player } from '../../data/players';
 import { Team } from '../../data/teams';
 import {
@@ -9,18 +10,45 @@ import {
   startAuctionState,
   validateBid,
 } from '../auctionLogic';
-import { isKvConfigured, kvDeleteRoom, kvGetRoom, kvSetRoom } from '../kv';
+import { getFirebaseDatabase, isFirebaseConfigured } from '../firebase';
 import { compactPlayersForRoom, compactTeamsForRoom } from './compactPlayers';
 import { ClientPlayer, FirebaseRoomRecord, toRoomSnapshot } from './types';
+
+function roomRef(roomCode: string) {
+  return ref(getFirebaseDatabase(), `rooms/${roomCode}`);
+}
 
 function clientsRecord(clients: ClientPlayer[]): Record<string, ClientPlayer> {
   return Object.fromEntries(clients.map((c) => [c.id, c]));
 }
 
+function assertFirebase() {
+  if (!isFirebaseConfigured()) {
+    throw new Error(
+      'Firebase is not configured. Add NEXT_PUBLIC_FIREBASE_* environment variables in Vercel and redeploy.'
+    );
+  }
+}
+
+async function fbGetRoom(roomCode: string): Promise<FirebaseRoomRecord | null> {
+  const snapshot = await get(roomRef(roomCode));
+  if (!snapshot.exists()) return null;
+  return snapshot.val() as FirebaseRoomRecord;
+}
+
+async function fbSetRoom(roomCode: string, record: FirebaseRoomRecord): Promise<void> {
+  await set(roomRef(roomCode), record);
+}
+
+async function fbDeleteRoom(roomCode: string): Promise<void> {
+  await remove(roomRef(roomCode));
+}
+
 async function generateUniqueRoomCode(): Promise<string> {
+  assertFirebase();
   for (let attempt = 0; attempt < 20; attempt++) {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const existing = await kvGetRoom<FirebaseRoomRecord>(code);
+    const existing = await fbGetRoom(code);
     if (!existing) return code;
   }
   throw new Error('Could not generate a unique room code. Please try again.');
@@ -32,7 +60,7 @@ export async function roomStoreCreate(
   players: Player[],
   teams: Team[]
 ) {
-  if (!isKvConfigured()) throw new Error('KV_NOT_CONFIGURED');
+  assertFirebase();
 
   const roomCode = await generateUniqueRoomCode();
   const record: FirebaseRoomRecord = {
@@ -56,12 +84,13 @@ export async function roomStoreCreate(
     ]),
   };
 
-  await kvSetRoom(roomCode, record);
+  await fbSetRoom(roomCode, record);
   return toRoomSnapshot(record);
 }
 
 export async function roomStoreJoin(roomCode: string, playerName: string, clientId: string) {
-  const record = await kvGetRoom<FirebaseRoomRecord>(roomCode);
+  assertFirebase();
+  const record = await fbGetRoom(roomCode);
   if (!record) throw new Error('Room not found. Please verify the code.');
   if (record.game.started) throw new Error('Auction has already started in this room.');
 
@@ -72,24 +101,25 @@ export async function roomStoreJoin(roomCode: string, playerName: string, client
   ];
   record.clients = clientsRecord(nextClients);
   record.game.logs = [...record.game.logs, `${playerName} joined the room.`];
-  await kvSetRoom(roomCode, record);
+  await fbSetRoom(roomCode, record);
   return toRoomSnapshot(record);
 }
 
 export async function roomStoreGet(roomCode: string) {
-  const record = await kvGetRoom<FirebaseRoomRecord>(roomCode);
+  assertFirebase();
+  const record = await fbGetRoom(roomCode);
   if (!record) return null;
   return toRoomSnapshot(record);
 }
 
 async function load(roomCode: string): Promise<FirebaseRoomRecord> {
-  const record = await kvGetRoom<FirebaseRoomRecord>(roomCode);
+  const record = await fbGetRoom(roomCode);
   if (!record) throw new Error('Room not found');
   return record;
 }
 
 async function save(roomCode: string, record: FirebaseRoomRecord) {
-  await kvSetRoom(roomCode, record);
+  await fbSetRoom(roomCode, record);
 }
 
 export async function roomStoreClaimTeam(
@@ -97,6 +127,7 @@ export async function roomStoreClaimTeam(
   clientId: string,
   teamId: string | null
 ) {
+  assertFirebase();
   const record = await load(roomCode);
   const me = record.clients[clientId];
   if (!me) throw new Error('Not in room');
@@ -118,6 +149,7 @@ export async function roomStoreClaimTeam(
 }
 
 export async function roomStoreStartAuction(roomCode: string, clientId: string) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host can start');
   record.game = startAuctionState(record.game);
@@ -126,6 +158,7 @@ export async function roomStoreStartAuction(roomCode: string, clientId: string) 
 }
 
 export async function roomStorePause(roomCode: string, clientId: string) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host');
   record.game.isPaused = true;
@@ -134,6 +167,7 @@ export async function roomStorePause(roomCode: string, clientId: string) {
 }
 
 export async function roomStoreResume(roomCode: string, clientId: string) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host');
   record.game.isPaused = false;
@@ -146,6 +180,7 @@ export async function roomStorePlaceBid(
   clientId: string,
   teamId: string
 ) {
+  assertFirebase();
   const record = await load(roomCode);
   const me = record.clients[clientId];
   if (!me) throw new Error('Not in room');
@@ -159,6 +194,7 @@ export async function roomStorePlaceBid(
 }
 
 export async function roomStoreSkip(roomCode: string, clientId: string) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host');
   record.game = skipPlayerState(record.game);
@@ -172,6 +208,7 @@ export async function roomStoreNext(
   overrideName?: string,
   overrideBasePrice?: number
 ) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host');
   record.game = nextPlayerState(record.game, overrideName, overrideBasePrice);
@@ -185,6 +222,7 @@ export async function roomStoreForceSell(
   teamId: string,
   amount: number
 ) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host');
   record.game = forceSellState(record.game, teamId, amount);
@@ -198,6 +236,7 @@ export async function roomStoreReset(
   players: Player[],
   teams: Team[]
 ) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host');
 
@@ -223,6 +262,7 @@ export async function roomStoreReset(
 }
 
 export async function roomStoreTick(roomCode: string, clientId: string) {
+  assertFirebase();
   const record = await load(roomCode);
   if (record.game.hostId !== clientId) throw new Error('Only host');
   const { game } = record;
@@ -240,14 +280,15 @@ export async function roomStoreTick(roomCode: string, clientId: string) {
 }
 
 export async function roomStoreLeave(roomCode: string, clientId: string) {
-  const record = await kvGetRoom<FirebaseRoomRecord>(roomCode);
+  assertFirebase();
+  const record = await fbGetRoom(roomCode);
   if (!record) return;
 
   delete record.clients[clientId];
   const clients = Object.values(record.clients).filter(Boolean);
 
   if (clients.length === 0) {
-    await kvDeleteRoom(roomCode);
+    await fbDeleteRoom(roomCode);
     return;
   }
 

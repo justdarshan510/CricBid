@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
-import { isKvConfigured } from '@/lib/kv';
+import { isFirebaseConfigured } from '@/lib/firebase';
 import { roomStoreCreate } from '@/lib/multiplayer/roomStore';
 
+const FIREBASE_MISSING =
+  'Firebase is not configured. Add all NEXT_PUBLIC_FIREBASE_* variables in Vercel → Settings → Environment Variables, then redeploy. See FIREBASE_SETUP.md.';
+
 export async function POST(request: Request) {
-  if (!isKvConfigured()) {
-    return NextResponse.json(
-      {
-        error:
-          'Vercel KV not linked. In Vercel: Storage → Create Database → KV → connect to this project → Redeploy.',
-      },
-      { status: 503 }
-    );
+  if (!isFirebaseConfigured()) {
+    return NextResponse.json({ error: FIREBASE_MISSING }, { status: 503 });
   }
 
   try {

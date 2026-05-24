@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { isKvConfigured } from '@/lib/kv';
+import { isFirebaseConfigured } from '@/lib/firebase';
 import { roomStoreGet } from '@/lib/multiplayer/roomStore';
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ code: string }> }
 ) {
-  if (!isKvConfigured()) {
-    return NextResponse.json({ error: 'KV not configured' }, { status: 503 });
+  if (!isFirebaseConfigured()) {
+    return NextResponse.json({ error: 'Firebase not configured' }, { status: 503 });
   }
 
   const { code } = await params;
