@@ -14,7 +14,8 @@ export const Navbar: React.FC = () => {
   const isMultiplayerActive = !!multiplayer.roomCode;
   const activeContext = isMultiplayerActive ? multiplayer : localAuction;
 
-  const { userTeamId, teams, soundEnabled, toggleSound, resetAuction } = activeContext;
+  const { userTeamId, teams, soundEnabled, voiceEnabled, toggleSound, toggleVoice, resetAuction } =
+    activeContext;
   const [isOpen, setIsOpen] = useState(false);
 
   const userTeam = teams.find(t => t.id === userTeamId);
@@ -87,7 +88,30 @@ export const Navbar: React.FC = () => {
             </div>
           )}
 
-          {/* Sound Toggle */}
+          {/* Auctioneer voice toggle */}
+          <button
+            onClick={toggleVoice}
+            className={`p-2 rounded-lg border transition ${
+              voiceEnabled
+                ? 'bg-white/5 hover:bg-white/10 border-white/5 text-[#94A3B8] hover:text-[#F8FAFC]'
+                : 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20'
+            }`}
+            title={voiceEnabled ? 'Turn off auctioneer voice' : 'Turn on auctioneer voice'}
+            aria-label={voiceEnabled ? 'Turn off auctioneer voice' : 'Turn on auctioneer voice'}
+          >
+            {voiceEnabled ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-2.08c3.39-.49 6-3.39 6-6.92h-2z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-2.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                <path d="M3.27 3L2 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 3.27 3z" />
+              </svg>
+            )}
+          </button>
+
+          {/* Sound effects toggle */}
           <button
             onClick={toggleSound}
             className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-[#94A3B8] hover:text-[#F8FAFC] transition"
@@ -122,6 +146,27 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile menu button */}
         <div className="md:hidden flex items-center space-x-3">
+          <button
+            onClick={toggleVoice}
+            className={`p-1.5 rounded border ${
+              voiceEnabled
+                ? 'bg-[#030810]/60 border-white/5 text-[#94A3B8]'
+                : 'bg-red-500/10 border-red-500/30 text-red-400'
+            }`}
+            title={voiceEnabled ? 'Turn off auctioneer voice' : 'Turn on auctioneer voice'}
+            aria-label={voiceEnabled ? 'Turn off auctioneer voice' : 'Turn on auctioneer voice'}
+          >
+            {voiceEnabled ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-2.08c3.39-.49 6-3.39 6-6.92h-2z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-2.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                <path d="M3.27 3L2 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 3.27 3z" />
+              </svg>
+            )}
+          </button>
           <button
             onClick={toggleSound}
             className="p-1.5 rounded bg-[#030810]/60 border border-white/5 text-[#94A3B8]"

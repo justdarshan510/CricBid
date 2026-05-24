@@ -28,6 +28,7 @@ const enrichTeams = (teamsList?: Team[]): Team[] => {
 import { Team, getLobbyTeams } from '../data/teams';
 import { soundEffects } from '../utils/sound';
 import { voiceAuctioneer } from '../utils/voiceAuctioneer';
+import { readVoiceEnabled, writeVoiceEnabled } from '../utils/voicePreferences';
 import { getMultiplayerMode, getMultiplayerService } from '../lib/multiplayer';
 import { RoomSnapshot } from '../lib/multiplayer/types';
 
@@ -60,6 +61,7 @@ interface MultiplayerContextType {
   userTeamId: string | null;
   isAuctionStarted: boolean;
   soundEnabled: boolean;
+  voiceEnabled: boolean;
   logs: string[];
   soldHistory: Player[];
   unsoldHistory: Player[];
@@ -77,6 +79,7 @@ interface MultiplayerContextType {
   nextPlayer: () => void;
   resetAuction: () => void;
   toggleSound: () => void;
+  toggleVoice: () => void;
   leaveRoom: () => void;
   executeVoiceCommand: (command: any) => void;
 }
@@ -101,6 +104,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [isAuctionStarted, setIsAuctionStarted] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(true);
   const [logs, setLogs] = useState<string[]>([]);
   const [auctionStatus, setAuctionStatus] = useState<'idle' | 'bidding' | 'sold_splash' | 'unsold_splash' | 'completed'>('idle');
   const [lastWinner, setLastWinner] = useState<{ player: Player; team: Team; price: number } | null>(null);
@@ -138,6 +142,16 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   useEffect(() => {
     soundEffects.setEnabled(soundEnabled);
   }, [soundEnabled]);
+
+  useEffect(() => {
+    const enabled = readVoiceEnabled();
+    setVoiceEnabled(enabled);
+    voiceAuctioneer.setEnabled(enabled);
+  }, []);
+
+  useEffect(() => {
+    voiceAuctioneer.setEnabled(voiceEnabled);
+  }, [voiceEnabled]);
 
   useEffect(() => {
     setHydrated(true);
@@ -368,6 +382,15 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setSoundEnabled(prev => !prev);
   };
 
+  const toggleVoice = () => {
+    setVoiceEnabled((prev) => {
+      const next = !prev;
+      writeVoiceEnabled(next);
+      voiceAuctioneer.setEnabled(next);
+      return next;
+    });
+  };
+
   const leaveRoom = () => {
     void mp.leaveRoom(roomCodeRef.current);
     setRoomCode(null);
@@ -380,7 +403,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const executeVoiceCommand = (cmd: { type: string; name?: string; basePrice?: number; team?: string; price?: number }) => {
-    if (!roomCode || !isHost || !isAuctionStarted) return;
+    if (!voiceEnabled || !roomCode || !isHost || !isAuctionStarted) return;
 
     switch (cmd.type) {
       case 'PAUSE':
@@ -429,6 +452,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       userTeamId,
       isAuctionStarted,
       soundEnabled,
+      voiceEnabled,
       logs,
       soldHistory,
       unsoldHistory,
@@ -445,6 +469,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       nextPlayer,
       resetAuction,
       toggleSound,
+      toggleVoice,
       leaveRoom,
       executeVoiceCommand
     }}>

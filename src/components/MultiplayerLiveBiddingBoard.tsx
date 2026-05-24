@@ -5,8 +5,6 @@ import { useMultiplayer } from '../context/MultiplayerContext';
 import { getNextBidAmount } from '../context/AuctionContext';
 import { PlayerCard } from './PlayerCard';
 import { BiddingEffectsOverlay } from './BiddingEffectsOverlay';
-import { VoiceControlPanel } from './VoiceControlPanel';
- 
 export const MultiplayerLiveBiddingBoard: React.FC = () => {
   const {
     currentPlayer,
@@ -27,8 +25,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
     nextPlayer,
     pauseAuction,
     resumeAuction,
-    playerName,
-    executeVoiceCommand
+    playerName
   } = useMultiplayer();
 
   // Compute only teams that have been claimed by a player
@@ -63,9 +60,6 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
 
   return (
     <div className="flex flex-col space-y-6">
-      {/* Premium AI Host voice assistant panel */}
-      <VoiceControlPanel onVoiceCommand={executeVoiceCommand} isHost={isHost} />
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
       {/* LEFT: Player Card (Col Span 4) */}
       <div className="lg:col-span-4 flex flex-col justify-between">

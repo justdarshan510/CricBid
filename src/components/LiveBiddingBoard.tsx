@@ -4,8 +4,6 @@ import React from 'react';
 import { useAuction, getNextBidAmount } from '../context/AuctionContext';
 import { PlayerCard } from './PlayerCard';
 import { BiddingEffectsOverlay } from './BiddingEffectsOverlay';
-import { VoiceControlPanel } from './VoiceControlPanel';
-
 export const LiveBiddingBoard: React.FC = () => {
   const {
     currentPlayer,
@@ -23,8 +21,7 @@ export const LiveBiddingBoard: React.FC = () => {
     nextPlayer,
     pauseAuction,
     resumeAuction,
-    autoSimulateActivePlayer,
-    executeVoiceCommand
+    autoSimulateActivePlayer
   } = useAuction();
 
   if (!currentPlayer) {
@@ -72,12 +69,6 @@ export const LiveBiddingBoard: React.FC = () => {
 
   return (
     <div className="flex flex-col space-y-6">
-
-      <VoiceControlPanel
-        onVoiceCommand={executeVoiceCommand}
-        isHost={true}
-      />
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* LEFT */}

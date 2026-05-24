@@ -6,6 +6,7 @@ import { Team, initialTeams } from '../data/teams';
 import { solvePlayingXI, analyzeSquad } from '../utils/aiEngine';
 import { soundEffects } from '../utils/sound';
 import { voiceAuctioneer } from '../utils/voiceAuctioneer';
+import { readVoiceEnabled, writeVoiceEnabled } from '../utils/voicePreferences';
 
 interface AuctionContextType {
   // Game states
@@ -20,6 +21,7 @@ interface AuctionContextType {
   userTeamId: string | null;
   isAuctionStarted: boolean;
   soundEnabled: boolean;
+  voiceEnabled: boolean;
   logs: string[];
   soldHistory: Player[];
   unsoldHistory: Player[];
@@ -37,6 +39,7 @@ interface AuctionContextType {
   resetAuction: () => void;
   importCSVPlayers: (customPlayers: Player[]) => void;
   toggleSound: () => void;
+  toggleVoice: () => void;
   autoSimulateActivePlayer: () => void;
   executeVoiceCommand: (command: any) => void;
 }
@@ -64,6 +67,7 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [userTeamId, setUserTeamId] = useState<string | null>(null);
   const [isAuctionStarted, setIsAuctionStarted] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(true);
   const [logs, setLogs] = useState<string[]>([]);
   const [auctionStatus, setAuctionStatus] = useState<'idle' | 'bidding' | 'sold_splash' | 'unsold_splash' | 'completed'>('idle');
   const [lastWinner, setLastWinner] = useState<{ player: Player; team: Team; price: number } | null>(null);
@@ -99,6 +103,16 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
   }, [players, teams, currentPlayerIndex, currentBid, currentBidderId, timer, isPaused, userTeamId, isAuctionStarted, auctionStatus]);
 
+  useEffect(() => {
+    const enabled = readVoiceEnabled();
+    setVoiceEnabled(enabled);
+    voiceAuctioneer.setEnabled(enabled);
+  }, []);
+
+  useEffect(() => {
+    voiceAuctioneer.setEnabled(voiceEnabled);
+  }, [voiceEnabled]);
+
   // Load from local storage after mount
   useEffect(() => {
     setIsMounted(true);
@@ -132,6 +146,10 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           setSoundEnabled(parsed.soundEnabled);
           soundEffects.setEnabled(parsed.soundEnabled);
         }
+        if (parsed.voiceEnabled !== undefined) {
+          setVoiceEnabled(parsed.voiceEnabled);
+          writeVoiceEnabled(parsed.voiceEnabled);
+        }
       } catch (e) {
         console.error('Failed to parse saved state:', e);
         setPlayers(initialPlayers);
@@ -158,10 +176,11 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       logs,
       auctionStatus,
       lastWinner,
-      soundEnabled
+      soundEnabled,
+      voiceEnabled
     };
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToSave));
-  }, [players, teams, currentPlayerIndex, currentBid, currentBidderId, timer, userTeamId, isAuctionStarted, logs, auctionStatus, lastWinner, soundEnabled, isMounted]);
+  }, [players, teams, currentPlayerIndex, currentBid, currentBidderId, timer, userTeamId, isAuctionStarted, logs, auctionStatus, lastWinner, soundEnabled, voiceEnabled, isMounted]);
 
   // Derived properties
   const activePool = players.filter(p => p.status === 'pool' || p.status === 'active');
@@ -442,6 +461,13 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     soundEffects.setEnabled(nextVal);
   };
 
+  const toggleVoice = () => {
+    const nextVal = !voiceEnabled;
+    setVoiceEnabled(nextVal);
+    writeVoiceEnabled(nextVal);
+    voiceAuctioneer.setEnabled(nextVal);
+  };
+
   const autoSimulateActivePlayer = () => {
     const activePool = players.filter(p => p.status === 'pool' || p.status === 'active');
     const p = activePool[currentPlayerIndex];
@@ -509,7 +535,7 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const executeVoiceCommand = (cmd: any) => {
-    if (!isAuctionStarted) return;
+    if (!voiceEnabled || !isAuctionStarted) return;
     
     switch (cmd.type) {
       case 'PAUSE':
@@ -608,6 +634,7 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       userTeamId,
       isAuctionStarted,
       soundEnabled,
+      voiceEnabled,
       logs,
       soldHistory,
       unsoldHistory,
@@ -623,6 +650,7 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       resetAuction,
       importCSVPlayers,
       toggleSound,
+      toggleVoice,
       autoSimulateActivePlayer,
       executeVoiceCommand
     }}>
