@@ -13,7 +13,7 @@ import {
 } from '../auctionLogic';
 import { getFirebaseDatabase, isFirebaseConfigured } from '../firebase';
 import { compactPlayersForRoom, compactTeamsForRoom } from './compactPlayers';
-import { sanitizeForFirebase } from './sanitizeForFirebase';
+import { asFirebaseArray, sanitizeForFirebase } from './sanitizeForFirebase';
 import { ClientPlayer, FirebaseRoomRecord, toRoomSnapshot } from './types';
 
 function roomRef(roomCode: string) {
@@ -117,9 +117,12 @@ export async function roomStoreGet(roomCode: string) {
 function normalizeGame(game: RoomGameState): RoomGameState {
   return {
     ...game,
-    players: game.players ?? [],
-    teams: (game.teams ?? []).map((t) => ({ ...t, players: t.players ?? [] })),
-    logs: game.logs ?? [],
+    players: asFirebaseArray(game.players as Player[] | Record<string, Player>),
+    teams: asFirebaseArray(game.teams as Team[] | Record<string, Team>).map((t) => ({
+      ...t,
+      players: asFirebaseArray(t.players as Player[] | Record<string, Player>),
+    })),
+    logs: asFirebaseArray(game.logs as string[] | Record<string, string>),
   };
 }
 

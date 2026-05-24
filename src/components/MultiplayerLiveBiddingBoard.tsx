@@ -25,7 +25,8 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
     nextPlayer,
     pauseAuction,
     resumeAuction,
-    playerName
+    playerName,
+    error,
   } = useMultiplayer();
 
   // Compute only teams that have been claimed by a player
@@ -60,6 +61,11 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
 
   return (
     <div className="flex flex-col space-y-6">
+      {error && (
+        <div className="text-xs font-semibold text-red-400 bg-red-950/20 border border-red-500/20 p-2.5 rounded-xl text-center">
+          {error}
+        </div>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
       {/* LEFT: Player Card (Col Span 4) */}
       <div className="lg:col-span-4 flex flex-col justify-between">

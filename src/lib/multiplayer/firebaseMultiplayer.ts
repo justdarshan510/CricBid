@@ -118,7 +118,18 @@ class FirebaseMultiplayerService implements IMultiplayerService {
   private async readRoom(roomCode: string): Promise<FirebaseRoomRecord | null> {
     const snapshot = await get(roomRef(roomCode));
     if (!snapshot.exists()) return null;
-    return snapshot.val() as FirebaseRoomRecord;
+    const record = snapshot.val() as FirebaseRoomRecord;
+    if (!record?.game) return record;
+    const snap = toRoomSnapshot(record);
+    record.game = {
+      ...record.game,
+      players: snap.players,
+      teams: snap.teams,
+      logs: snap.logs,
+      isPaused: snap.isPaused,
+      auctionStatus: snap.auctionStatus,
+    };
+    return record;
   }
 
   private async writeGame(roomCode: string, game: RoomGameState): Promise<void> {
@@ -227,6 +238,17 @@ class FirebaseMultiplayerService implements IMultiplayerService {
         prev.auctionStatus === next.auctionStatus &&
         JSON.stringify(prev.players) === JSON.stringify(next.players);
 
+      const majorStateChange =
+        prev.auctionStatus !== next.auctionStatus ||
+        prev.started !== next.started ||
+        prev.isPaused !== next.isPaused ||
+        prev.currentPlayerIndex !== next.currentPlayerIndex ||
+        prev.currentBid !== next.currentBid ||
+        prev.currentBidderId !== next.currentBidderId ||
+        JSON.stringify(prev.players) !== JSON.stringify(next.players) ||
+        JSON.stringify(prev.teams) !== JSON.stringify(next.teams) ||
+        JSON.stringify(prev.lastWinner) !== JSON.stringify(next.lastWinner);
+
       if (
         bidChanged &&
         next.auctionStatus === 'bidding' &&
@@ -261,14 +283,6 @@ class FirebaseMultiplayerService implements IMultiplayerService {
         });
         this.stopHostTimer();
       }
-
-      const majorStateChange =
-        prev.auctionStatus !== next.auctionStatus ||
-        prev.started !== next.started ||
-        prev.currentPlayerIndex !== next.currentPlayerIndex ||
-        JSON.stringify(prev.players) !== JSON.stringify(next.players) ||
-        JSON.stringify(prev.teams) !== JSON.stringify(next.teams) ||
-        JSON.stringify(prev.lastWinner) !== JSON.stringify(next.lastWinner);
 
       if (majorStateChange && !splashTransition) {
         this.emit('state_update', next);
@@ -477,13 +491,19 @@ class FirebaseMultiplayerService implements IMultiplayerService {
         return;
       }
 
-      const validation = validateBid(record.game, teamId, me.teamId);
+      const bidTeamId = me.teamId ?? teamId;
+      if (!bidTeamId) {
+        this.emit('bid_error', 'Claim a team in the lobby before bidding.');
+        return;
+      }
+
+      const validation = validateBid(record.game, bidTeamId, bidTeamId);
       if (!validation.ok) {
         this.emit('bid_error', validation.error);
         return;
       }
 
-      const game = applyBid(record.game, teamId, validation.nextBid, me.name);
+      const game = applyBid(record.game, bidTeamId, validation.nextBid, me.name);
       await this.writeGame(roomCode, game);
     } catch (err) {
       console.error('[multiplayer] placeBid failed:', err);

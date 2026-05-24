@@ -1,6 +1,7 @@
 import { Player } from '../../data/players';
 import { Team } from '../../data/teams';
 import { AuctionStatus, RoomGameState, RoomWinner } from '../auctionLogic';
+import { asFirebaseArray } from './sanitizeForFirebase';
 
 export interface ClientPlayer {
   id: string;
@@ -77,20 +78,25 @@ export function toRoomSnapshot(record: FirebaseRoomRecord | null | undefined): R
     };
   }
 
+  const players = asFirebaseArray<Player>(game.players as Player[] | Record<string, Player>);
+  const teams = asFirebaseArray<Team>(game.teams as Team[] | Record<string, Team>).map(
+    (t) => ({ ...t, players: asFirebaseArray<Player>(t.players as Player[] | Record<string, Player>) })
+  );
+
   return {
     ...game,
     code: game.code ?? '',
     hostId: game.hostId ?? '',
     started: game.started ?? false,
-    isPaused: game.isPaused ?? true,
+    isPaused: game.isPaused ?? false,
     auctionStatus: game.auctionStatus ?? 'idle',
-    players: game.players ?? [],
-    teams: (game.teams ?? []).map((t) => ({ ...t, players: t.players ?? [] })),
+    players,
+    teams,
     currentPlayerIndex: game.currentPlayerIndex ?? 0,
     currentBid: game.currentBid ?? 0,
     currentBidderId: game.currentBidderId ?? null,
     timer: game.timer ?? 10,
-    logs: game.logs ?? [],
+    logs: asFirebaseArray<string>(game.logs as string[] | Record<string, string>),
     lastWinner: game.lastWinner ?? null,
     clients,
   };

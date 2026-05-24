@@ -2,6 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { Player, initialPlayers } from '../data/players';
+import { Team, getLobbyTeams } from '../data/teams';
+import { soundEffects } from '../utils/sound';
+import { voiceAuctioneer } from '../utils/voiceAuctioneer';
+import { readVoiceEnabled, writeVoiceEnabled } from '../utils/voicePreferences';
+import { getMultiplayerMode, getMultiplayerService } from '../lib/multiplayer';
+import { RoomSnapshot } from '../lib/multiplayer/types';
+import { asFirebaseArray } from '../lib/multiplayer/sanitizeForFirebase';
+
 // Build a lookup map of player images
 const playerImageMap: Record<string, string> = {};
 initialPlayers.forEach(p => {
@@ -11,8 +19,8 @@ initialPlayers.forEach(p => {
   }
 });
 
-const enrichPlayers = (playersList?: Player[]): Player[] => {
-  return (playersList ?? []).map(p => ({
+const enrichPlayers = (playersList?: Player[] | Record<string, Player>): Player[] => {
+  return asFirebaseArray(playersList).map(p => ({
     ...p,
     image: p.image || playerImageMap[p.id] || playerImageMap[p.name.toLowerCase().trim()] || ''
   }));
@@ -24,13 +32,6 @@ const enrichTeams = (teamsList?: Team[]): Team[] => {
     players: enrichPlayers(t.players)
   }));
 };
-
-import { Team, getLobbyTeams } from '../data/teams';
-import { soundEffects } from '../utils/sound';
-import { voiceAuctioneer } from '../utils/voiceAuctioneer';
-import { readVoiceEnabled, writeVoiceEnabled } from '../utils/voicePreferences';
-import { getMultiplayerMode, getMultiplayerService } from '../lib/multiplayer';
-import { RoomSnapshot } from '../lib/multiplayer/types';
 
 interface ClientPlayer {
   id: string;
@@ -172,7 +173,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setLogs(data.logs ?? []);
       setAuctionStatus(data.auctionStatus ?? 'idle');
       setIsAuctionStarted(data.started ?? false);
-      setIsPaused(data.isPaused ?? true);
+      setIsPaused(data.isPaused ?? false);
       setError(null);
     };
 
