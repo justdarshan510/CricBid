@@ -13,6 +13,7 @@ import {
 } from '../auctionLogic';
 import { getFirebaseDatabase, isFirebaseConfigured } from '../firebase';
 import { compactPlayersForRoom, compactTeamsForRoom } from './compactPlayers';
+import { sanitizeForFirebase } from './sanitizeForFirebase';
 import { ClientPlayer, FirebaseRoomRecord, toRoomSnapshot } from './types';
 
 function roomRef(roomCode: string) {
@@ -38,7 +39,7 @@ async function fbGetRoom(roomCode: string): Promise<FirebaseRoomRecord | null> {
 }
 
 async function fbSetRoom(roomCode: string, record: FirebaseRoomRecord): Promise<void> {
-  await set(roomRef(roomCode), record);
+  await set(roomRef(roomCode), sanitizeForFirebase(record));
 }
 
 async function fbDeleteRoom(roomCode: string): Promise<void> {

@@ -24,6 +24,7 @@ import {
 import { getFirebaseDatabase, isFirebaseConfigured } from '../firebase';
 import { getClientId } from '../../utils/clientId';
 import { compactPlayersForRoom, compactTeamsForRoom } from './compactPlayers';
+import { sanitizeForFirebase } from './sanitizeForFirebase';
 import {
   ClientPlayer,
   FirebaseRoomRecord,
@@ -122,7 +123,7 @@ class FirebaseMultiplayerService implements IMultiplayerService {
   }
 
   private async writeGame(roomCode: string, game: RoomGameState): Promise<void> {
-    await update(roomRef(roomCode), { game });
+    await update(roomRef(roomCode), { game: sanitizeForFirebase(game) });
   }
 
   private async writeClients(
@@ -133,7 +134,7 @@ class FirebaseMultiplayerService implements IMultiplayerService {
   }
 
   private async writeRoom(roomCode: string, record: FirebaseRoomRecord): Promise<void> {
-    await set(roomRef(roomCode), record);
+    await set(roomRef(roomCode), sanitizeForFirebase(record));
   }
 
   private registerPresence(roomCode: string): void {
@@ -479,7 +480,7 @@ class FirebaseMultiplayerService implements IMultiplayerService {
 
       const team = record.game.teams.find((t) => t.id === teamId)!;
       record.game = applyBid(record.game, teamId, validation.nextBid, me.name);
-      return record;
+      return sanitizeForFirebase(record);
     });
 
     if (!result.committed) {
@@ -544,8 +545,8 @@ class FirebaseMultiplayerService implements IMultiplayerService {
       started: false,
       isPaused: true,
       auctionStatus: 'idle',
-      players: initialPlayersList,
-      teams: initialTeamsList,
+      players: compactPlayersForRoom(initialPlayersList),
+      teams: compactTeamsForRoom(initialTeamsList),
       currentPlayerIndex: 0,
       currentBid: 0,
       currentBidderId: null,

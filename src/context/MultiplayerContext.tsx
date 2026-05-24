@@ -324,7 +324,8 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setPlayerName(name);
     void mp.createRoom(
       name,
-      customPlayers || initialPlayers.map(p => ({ ...p, status: 'pool', sold_to: undefined, sold_price: undefined })),
+      customPlayers ||
+        initialPlayers.map((p) => ({ ...p, status: 'pool' as const })),
       getLobbyTeams()
     );
   };
@@ -373,7 +374,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (!roomCode || !isHost) return;
     void mp.resetAuction(
       roomCode,
-      initialPlayers.map(p => ({ ...p, status: 'pool', sold_to: undefined, sold_price: undefined })),
+      initialPlayers.map((p) => ({ ...p, status: 'pool' as const })),
       getLobbyTeams()
     );
   };

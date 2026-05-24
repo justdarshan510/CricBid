@@ -10,6 +10,18 @@ Multiplayer uses **Firebase Realtime Database** on Vercel (Socket.io does not ru
 2. Project **Settings** (gear) → **Your apps** → **Web** (`</>`) → copy the config values.
 3. [Vercel Dashboard](https://vercel.com) → your **CricBid** project → **Settings** → **Environment Variables**.
 4. Add each variable from `.env.example` (all `NEXT_PUBLIC_FIREBASE_*`). Apply to **Production** and **Preview**.
+
+### Old domain works, new Vercel domain does not
+
+Each **Vercel project** has its own environment variables. A custom domain on project A does not share env with project B.
+
+1. Open the **working** Vercel project → Settings → Environment Variables.
+2. Copy all 7 `NEXT_PUBLIC_FIREBASE_*` values.
+3. Open the **new** Vercel project (the one serving the new domain) → Settings → Environment Variables → paste the same keys and values.
+4. For each variable, check **Production** and **Preview** (not Development only).
+5. **Redeploy** the new project and disable **Use existing Build Cache**.
+
+Check: open `https://YOUR-NEW-DOMAIN/api/multiplayer/status` — `configured` should be `true`.
 5. **Deployments** → **Redeploy** the latest `main` branch (must rebuild after env changes).
 6. Open `/lobby` on your live URL → **Create Room** — you should get a 6-digit code.
 

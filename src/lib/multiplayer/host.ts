@@ -4,16 +4,18 @@ export const PRODUCTION_FIREBASE_SETUP_MESSAGE =
 export const LOCAL_SOCKET_SETUP_MESSAGE =
   'Cannot reach the game server. Run npm run dev (starts Socket.io and Next.js). Do not use npm run dev:next for multiplayer.';
 
-/** True when the app runs on Vercel (or similar) without a local Socket.io server. */
+/** True when the app runs on the public internet (not local dev). */
 export function isDeployedProduction(): boolean {
   if (typeof window === 'undefined') return false;
   const host = window.location.hostname;
-  if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local')) {
+  if (
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host.endsWith('.local') ||
+    host.startsWith('192.168.') ||
+    host.startsWith('10.')
+  ) {
     return false;
   }
-  return (
-    host.endsWith('.vercel.app') ||
-    process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ||
-    process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-  );
+  return true;
 }
