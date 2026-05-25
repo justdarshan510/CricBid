@@ -4,18 +4,18 @@
  * Images located in: public/team-backgrounds/
  */
 
-// Mapping using team short names for easy lookup
-const teamShortNameToBackground: Record<string, string> = {
-  CSK: '/team-backgrounds/csk-background.png',
-  MI: '/team-backgrounds/mi-background.png',
-  RCB: '/team-backgrounds/rcb-background.png',
-  KKR: '/team-backgrounds/kkr-background.png',
-  SRH: '/team-backgrounds/srh-background.png',
-  DC: '/team-backgrounds/dc-background.png',
-  RR: '/team-backgrounds/rr-background.png',
-  PBKS: '/team-backgrounds/pbks-background.png',
-  LSG: '/team-backgrounds/lsg-background.png',
-  GT: '/team-backgrounds/gt-background.png'
+// 1. Create team mapping exactly as requested:
+export const teamBackgrounds = {
+  CSK: "/team-backgrounds/csk-background.png",
+  MI: "/team-backgrounds/mi-background.png",
+  RCB: "/team-backgrounds/rcb-background.png",
+  KKR: "/team-backgrounds/kkr-background.png",
+  SRH: "/team-backgrounds/srh-background.png",
+  DC: "/team-backgrounds/dc-background.png",
+  RR: "/team-backgrounds/rr-background.png",
+  PBKS: "/team-backgrounds/pbks-background.png",
+  GT: "/team-backgrounds/gt-background.png",
+  LSG: "/team-backgrounds/lsg-background.png"
 };
 
 // Mapping using full team IDs for consistency with database
@@ -32,8 +32,6 @@ const teamIdToBackground: Record<string, string> = {
   'team_gt': '/team-backgrounds/gt-background.png'
 };
 
-export const teamBackgrounds = teamIdToBackground;
-
 /**
  * Get background image URL for a team
  * Supports both team IDs (e.g., "team_csk") and short names (e.g., "CSK")
@@ -48,9 +46,10 @@ export const getTeamBackgroundUrl = (teamId: string | null | undefined): string 
     return teamIdToBackground[teamId];
   }
   
-  // Try short name lookup
-  if (teamShortNameToBackground[teamId]) {
-    return teamShortNameToBackground[teamId];
+  // Try short name lookup (using the requested teamBackgrounds map)
+  const upperTeamId = teamId.toUpperCase();
+  if (teamBackgrounds[upperTeamId as keyof typeof teamBackgrounds]) {
+    return teamBackgrounds[upperTeamId as keyof typeof teamBackgrounds];
   }
   
   return undefined;

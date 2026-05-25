@@ -51,18 +51,10 @@ export const LobbyBackgroundProvider: React.FC<LobbyBackgroundProviderProps> = (
     }
   }, [teamId]);
 
-  // Only show background if team is selected
-  if (!teamId) {
-    return <>{children}</>;
-  }
-
   const backgroundStyle: React.CSSProperties = {
     backgroundImage: imageError || !backgroundUrl 
-      ? undefined 
+      ? "url('/stadium_bg.png')" 
       : `url('${backgroundUrl}')`,
-    background: imageError || !backgroundUrl 
-      ? FALLBACK_BACKGROUND 
-      : undefined,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

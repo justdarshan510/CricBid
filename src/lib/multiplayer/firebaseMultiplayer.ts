@@ -497,8 +497,26 @@ class FirebaseMultiplayerService implements IMultiplayerService {
         return;
       }
 
+      // Debug: log bid attempt details to help diagnose raise issues
+      try {
+        // eslint-disable-next-line no-console
+        console.debug('[multiplayer] placeBid attempt', {
+          room: roomCode,
+          clientId: this.clientId,
+          me: { id: me.id, name: me.name, teamId: me.teamId },
+          bidTeamId,
+          currentBid: record.game.currentBid,
+          auctionStatus: record.game.auctionStatus,
+        });
+      } catch (e) {
+        /* ignore logging errors */
+      }
+
       const validation = validateBid(record.game, bidTeamId, bidTeamId);
       if (!validation.ok) {
+        // Emit detailed error and log for diagnostics
+        // eslint-disable-next-line no-console
+        console.debug('[multiplayer] placeBid validation failed', { room: roomCode, error: validation.error });
         this.emit('bid_error', validation.error);
         return;
       }

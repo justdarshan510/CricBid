@@ -308,10 +308,21 @@ app.prepare().then(() => {
       io.to(roomCode).emit('state_update', getRoomState(room));
     });
 
+
     // Place Bid
         socket.on('place_bid', ({ roomCode, teamId }) => {
       const room = rooms[roomCode];
-      if (!room || room.isPaused || room.auctionStatus !== 'bidding') return;
+      // Log attempt and return a helpful error when auction not accepting bids
+      if (!room) {
+        socket.emit('bid_error', 'Room not found.');
+        console.debug('[server] place_bid: room not found', { roomCode, socket: socket.id });
+        return;
+      }
+      if (room.isPaused || room.auctionStatus !== 'bidding') {
+        socket.emit('bid_error', 'Auction is not accepting bids right now.');
+        console.debug('[server] place_bid ignored - auction not accepting bids', { roomCode, socket: socket.id, isPaused: room.isPaused, auctionStatus: room.auctionStatus });
+        return;
+      }
 
       const activePool = room.players.filter(p => p.status === 'pool' || p.status === 'active');
       const p = activePool[room.currentPlayerIndex];
@@ -321,12 +332,14 @@ app.prepare().then(() => {
       const team = room.teams.find(t => t.id === teamId);
       if (!team) {
         socket.emit('bid_error', 'Invalid team.');
+        console.debug('[server] place_bid invalid team', { roomCode, teamId });
         return;
       }
 
       const client = room.clients.get(socket.id);
       if (!client || client.teamId !== teamId) {
         socket.emit('bid_error', 'You must claim the team before bidding.');
+        console.debug('[server] place_bid unclaimed team', { roomCode, socket: socket.id, client, teamId });
         return;
       }
 
@@ -336,14 +349,17 @@ app.prepare().then(() => {
       const isSquadLimit = team.players.length >= 25;
       if (isSquadLimit) {
         socket.emit('bid_error', 'Squad limit of 25 reached.');
+        console.debug('[server] place_bid squad full', { roomCode, teamId });
         return;
       }
       if (isOverseasLimit) {
         socket.emit('bid_error', 'Overseas limit of 8 reached.');
+        console.debug('[server] place_bid overseas limit', { roomCode, teamId });
         return;
       }
       if (team.purse < nextBid) {
         socket.emit('bid_error', 'Insufficient purse.');
+        console.debug('[server] place_bid insufficient purse', { roomCode, teamId, purse: team.purse, nextBid });
         return;
       }
 
