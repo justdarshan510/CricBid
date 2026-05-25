@@ -51,23 +51,15 @@ export const LobbyBackgroundProvider: React.FC<LobbyBackgroundProviderProps> = (
     }
   }, [teamId]);
 
-  const backgroundStyle: React.CSSProperties = {
-    backgroundImage: imageError || !backgroundUrl 
-      ? "url('/stadium_bg.png')" 
-      : `url('${backgroundUrl}')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundAttachment: 'fixed',
-  };
-
   return (
     <div className="relative w-full min-h-screen">
-      {/* Background container - fixed behind all content */}
-      <div
-        className="lobby-bg-image lobby-bg-fade-in"
-        style={backgroundStyle}
-      />
+      <div className="lobby-bg-container lobby-bg-fade-in">
+        {!imageError && backgroundUrl ? (
+          <img src={backgroundUrl} alt="Team Background" className="lobby-bg-image" />
+        ) : (
+          <div className="lobby-bg-fallback" />
+        )}
+      </div>
 
       {/* Dark overlay for readability */}
       <div

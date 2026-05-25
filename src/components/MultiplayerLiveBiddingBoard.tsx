@@ -23,6 +23,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
     placeUserBid,
     skipPlayer,
     nextPlayer,
+    sellNow,
     pauseAuction,
     resumeAuction,
     playerName,
@@ -193,18 +194,24 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
 
             {/* Quick Actions Panel - Host Only */}
             {isHost ? (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={isPaused ? resumeAuction : pauseAuction}
-                  className="py-2.5 rounded-xl bg-white/5 border border-white/5 text-[#94A3B8] hover:text-[#F8FAFC] text-xs font-bold hover:bg-white/10 transition cursor-pointer"
+                  className="py-2.5 rounded-xl bg-white/5 border border-white/5 text-[#94A3B8] hover:text-[#F8FAFC] text-[10px] font-bold hover:bg-white/10 transition cursor-pointer"
                 >
                   {isPaused ? '▶ Resume' : '⏸ Pause'}
                 </button>
                 <button
                   onClick={skipPlayer}
-                  className="py-2.5 rounded-xl bg-white/5 border border-white/5 text-[#94A3B8] hover:text-[#F8FAFC] text-xs font-bold hover:bg-white/10 transition cursor-pointer"
+                  className="py-2.5 rounded-xl bg-white/5 border border-white/5 text-[#94A3B8] hover:text-[#F8FAFC] text-[10px] font-bold hover:bg-white/10 transition cursor-pointer"
                 >
-                  ✖ Pass Player
+                  ✖ Pass
+                </button>
+                <button
+                  onClick={sellNow}
+                  className="py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:text-emerald-300 text-[10px] font-bold hover:bg-emerald-500/20 transition cursor-pointer"
+                >
+                  🔨 SELL NOW
                 </button>
               </div>
             ) : (

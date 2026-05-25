@@ -48,26 +48,15 @@ export const TeamBackgroundProvider: React.FC<TeamBackgroundProviderProps> = ({
     }
   }, [teamId]);
 
-  const backgroundStyle: React.CSSProperties = {
-    backgroundImage: imageError || !backgroundUrl 
-      ? undefined 
-      : `url('${backgroundUrl}')`,
-    background: imageError || !backgroundUrl 
-      ? FALLBACK_BACKGROUND 
-      : undefined,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundAttachment: 'fixed',
-  };
-
   return (
     <div className="relative w-full min-h-screen">
-      {/* Background container */}
-      <div
-        className="team-bg-image team-bg-fade-in"
-        style={backgroundStyle}
-      />
+      <div className="team-bg-container team-bg-fade-in">
+        {!imageError && backgroundUrl ? (
+          <img src={backgroundUrl} alt="Team Background" className="team-bg-image" />
+        ) : (
+          <div className="team-bg-fallback" />
+        )}
+      </div>
 
       {/* Dark overlay for readability */}
       <div

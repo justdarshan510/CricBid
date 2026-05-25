@@ -40,13 +40,11 @@ export default function MultiplayerRoomPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-8 w-full">
           {/* Main board */}
-          <div className="lg:col-span-9">
+          <div className="w-full flex-1">
             <MultiplayerLiveBiddingBoard />
           </div>
-
-
         </div>
       </div>
     </TeamBackgroundProvider>

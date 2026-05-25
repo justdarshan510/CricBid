@@ -193,9 +193,9 @@ export default function LobbyPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      <div className="flex flex-col lg:flex-row items-start justify-between gap-8 w-full">
         {/* LEFT PANEL: Connected Players List (Col Span 4) */}
-        <div className="lg:col-span-4 flex flex-col">
+        <div className="w-full lg:w-[30%] flex-shrink-0 flex flex-col">
           <h2 className="text-xs uppercase tracking-widest font-black text-[#94A3B8]/60 mb-3 flex items-center justify-between">
             <span>Connected Players ({clients.length})</span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
@@ -251,7 +251,7 @@ export default function LobbyPage() {
         </div>
 
         {/* RIGHT PANEL: Team Claiming Board (Col Span 8) */}
-        <div className="lg:col-span-8 flex flex-col space-y-4">
+        <div className="w-full flex-1 flex flex-col space-y-4">
           <div>
             <h2 className="text-xs uppercase tracking-widest font-black text-[#94A3B8]/60 mb-1">
               Select Your Franchise

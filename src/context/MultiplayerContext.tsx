@@ -78,6 +78,7 @@ interface MultiplayerContextType {
   placeUserBid: () => void;
   skipPlayer: () => void;
   nextPlayer: () => void;
+  sellNow: () => void;
   resetAuction: () => void;
   toggleSound: () => void;
   toggleVoice: () => void;
@@ -385,6 +386,15 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     void mp.nextPlayer(roomCode);
   };
 
+  const sellNow = () => {
+    if (!roomCode || !isHost) return;
+    if (currentBidderId && currentBid > 0) {
+      void mp.forceSell(roomCode, currentBidderId, currentBid);
+    } else {
+      void mp.skipPlayer(roomCode);
+    }
+  };
+
   const resetAuction = () => {
     if (!roomCode || !isHost) return;
     void mp.resetAuction(
@@ -483,6 +493,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       placeUserBid,
       skipPlayer,
       nextPlayer,
+      sellNow,
       resetAuction,
       toggleSound,
       toggleVoice,
