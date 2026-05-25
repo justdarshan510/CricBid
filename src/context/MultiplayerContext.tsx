@@ -10,11 +10,6 @@ import { getMultiplayerMode, getMultiplayerService } from '../lib/multiplayer';
 import { RoomSnapshot } from '../lib/multiplayer/types';
 import { asFirebaseArray } from '../lib/multiplayer/sanitizeForFirebase';
 import { useAuth } from './AuthContext';
-import {
-  clearPersistedMultiplayerSession,
-  readPersistedMultiplayerSession,
-  writePersistedMultiplayerSession,
-} from '../utils/persistedMultiplayerSession';
 
 // Build a lookup map of player images
 const playerImageMap: Record<string, string> = {};
@@ -140,10 +135,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const teamsRef = useRef(teams);
   const playersRef = useRef(players);
   const lastSpokenPlayerIdRef = useRef<string | null>(null);
-  const clientIdRef = useRef(clientId);
   const roomCodeRef = useRef(roomCode);
-  const restoreAttemptedRef = useRef(false);
-  const autoRejoinRef = useRef<{ roomCode: string; teamId: string | null } | null>(null);
 
   useEffect(() => {
     auctionStatusRef.current = auctionStatus;
@@ -158,36 +150,8 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [players]);
 
   useEffect(() => {
-    clientIdRef.current = clientId;
-  }, [clientId]);
-
-  useEffect(() => {
     roomCodeRef.current = roomCode;
   }, [roomCode]);
-
-  useEffect(() => {
-    if (!hydrated || !user || !roomCode) return;
-    writePersistedMultiplayerSession({
-      uid: user.uid,
-      roomCode,
-      playerName: playerName || user.displayName || 'Player',
-      teamId: userTeamId,
-    });
-  }, [hydrated, user, roomCode, playerName, userTeamId]);
-
-  useEffect(() => {
-    if (!hydrated || !user) return;
-    if (restoreAttemptedRef.current) return;
-    const persisted = readPersistedMultiplayerSession();
-    if (!persisted || persisted.uid !== user.uid) return;
-    if (roomCodeRef.current) return;
-    restoreAttemptedRef.current = true;
-    autoRejoinRef.current = { roomCode: persisted.roomCode, teamId: persisted.teamId };
-    const name = persisted.playerName || user.displayName || 'Player';
-    console.log('Room restored');
-    setPlayerName(name);
-    void mp.joinRoom(persisted.roomCode, name);
-  }, [hydrated, user, mp]);
 
   useEffect(() => {
     soundEffects.setEnabled(soundEnabled);
@@ -221,22 +185,6 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setIsAuctionStarted(data.started ?? false);
       setIsPaused(data.isPaused ?? false);
       setError(null);
-
-      const pending = autoRejoinRef.current;
-      if (pending && data.code === pending.roomCode) {
-        console.log('Auto rejoined');
-        if (pending.teamId) {
-          const mine = (data.clients ?? []).find(c => c.id === clientIdRef.current);
-          const alreadyHasTeam = Boolean(mine?.teamId);
-          const claimedByOther = (data.clients ?? []).some(
-            c => c.teamId === pending.teamId && c.id !== clientIdRef.current
-          );
-          if (!alreadyHasTeam && !claimedByOther) {
-            void mp.claimTeam(data.code, pending.teamId);
-          }
-        }
-        autoRejoinRef.current = null;
-      }
     };
 
     const onJoinError = (msg: string) => setError(msg);

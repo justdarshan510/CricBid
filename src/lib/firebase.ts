@@ -92,40 +92,33 @@ export function getFirebaseConfigErrorMessage(): string {
   );
 }
 
-let app: FirebaseApp | null = null;
-let database: Database | null = null;
-let auth: Auth | null = null;
+let app: FirebaseApp;
+try {
+  app = getApps().length ? getApp() : initializeApp(readFirebaseConfig());
+} catch (e) {
+  // Fallback for environments where config might be missing initially
+  app = initializeApp(readFirebaseConfig());
+}
+
+export const auth = getAuth(app);
+export const database = getDatabase(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export function getFirebaseApp(): FirebaseApp {
-  if (!isFirebaseConfigured()) {
-    throw new Error(getFirebaseConfigErrorMessage());
-  }
-  if (!app) {
-    app = getApps().length ? getApp() : initializeApp(readFirebaseConfig());
-  }
   return app;
 }
 
 export function getFirebaseAuth(): Auth {
-  if (!auth) {
-    auth = getAuth(getFirebaseApp());
-  }
   return auth;
 }
 
 export function getFirebaseDatabase(): Database {
-  if (!database) {
-    database = getDatabase(getFirebaseApp());
-  }
   return database;
 }
 
 export function resetFirebaseForTests(): void {
-  app = null;
-  database = null;
-  auth = null;
+  // app = null; // Cannot reset const
 }
 
-export const loginWithGoogle = () => signInWithPopup(getFirebaseAuth(), googleProvider);
-export const logout = () => signOut(getFirebaseAuth());
+export const loginWithGoogle = () => signInWithPopup(auth, googleProvider);
+export const logout = () => signOut(auth);
