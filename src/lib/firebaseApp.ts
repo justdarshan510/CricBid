@@ -8,8 +8,17 @@ import { getAnalytics } from "firebase/analytics";
 import type { Analytics } from "firebase/analytics";
 
 /**
- * Firebase configuration using environment variables.
+ * DEBUG: Log environment variables to help the user identify missing keys.
+ * These will show up in the browser console (F12).
  */
+if (typeof window !== 'undefined') {
+  console.log("--- Firebase Environment Check ---");
+  console.log("API Key:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? "✅ Defined" : "❌ UNDEFINED");
+  console.log("Project ID:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? "✅ Defined" : "❌ UNDEFINED");
+  console.log("Auth Domain:", process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? "✅ Defined" : "❌ UNDEFINED");
+  console.log("----------------------------------");
+}
+
 export const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -21,112 +30,64 @@ export const firebaseConfig: FirebaseOptions = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-/**
- * Returns a copy of the Firebase configuration.
- */
-export const readFirebaseConfig = (): FirebaseOptions => {
-  return { ...firebaseConfig };
-};
-
-/**
- * Checks if the minimum required Firebase configuration is present.
- */
 export const isFirebaseConfigured = (): boolean => {
   return !!(
-    firebaseConfig.apiKey && 
-    firebaseConfig.projectId && 
-    firebaseConfig.databaseURL
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
   );
 };
 
-/**
- * Client-side check for Firebase configuration.
- */
-export const isFirebaseConfiguredOnClient = (): boolean => {
-  return isFirebaseConfigured();
-};
-
-/**
- * Returns a list of missing required environment variables.
- */
-export const getMissingFirebaseEnvKeys = (): string[] => {
-  const missing: string[] = [];
-  if (!firebaseConfig.apiKey) missing.push("NEXT_PUBLIC_FIREBASE_API_KEY");
-  if (!firebaseConfig.projectId) missing.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
-  if (!firebaseConfig.databaseURL) missing.push("NEXT_PUBLIC_FIREBASE_DATABASE_URL");
-  return missing;
-};
-
-/**
- * Returns a list of unset environment variables.
- */
-export const getUnsetFirebaseEnvKeys = (): string[] => {
-  return getMissingFirebaseEnvKeys();
-};
-
-/**
- * Returns a descriptive error message if Firebase configuration is missing.
- */
-export const getFirebaseConfigErrorMessage = (): string => {
-  const missing = getMissingFirebaseEnvKeys();
-  if (missing.length === 0) return "";
-  return "Missing Firebase configuration: " + missing.join(", ") + ". Please add these as Environment Variables in Vercel.";
-};
-
-/**
- * Initializes and returns the Firebase App instance.
- * Safe to call during build time.
- */
 export const getFirebaseApp = (): FirebaseApp => {
   if (getApps().length > 0) return getApp();
   
-  // Use a dummy config if keys are missing to prevent crash during static build
-  const config = isFirebaseConfigured() ? firebaseConfig : {
-    apiKey: "dummy-key",
-    projectId: "dummy-project",
-    authDomain: "dummy-project.firebaseapp.com",
-    databaseURL: "https://dummy.firebaseio.com"
-  };
+  if (!isFirebaseConfigured()) {
+    // Return a dummy app during build time to prevent crashes
+    return initializeApp({
+      apiKey: "missing-key",
+      projectId: "missing-project",
+      authDomain: "missing-project.firebaseapp.com"
+    }, "dummy-app");
+  }
   
-  return initializeApp(config);
+  return initializeApp(firebaseConfig);
 };
 
-/**
- * Returns the Firebase Auth instance.
- */
-export const getFirebaseAuth = (): Auth => {
-  return getAuth(getFirebaseApp());
-};
+export const getFirebaseAuth = (): Auth => getAuth(getFirebaseApp());
+export const getFirebaseDatabase = (): Database => getDatabase(getFirebaseApp());
 
-/**
- * Returns the Firebase Realtime Database instance.
- */
-export const getFirebaseDatabase = (): Database => {
-  return getDatabase(getFirebaseApp());
-};
-
-// Singleton instances - initialized lazily or safely
 export const app = getFirebaseApp();
 export const auth = getFirebaseAuth();
 export const database = getFirebaseDatabase();
 export const googleProvider = new GoogleAuthProvider();
 
-// Analytics is only available in the browser
 export const analytics: Analytics | undefined = 
   typeof window !== "undefined" && isFirebaseConfigured() 
     ? getAnalytics(app) 
     : undefined;
 
-/**
- * Helper to log in with Google using a popup.
- */
 export const loginWithGoogle = async () => {
+  if (!isFirebaseConfigured()) {
+    const error = "CRITICAL: Firebase is not configured. Google login will not work. Please check your Vercel Environment Variables.";
+    alert(error);
+    throw new Error(error);
+  }
   return signInWithPopup(auth, googleProvider);
 };
 
-/**
- * Helper to log out of the current session.
- */
-export const logout = async () => {
-  return signOut(auth);
+export const logout = async () => signOut(auth);
+
+// Re-exports for compatibility
+export const readFirebaseConfig = () => ({ ...firebaseConfig });
+export const isFirebaseConfiguredOnClient = isFirebaseConfigured;
+export const getMissingFirebaseEnvKeys = () => {
+  const missing: string[] = [];
+  if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) missing.push("NEXT_PUBLIC_FIREBASE_API_KEY");
+  if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) missing.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
+  return missing;
+};
+export const getUnsetFirebaseEnvKeys = getMissingFirebaseEnvKeys;
+export const getFirebaseConfigErrorMessage = () => {
+  const missing = getMissingFirebaseEnvKeys();
+  if (missing.length === 0) return "";
+  return "Missing: " + missing.join(", ");
 };
