@@ -1,7 +1,8 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getFirebaseAuth, loginWithGoogle, logout } from '../lib/firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { getFirebaseAuth, loginWithGoogle as firebaseLoginWithGoogle, logout } from '../lib/firebase';
+import { browserLocalPersistence, onAuthStateChanged, setPersistence, User } from 'firebase/auth';
+import { writePersistedAuthUser } from '../utils/persistedAuth';
 
 interface AuthContextType {
   user: User | null;
@@ -21,11 +22,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const loginWithGoogle = async () => {
+    try {
+      const result = await firebaseLoginWithGoogle();
+      console.log('Google login success');
+      return result;
+    } catch (error: any) {
+      console.error('Google login failed');
+      console.error(error?.code);
+      console.error(error?.message);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     try {
       const auth = getFirebaseAuth();
+      void setPersistence(auth, browserLocalPersistence);
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         setUser(currentUser);
+        if (currentUser) {
+          writePersistedAuthUser({
+            uid: currentUser.uid,
+            name: currentUser.displayName ?? null,
+            email: currentUser.email ?? null,
+            photoURL: currentUser.photoURL ?? null,
+          });
+        } else {
+          writePersistedAuthUser(null);
+        }
         setLoading(false);
       });
       return () => unsubscribe();
