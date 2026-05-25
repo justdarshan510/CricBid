@@ -107,6 +107,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [roomCode, setRoomCode] = useState<string | null>(null);
   const [clients, setClients] = useState<ClientPlayer[]>([]);
   const [playerName, setPlayerName] = useState<string>('');
+  const [hostId, setHostId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [players, setPlayers] = useState<Player[]>([]);
@@ -124,7 +125,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [lastWinner, setLastWinner] = useState<{ player: Player; team: Team; price: number } | null>(null);
 
   const userTeamId = clients.find(c => c.id === clientId)?.teamId || null;
-  const isHost = clients.find(c => c.id === clientId)?.isHost || false;
+  const isHost = (clientId && hostId && clientId === hostId) || clients.find(c => c.id === clientId)?.isHost || false;
 
   const activePool = players.filter(p => p.status === 'pool' || p.status === 'active');
   const currentPlayer =
@@ -210,10 +211,15 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [mp]);
 
   useEffect(() => {
+    console.log('Identity Check - Client:', clientId, 'Host:', hostId, 'isHost:', isHost);
+  }, [clientId, hostId, isHost]);
+
+  useEffect(() => {
     mp.connect();
 
     const applyRoomSnapshot = (data: RoomSnapshot) => {
       setRoomCode(data.code);
+      setHostId(data.hostId);
       setClients(data.clients ?? []);
       setPlayers(enrichPlayers(data.players));
       setTeams(enrichTeams(data.teams?.length ? data.teams : getLobbyTeams()));
