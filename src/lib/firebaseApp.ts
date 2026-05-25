@@ -84,6 +84,7 @@ export const getFirebaseApp = (): FirebaseApp => {
   const config = isFirebaseConfigured() ? firebaseConfig : {
     apiKey: "dummy-key",
     projectId: "dummy-project",
+    authDomain: "dummy-project.firebaseapp.com",
     databaseURL: "https://dummy.firebaseio.com"
   };
   
