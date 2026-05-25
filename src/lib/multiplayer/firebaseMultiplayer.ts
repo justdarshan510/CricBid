@@ -339,7 +339,7 @@ class FirebaseMultiplayerService implements IMultiplayerService {
         currentPlayerIndex: 0,
         currentBid: 0,
         currentBidderId: null,
-        timer: 10,
+        timer: 20,
         logs: [`Room created by ${hostName}. Room Code: ${roomCode}`],
         lastWinner: null,
       };
@@ -582,7 +582,7 @@ class FirebaseMultiplayerService implements IMultiplayerService {
       currentPlayerIndex: 0,
       currentBid: 0,
       currentBidderId: null,
-      timer: 10,
+      timer: 20,
       lastWinner: null,
       logs: ['Auction was reset by Host. Lobby is active.'],
     };

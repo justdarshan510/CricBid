@@ -32,9 +32,11 @@ export interface RoomGameState {
 
 export function getNextBidAmount(currentBid: number, basePrice: number): number {
   if (currentBid === 0) return basePrice;
-  if (currentBid < 2.0) return parseFloat((currentBid + 0.2).toFixed(2));
-  if (currentBid < 5.0) return parseFloat((currentBid + 0.5).toFixed(2));
-  return parseFloat((currentBid + 1.0).toFixed(2));
+  if (currentBid < 2.0) return parseFloat((currentBid + 0.1).toFixed(2));
+  if (currentBid < 5.0) return parseFloat((currentBid + 0.2).toFixed(2));
+  if (currentBid < 10.0) return parseFloat((currentBid + 0.5).toFixed(2));
+  if (currentBid < 20.0) return parseFloat((currentBid + 1.0).toFixed(2));
+  return parseFloat((currentBid + 2.0).toFixed(2));
 }
 
 export function analyzeSquad(squad: Player[]) {
@@ -153,7 +155,7 @@ export function applyBid(
   bidderName: string
 ): RoomGameState {
   const team = room.teams.find((t) => t.id === teamId)!;
-  const timer = room.timer < 8 ? 8 : room.timer;
+  const timer = 20;
   const logs = [
     `${bidderName} (${team.shortName}) bids ${nextBid.toFixed(2)} Cr`,
     ...room.logs,
@@ -191,7 +193,7 @@ export function startAuctionState(room: RoomGameState): RoomGameState {
     currentPlayerIndex: hammerPlayer ? activePlayerIndex(players, hammerPlayer.id) : 0,
     currentBid: 0,
     currentBidderId: null,
-    timer: 10,
+    timer: 20,
     lastWinner: null,
     players,
     logs,
@@ -271,7 +273,7 @@ export function nextPlayerState(
     logs,
     currentBid: 0,
     currentBidderId: null,
-    timer: 10,
+    timer: 20,
     auctionStatus: 'bidding',
     isPaused: false,
     lastWinner: null,

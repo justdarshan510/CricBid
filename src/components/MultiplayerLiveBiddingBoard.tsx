@@ -57,7 +57,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
   // Countdown timer circle calculations
   const radius = 30;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (timer / 10) * circumference;
+  const strokeDashoffset = circumference - (timer / 20) * circumference;
 
   return (
     <div className="flex flex-col space-y-6">

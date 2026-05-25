@@ -62,7 +62,7 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
   const [currentBid, setCurrentBid] = useState<number>(0);
   const [currentBidderId, setCurrentBidderId] = useState<string | null>(null);
-  const [timer, setTimer] = useState<number>(10);
+  const [timer, setTimer] = useState<number>(20);
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [userTeamId, setUserTeamId] = useState<string | null>(null);
   const [isAuctionStarted, setIsAuctionStarted] = useState<boolean>(false);
@@ -135,7 +135,7 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setCurrentPlayerIndex(parsed.currentPlayerIndex || 0);
         setCurrentBid(parsed.currentBid || 0);
         setCurrentBidderId(parsed.currentBidderId || null);
-        setTimer(parsed.timer !== undefined ? parsed.timer : 10);
+        setTimer(parsed.timer !== undefined ? parsed.timer : 20);
         setIsPaused(true); // Always start paused on reload
         setUserTeamId(parsed.userTeamId || null);
         setIsAuctionStarted(parsed.isAuctionStarted || false);

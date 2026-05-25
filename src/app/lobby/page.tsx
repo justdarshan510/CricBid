@@ -267,7 +267,7 @@ export default function LobbyPage() {
             </div>
           )}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
             {(teams ?? []).map((t) => {
               const claimedBy = clients.find(c => c.teamId === t.id);
               const isMine = userTeamId === t.id;
@@ -324,7 +324,7 @@ export default function LobbyPage() {
                       </span>
                     </div>
                     <div>
-                      <h3 className="text-xs font-black text-[#F8FAFC] group-hover:text-[#38BDF8] transition-colors uppercase leading-none truncate max-w-[120px]">
+                      <h3 className="text-xs font-black text-[#F8FAFC] group-hover:text-[#38BDF8] transition-colors uppercase leading-tight line-clamp-2">
                         {t.name}
                       </h3>
                       <span className="text-[9px] text-[#94A3B8]/60 uppercase tracking-wider block mt-1 font-semibold">
