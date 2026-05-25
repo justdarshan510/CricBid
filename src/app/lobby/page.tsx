@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMultiplayer } from '../../context/MultiplayerContext';
+import { useAuth } from '../../context/AuthContext';
 import { LobbyBackgroundProvider } from '../../components/LobbyBackgroundProvider';
 import { Player } from '../../data/players';
 export default function LobbyPage() {
@@ -25,9 +26,17 @@ export default function LobbyPage() {
     leaveRoom
   } = useMultiplayer();
 
+  const { user, loginWithGoogle } = useAuth();
+
   const [activeTab, setActiveTab] = useState<'create' | 'join'>('create');
   const [localName, setLocalName] = useState('');
   const [localCode, setLocalCode] = useState('');
+
+  useEffect(() => {
+    if (user && !localName) {
+      setLocalName(user.displayName || 'Player');
+    }
+  }, [user, localName]);
 
   // Redirect to room if started
   useEffect(() => {
@@ -96,8 +105,26 @@ export default function LobbyPage() {
           </div>
         )}
 
-        <div className="glass-card rounded-3xl p-6 border border-white/5 shadow-2xl relative bg-[#07111F]/40 backdrop-blur-md">
-          {activeTab === 'create' ? (
+        <div className="glass-card rounded-3xl p-6 border border-white/5 shadow-2xl relative bg-[#0F172A]/40 backdrop-blur-md">
+          {!user ? (
+            <div className="text-center py-8 space-y-6">
+              <div className="w-16 h-16 mx-auto bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20">
+                <span className="text-2xl">🔒</span>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">Sign in to play</h3>
+                <p className="text-sm text-slate-400 max-w-sm mx-auto">
+                  Authentication ensures you can seamlessly rejoin your session if you get disconnected.
+                </p>
+              </div>
+              <button
+                onClick={loginWithGoogle}
+                className="w-full max-w-sm mx-auto py-4 rounded-xl text-sm font-black uppercase tracking-widest text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-[0_4px_25px_rgba(37,99,235,0.3)] transition active:scale-98 cursor-pointer flex items-center justify-center gap-3"
+              >
+                <span>Sign in with Google</span>
+              </button>
+            </div>
+          ) : activeTab === 'create' ? (
             <form onSubmit={handleCreate} className="space-y-6">
               <div className="space-y-2">
                 <label className="block text-xs uppercase tracking-wider font-extrabold text-[#94A3B8]/60">
@@ -116,7 +143,7 @@ export default function LobbyPage() {
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest text-[#07111F] bg-gradient-to-r from-[#38BDF8] to-[#0284C7] hover:shadow-[0_4px_25px_rgba(56,189,248,0.3)] transition active:scale-98 cursor-pointer"
+                className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-[0_4px_25px_rgba(37,99,235,0.3)] transition active:scale-98 cursor-pointer"
               >
                 Create Room & Get Code
               </button>
@@ -125,7 +152,7 @@ export default function LobbyPage() {
             <form onSubmit={handleJoin} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider font-extrabold text-[#94A3B8]/60">
+                  <label className="block text-xs uppercase tracking-wider font-extrabold text-slate-400">
                     Your Nickname
                   </label>
                   <input
@@ -135,11 +162,11 @@ export default function LobbyPage() {
                     onChange={(e) => setLocalName(e.target.value)}
                     maxLength={15}
                     required
-                    className="w-full bg-[#030810]/60 border border-white/5 focus:border-[#38BDF8] rounded-xl px-4 py-3 text-sm text-[#F8FAFC] placeholder-[#94A3B8]/30 focus:outline-none transition-colors"
+                    className="w-full bg-slate-900/60 border border-white/5 focus:border-blue-500 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-xs uppercase tracking-wider font-extrabold text-[#94A3B8]/60">
+                  <label className="block text-xs uppercase tracking-wider font-extrabold text-slate-400">
                     6-Digit Room Code
                   </label>
                   <input
@@ -149,14 +176,14 @@ export default function LobbyPage() {
                     onChange={(e) => setLocalCode(e.target.value)}
                     maxLength={6}
                     required
-                    className="w-full bg-[#030810]/60 border border-white/5 focus:border-[#38BDF8] rounded-xl px-4 py-3 text-sm text-[#F8FAFC] placeholder-[#94A3B8]/30 focus:outline-none transition-colors tracking-widest font-black text-center"
+                    className="w-full bg-slate-900/60 border border-white/5 focus:border-blue-500 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-colors tracking-widest font-black text-center"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest text-[#07111F] bg-gradient-to-r from-[#38BDF8] to-[#0284C7] hover:shadow-[0_4px_25px_rgba(56,189,248,0.3)] transition active:scale-98 cursor-pointer"
+                className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-[0_4px_25px_rgba(37,99,235,0.3)] transition active:scale-98 cursor-pointer"
               >
                 Join Friends' Room
               </button>

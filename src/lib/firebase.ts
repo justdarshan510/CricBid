@@ -1,5 +1,6 @@
 import { FirebaseApp, getApp, getApps, initializeApp, type FirebaseOptions } from 'firebase/app';
 import { Database, getDatabase } from 'firebase/database';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, Auth } from 'firebase/auth';
 import { CRICBID_FIREBASE_DEFAULTS } from './firebaseDefaults';
 
 const REQUIRED_ENV_KEYS = [
@@ -93,6 +94,8 @@ export function getFirebaseConfigErrorMessage(): string {
 
 let app: FirebaseApp | null = null;
 let database: Database | null = null;
+let auth: Auth | null = null;
+export const googleProvider = new GoogleAuthProvider();
 
 export function getFirebaseApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
@@ -102,6 +105,13 @@ export function getFirebaseApp(): FirebaseApp {
     app = getApps().length ? getApp() : initializeApp(readFirebaseConfig());
   }
   return app;
+}
+
+export function getFirebaseAuth(): Auth {
+  if (!auth) {
+    auth = getAuth(getFirebaseApp());
+  }
+  return auth;
 }
 
 export function getFirebaseDatabase(): Database {
@@ -114,4 +124,8 @@ export function getFirebaseDatabase(): Database {
 export function resetFirebaseForTests(): void {
   app = null;
   database = null;
+  auth = null;
 }
+
+export const loginWithGoogle = () => signInWithPopup(getFirebaseAuth(), googleProvider);
+export const logout = () => signOut(getFirebaseAuth());

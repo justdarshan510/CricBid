@@ -9,6 +9,7 @@ import { readVoiceEnabled, writeVoiceEnabled } from '../utils/voicePreferences';
 import { getMultiplayerMode, getMultiplayerService } from '../lib/multiplayer';
 import { RoomSnapshot } from '../lib/multiplayer/types';
 import { asFirebaseArray } from '../lib/multiplayer/sanitizeForFirebase';
+import { useAuth } from './AuthContext';
 
 // Build a lookup map of player images
 const playerImageMap: Record<string, string> = {};
@@ -89,7 +90,15 @@ interface MultiplayerContextType {
 const MultiplayerContext = createContext<MultiplayerContextType | undefined>(undefined);
 
 export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
   const mp = getMultiplayerService();
+  
+  useEffect(() => {
+    if (user && 'setClientId' in mp) {
+      (mp as any).setClientId(user.uid);
+    }
+  }, [user, mp]);
+
   const [hydrated, setHydrated] = useState(false);
   const [clientId, setClientId] = useState('');
   const [roomCode, setRoomCode] = useState<string | null>(null);

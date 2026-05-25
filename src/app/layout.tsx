@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "../context/AuthContext";
 import { AuctionProvider } from "../context/AuctionContext";
 import { MultiplayerProvider } from "../context/MultiplayerContext";
 import { Navbar } from "../components/Navbar";
@@ -16,18 +17,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-[#07111F] text-[#F8FAFC] relative antialiased">
+      <body className="min-h-screen flex flex-col bg-[#0F172A] text-[#F8FAFC] relative antialiased">
         <div className="studio-bg">
           <div className="stadium-texture"></div>
         </div>
-        <AuctionProvider>
-          <MultiplayerProvider>
-            <Navbar />
-            <main className="flex-grow p-4 md:p-8 max-w-7xl w-full mx-auto relative z-10">
-              {children}
-            </main>
-          </MultiplayerProvider>
-        </AuctionProvider>
+        <AuthProvider>
+          <AuctionProvider>
+            <MultiplayerProvider>
+              <Navbar />
+              <main className="flex-grow p-4 md:p-8 max-w-7xl w-full mx-auto relative z-10">
+                {children}
+              </main>
+            </MultiplayerProvider>
+          </AuctionProvider>
+        </AuthProvider>
       </body>
     </html>
   );

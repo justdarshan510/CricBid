@@ -81,7 +81,7 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
         this.decay = Math.random() * 0.015 + 0.008;
         this.gravity = 0.08;
 
-        const goldShades = ['#FFD700', '#FFA500', '#FFF8DC', '#DAA520', '#FFE4B5', '#FFF'];
+        const goldShades = ['#10B981', '#34D399', '#6EE7B7', '#059669', '#A7F3D0', '#FFF'];
         this.color = goldShades[Math.floor(Math.random() * goldShades.length)];
       }
 
@@ -278,24 +278,24 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
 
       {/* SOLD CELEBRATION MODAL */}
       {status === 'sold' && (
-        <div className="relative max-w-md w-full mx-4 flex flex-col items-center bg-zinc-950/85 border border-zinc-800 p-8 rounded-3xl text-center shadow-[0_0_50px_rgba(255,203,5,0.15)] overflow-hidden scale-in-animation">
+        <div className="relative max-w-md w-full mx-4 flex flex-col items-center bg-slate-900 border border-slate-800 p-8 rounded-3xl text-center shadow-[0_0_50px_rgba(16,185,129,0.15)] overflow-hidden scale-in-animation">
           {/* Elegant background halo glow matching team's brand color */}
           <div 
             className="absolute -top-32 w-72 h-72 rounded-full blur-[80px] opacity-40 pointer-events-none transition-all duration-700" 
             style={{ backgroundColor: teamColor }} 
           />
 
-          <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-amber-500 mb-2 font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+          <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-emerald-400 mb-2 font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
             ⚡ Live Auction Result ⚡
           </div>
 
-          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 uppercase tracking-widest mb-6 font-sans drop-shadow-[0_0_12px_rgba(218,165,32,0.4)] sold-glow-anim">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-200 to-emerald-400 uppercase tracking-widest mb-6 font-sans drop-shadow-[0_0_12px_rgba(16,185,129,0.4)] sold-glow-anim">
             SOLD!
           </h2>
 
           {/* Scaled-up Glowing Neon Winning Team Container */}
           <div 
-            className="relative w-36 h-36 flex items-center justify-center bg-zinc-900 border-2 rounded-full p-4 mb-6 transition-all duration-500 team-logo-glow"
+            className="relative w-36 h-36 flex items-center justify-center bg-slate-800 border-2 rounded-full p-4 mb-6 transition-all duration-500 team-logo-glow"
             style={{ 
               borderColor: teamColor,
               boxShadow: `0 0 35px ${teamColor}50, inset 0 0 15px ${teamColor}30` 
@@ -319,21 +319,21 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
 
           <div className="z-10 mb-6">
             <h3 className="text-2xl font-extrabold text-white tracking-wide">{playerName}</h3>
-            <span className="text-[12px] text-zinc-400 font-medium px-3 py-1 bg-zinc-900/90 rounded-full border border-zinc-800 inline-block mt-1 font-mono">
+            <span className="text-[12px] text-slate-400 font-medium px-3 py-1 bg-slate-800/90 rounded-full border border-slate-700 inline-block mt-1 font-mono">
               {playerRole}
             </span>
           </div>
 
           {/* Luxury purchase slip badge */}
-          <div className="w-full bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-4 mb-6 backdrop-blur-sm shadow-inner text-left flex flex-col gap-2">
+          <div className="w-full bg-slate-800/60 border border-slate-700/80 rounded-2xl p-4 mb-6 backdrop-blur-sm shadow-inner text-left flex flex-col gap-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="text-zinc-500 font-semibold uppercase tracking-wider font-mono">Purchasing Franchise</span>
+              <span className="text-slate-400 font-semibold uppercase tracking-wider font-mono">Purchasing Franchise</span>
               <span className="text-white font-bold tracking-wide" style={{ color: teamColor }}>{teamName}</span>
             </div>
-            <div className="h-[1px] bg-zinc-800" />
+            <div className="h-[1px] bg-slate-700" />
             <div className="flex justify-between items-center">
-              <span className="text-zinc-500 text-xs font-semibold uppercase tracking-wider font-mono">Final Bid Amount</span>
-              <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-200 font-mono">
+              <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider font-mono">Final Bid Amount</span>
+              <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-200 to-emerald-400 font-mono">
                 ₹{amountStr}
               </span>
             </div>
@@ -341,7 +341,7 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
 
           <button
             onClick={onClose}
-            className="z-10 w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-black font-extrabold tracking-widest text-sm shadow-[0_4px_20px_rgba(245,158,11,0.25)] transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+            className="z-10 w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-extrabold tracking-widest text-sm shadow-[0_4px_20px_rgba(37,99,235,0.25)] transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
           >
             NEXT PLAYER
           </button>

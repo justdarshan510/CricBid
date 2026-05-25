@@ -73,12 +73,14 @@ class FirebaseMultiplayerService implements IMultiplayerService {
   private activeRoomCode: string | null = null;
   private _clientId: string | null = null;
 
+  setClientId(id: string | null) {
+    this._clientId = id;
+  }
+
   get clientId(): string {
+    if (this._clientId) return this._clientId;
     if (typeof window === 'undefined') return '';
-    if (!this._clientId) {
-      this._clientId = getClientId();
-    }
-    return this._clientId;
+    return getClientId(); // Fallback to anonymous ID if not authenticated
   }
 
   watchClientId(onChange: (id: string) => void): () => void {

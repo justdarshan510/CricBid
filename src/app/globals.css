@@ -2,19 +2,21 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #07111F;
-  --bg-card: rgba(255, 255, 255, 0.04);
+  --bg-primary: #0F172A;
+  --bg-card: rgba(30, 41, 59, 0.4);
   --border-card: rgba(255, 255, 255, 0.08);
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
-  --accent-gold: #38BDF8;
+  --accent-blue: #2563EB;
+  --accent-emerald: #10B981;
   --font-plus: 'Plus Jakarta Sans', sans-serif;
 }
 
 @theme {
   --font-sans: var(--font-plus);
-  --color-ipl-bg: #07111F;
-  --color-gold-accent: #38BDF8;
+  --color-ipl-bg: #0F172A;
+  --color-blue-accent: #2563EB;
+  --color-emerald-accent: #10B981;
   --color-text-primary: #F8FAFC;
   --color-text-secondary: #94A3B8;
 }
@@ -185,12 +187,12 @@ body {
 }
 
 .gold-sweep-text {
-  background: linear-gradient(90deg, #D4AF37 0%, #FFF5CC 35%, #D4AF37 70%, #FFF5CC 100%);
+  background: linear-gradient(90deg, #3B82F6 0%, #93C5FD 35%, #3B82F6 70%, #93C5FD 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gold-sweep-anim 3.5s linear infinite;
-  text-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
 }
 
 @keyframes gold-sweep-anim {
