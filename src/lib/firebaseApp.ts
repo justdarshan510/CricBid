@@ -6,49 +6,62 @@ import { getDatabase } from "firebase/database";
 import type { Database } from "firebase/database";
 import { getAnalytics } from "firebase/analytics";
 import type { Analytics } from "firebase/analytics";
+import { CRICBID_FIREBASE_DEFAULTS } from "./firebaseDefaults";
+
+const clean = (val: any) => {
+  if (typeof val !== 'string') return undefined;
+  const trimmed = val.trim();
+  if (!trimmed || trimmed === 'undefined' || trimmed === 'null') return undefined;
+  return trimmed;
+};
 
 /**
- * DEBUG: Log environment variables to help the user identify missing keys.
- * These will show up in the browser console (F12).
+ * Resolve the Firebase configuration.
+ * Merges Vercel environment variables with built-in defaults.
+ */
+const getResolvedConfig = (): FirebaseOptions => {
+  const defaults = CRICBID_FIREBASE_DEFAULTS;
+  
+  const apiKey = clean(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+  const projectId = clean(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
+
+  // If no environment variables are detected, return the working defaults.
+  if (!apiKey && !projectId) {
+    return defaults;
+  }
+
+  // If environment variables exist, merge them with defaults to prevent missing fields.
+  // This ensures that even if you only set the API Key, other fields stay valid.
+  return {
+    ...defaults,
+    apiKey: apiKey || defaults.apiKey,
+    projectId: projectId || defaults.projectId,
+    authDomain: clean(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN) || (projectId ? `${projectId}.firebaseapp.com` : defaults.authDomain),
+    databaseURL: clean(process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL) || defaults.databaseURL,
+    storageBucket: clean(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET) || defaults.storageBucket,
+    messagingSenderId: clean(process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID) || defaults.messagingSenderId,
+    appId: clean(process.env.NEXT_PUBLIC_FIREBASE_APP_ID) || defaults.appId,
+    measurementId: clean(process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID) || defaults.measurementId,
+  };
+};
+
+export const firebaseConfig = getResolvedConfig();
+
+/**
+ * DEBUG: Log initialization status to browser console (F12)
  */
 if (typeof window !== 'undefined') {
-  console.log("--- Firebase Environment Check ---");
-  console.log("API Key:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? "✅ Defined" : "❌ UNDEFINED");
-  console.log("Project ID:", process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ? "✅ Defined" : "❌ UNDEFINED");
-  console.log("Auth Domain:", process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? "✅ Defined" : "❌ UNDEFINED");
-  console.log("----------------------------------");
+  const envKey = clean(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+  console.log("--- Firebase Configuration ---");
+  console.log("Source:", envKey ? "Vercel Environment Variables" : "CricBid Defaults");
+  console.log("Project ID:", firebaseConfig.projectId);
+  console.log("API Key Status:", firebaseConfig.apiKey ? "✅ Set" : "❌ Missing");
+  console.log("------------------------------");
 }
 
-export const firebaseConfig: FirebaseOptions = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-};
-
-export const isFirebaseConfigured = (): boolean => {
-  return !!(
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-  );
-};
-
 export const getFirebaseApp = (): FirebaseApp => {
-  if (getApps().length > 0) return getApp();
-  
-  if (!isFirebaseConfigured()) {
-    // Return a dummy app during build time to prevent crashes
-    return initializeApp({
-      apiKey: "missing-key",
-      projectId: "missing-project",
-      authDomain: "missing-project.firebaseapp.com"
-    }, "dummy-app");
-  }
-  
+  const apps = getApps();
+  if (apps.length > 0) return apps[0];
   return initializeApp(firebaseConfig);
 };
 
@@ -61,13 +74,11 @@ export const database = getFirebaseDatabase();
 export const googleProvider = new GoogleAuthProvider();
 
 export const analytics: Analytics | undefined = 
-  typeof window !== "undefined" && isFirebaseConfigured() 
-    ? getAnalytics(app) 
-    : undefined;
+  typeof window !== "undefined" ? getAnalytics(app) : undefined;
 
 export const loginWithGoogle = async () => {
-  if (!isFirebaseConfigured()) {
-    const error = "CRITICAL: Firebase is not configured. Google login will not work. Please check your Vercel Environment Variables.";
+  if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes('missing')) {
+    const error = "Firebase API Key is invalid. Please check your Vercel Environment Variables.";
     alert(error);
     throw new Error(error);
   }
@@ -76,18 +87,17 @@ export const loginWithGoogle = async () => {
 
 export const logout = async () => signOut(auth);
 
-// Re-exports for compatibility
+// Compatibility re-exports
 export const readFirebaseConfig = () => ({ ...firebaseConfig });
+export const isFirebaseConfigured = () => !!firebaseConfig.apiKey;
 export const isFirebaseConfiguredOnClient = isFirebaseConfigured;
 export const getMissingFirebaseEnvKeys = () => {
   const missing: string[] = [];
-  if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) missing.push("NEXT_PUBLIC_FIREBASE_API_KEY");
-  if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) missing.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
+  if (!clean(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)) missing.push("NEXT_PUBLIC_FIREBASE_API_KEY");
+  if (!clean(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID)) missing.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
   return missing;
 };
-export const getUnsetFirebaseEnvKeys = getMissingFirebaseEnvKeys;
 export const getFirebaseConfigErrorMessage = () => {
   const missing = getMissingFirebaseEnvKeys();
-  if (missing.length === 0) return "";
-  return "Missing: " + missing.join(", ");
+  return missing.length ? "Note: Using defaults. Missing env keys: " + missing.join(", ") : "";
 };
