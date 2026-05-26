@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E7D08A"/>
+      <stop offset="0.45" stop-color="#C9A24A"/>
+      <stop offset="1" stop-color="#8B6B26"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F1217"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softShadow)" transform="translate(0,10)">
+    <g transform="translate(400 320) rotate(-18) translate(-400 -320)">
+      <g>
+        <rect x="282" y="180" width="300" height="110" rx="26" fill="url(#metal)" stroke="rgba(255,255,255,0.10)" stroke-width="6"/>
+        <rect x="308" y="204" width="248" height="62" rx="18" fill="url(#gold)" opacity="0.95"/>
+        <rect x="268" y="162" width="330" height="34" rx="17" fill="#0A0C10" stroke="rgba(255,255,255,0.10)" stroke-width="6"/>
+        <rect x="268" y="292" width="330" height="34" rx="17" fill="#0A0C10" stroke="rgba(255,255,255,0.10)" stroke-width="6"/>
+      </g>
+
+      <g>
+        <rect x="552" y="249" width="250" height="28" rx="14" fill="#07090C"/>
+        <rect x="568" y="240" width="230" height="46" rx="23" fill="#0B0D10" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
+        <rect x="786" y="234" width="120" height="58" rx="29" fill="#0B0D10" stroke="rgba(255,255,255,0.08)" stroke-width="4"/>
+        <rect x="808" y="250" width="76" height="26" rx="13" fill="url(#gold)" opacity="0.45"/>
+      </g>
+
+      <g transform="translate(0,10)">
+        <ellipse cx="318" cy="416" rx="210" ry="78" fill="#05070A"/>
+        <ellipse cx="318" cy="416" rx="186" ry="60" fill="#070A0E"/>
+        <path d="M132 416c0-30 83-54 186-54s186 24 186 54-83 54-186 54-186-24-186-54Z" fill="url(#gold)" opacity="0.20"/>
+        <path d="M148 416c0-24 76-44 170-44s170 20 170 44-76 44-170 44-170-20-170-44Z" stroke="url(#gold)" stroke-opacity="0.55" stroke-width="10"/>
+        <path d="M182 410c26-16 79-28 136-28 56 0 109 12 136 28" stroke="url(#gold)" stroke-opacity="0.38" stroke-width="6" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+</svg>
