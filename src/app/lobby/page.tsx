@@ -106,25 +106,7 @@ export default function LobbyPage() {
         )}
 
         <div className="glass-card rounded-3xl p-6 border border-white/5 shadow-2xl relative bg-[#0F172A]/40 backdrop-blur-md">
-          {!user ? (
-            <div className="text-center py-8 space-y-6">
-              <div className="w-16 h-16 mx-auto bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20">
-                <span className="text-2xl">🔒</span>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">Sign in to play</h3>
-                <p className="text-sm text-slate-400 max-w-sm mx-auto">
-                  Authentication ensures you can seamlessly rejoin your session if you get disconnected.
-                </p>
-              </div>
-              <button
-                onClick={loginWithGoogle}
-                className="w-full max-w-sm mx-auto py-4 rounded-xl text-sm font-black uppercase tracking-widest text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-[0_4px_25px_rgba(37,99,235,0.3)] transition active:scale-98 cursor-pointer flex items-center justify-center gap-3"
-              >
-                <span>Sign in with Google</span>
-              </button>
-            </div>
-          ) : activeTab === 'create' ? (
+          {activeTab === 'create' ? (
             <form onSubmit={handleCreate} className="space-y-6">
               <div className="space-y-2">
                 <label className="block text-xs uppercase tracking-wider font-extrabold text-[#94A3B8]/60">

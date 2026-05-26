@@ -4,6 +4,7 @@ import { AuthProvider } from "../context/AuthContext";
 import { AuctionProvider } from "../context/AuctionContext";
 import { MultiplayerProvider } from "../context/MultiplayerContext";
 import { Navbar } from "../components/Navbar";
+import { GoogleSignInBubble } from "../components/GoogleSignInBubble";
 
 export const metadata: Metadata = {
   title: "Cric Bid - Premium Live Auction Simulator",
@@ -28,6 +29,7 @@ export default function RootLayout({
               <main className="flex-grow p-4 md:p-8 max-w-7xl w-full mx-auto relative z-10">
                 {children}
               </main>
+              <GoogleSignInBubble />
             </MultiplayerProvider>
           </AuctionProvider>
         </AuthProvider>

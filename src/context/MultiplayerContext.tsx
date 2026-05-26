@@ -165,28 +165,28 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [roomCode]);
 
   useEffect(() => {
-    if (!hydrated || !user || !roomCode) return;
+    if (!hydrated || !clientId || !roomCode) return;
     writePersistedMultiplayerSession({
-      uid: user.uid,
+      uid: clientId,
       roomCode,
-      playerName: playerName || user.displayName || 'Player',
+      playerName: playerName || user?.displayName || 'Player',
       teamId: userTeamId,
     });
-  }, [hydrated, user, roomCode, playerName, userTeamId]);
+  }, [hydrated, clientId, roomCode, playerName, userTeamId, user]);
 
   useEffect(() => {
-    if (!hydrated || !user) return;
+    if (!hydrated || !clientId) return;
     if (restoreAttemptedRef.current) return;
     const persisted = readPersistedMultiplayerSession();
-    if (!persisted || persisted.uid !== user.uid) return;
+    if (!persisted || persisted.uid !== clientId) return;
     if (roomCodeRef.current) return;
     restoreAttemptedRef.current = true;
     autoRejoinRef.current = { roomCode: persisted.roomCode, teamId: persisted.teamId };
-    const name = persisted.playerName || user.displayName || 'Player';
+    const name = persisted.playerName || user?.displayName || 'Player';
     console.log('Room restored');
     setPlayerName(name);
     void mp.joinRoom(persisted.roomCode, name);
-  }, [hydrated, user, mp]);
+  }, [hydrated, clientId, mp, user]);
 
   useEffect(() => {
     soundEffects.setEnabled(soundEnabled);

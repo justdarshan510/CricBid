@@ -97,6 +97,22 @@ export const getMissingFirebaseEnvKeys = () => {
   if (!clean(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID)) missing.push("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
   return missing;
 };
+export const getUnsetFirebaseEnvKeys = () => {
+  const unset: string[] = [];
+  const keys = [
+    'NEXT_PUBLIC_FIREBASE_API_KEY',
+    'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
+    'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
+    'NEXT_PUBLIC_FIREBASE_DATABASE_URL',
+    'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
+    'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
+    'NEXT_PUBLIC_FIREBASE_APP_ID'
+  ];
+  keys.forEach(key => {
+    if (!clean(process.env[key])) unset.push(key);
+  });
+  return unset;
+};
 export const getFirebaseConfigErrorMessage = () => {
   const missing = getMissingFirebaseEnvKeys();
   return missing.length ? "Note: Using defaults. Missing env keys: " + missing.join(", ") : "";
