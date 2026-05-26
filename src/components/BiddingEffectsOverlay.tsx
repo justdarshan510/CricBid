@@ -341,7 +341,7 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
 
           <button
             onClick={onClose}
-            className="z-10 w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-extrabold tracking-widest text-sm shadow-[0_4px_20px_rgba(37,99,235,0.25)] transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+            className="btn-primary btn-primary--highlight z-10 w-full py-3.5 px-6 text-white font-extrabold tracking-widest text-sm cursor-pointer"
           >
             NEXT PLAYER
           </button>
@@ -376,7 +376,7 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
 
           <button
             onClick={onClose}
-            className="w-full py-3 px-6 rounded-xl bg-zinc-900 hover:bg-zinc-850 text-zinc-300 border border-zinc-800 font-bold tracking-wide text-xs transition-all duration-200 hover:text-white"
+            className="btn-primary w-full py-3 px-6 text-white font-bold tracking-wide text-xs cursor-pointer"
           >
             CONTINUE
           </button>

@@ -171,10 +171,8 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
             <button
               onClick={placeUserBid}
               disabled={!canUserBid}
-              className={`w-full py-4 rounded-2xl text-base font-black uppercase tracking-wider transition-all duration-200 shadow-lg ${
-                canUserBid
-                  ? 'bg-gradient-to-r from-[#38BDF8] to-[#0284C7] text-[#07111F] hover:shadow-[0_4px_20px_rgba(56,189,248,0.3)] active:scale-98 cursor-pointer'
-                  : 'bg-white/5 border border-white/5 text-[#94A3B8]/40 cursor-not-allowed'
+              className={`btn-primary w-full py-4 text-base font-black uppercase tracking-wider shadow-lg transition-all duration-200 disabled:opacity-50 ${
+                canUserBid ? 'btn-primary--highlight cursor-pointer' : 'cursor-not-allowed'
               }`}
             >
               {!userTeamId
@@ -209,7 +207,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
                 </button>
                 <button
                   onClick={sellNow}
-                  className="py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:text-emerald-300 text-[10px] font-bold hover:bg-emerald-500/20 transition cursor-pointer"
+                  className="btn-primary py-2.5 text-[10px] font-bold cursor-pointer"
                 >
                   🔨 SELL NOW
                 </button>

@@ -76,7 +76,7 @@ interface MultiplayerContextType {
   lastWinner: { player: Player; team: Team; price: number } | null;
 
   createRoom: (name: string, customPlayers?: Player[]) => void;
-  joinRoom: (code: string, name: string) => void;
+  joinRoom: (code: string, name: string, forceRejoin?: boolean) => void;
   selectUserTeam: (teamId: string) => void;
   startAuction: () => void;
   pauseAuction: () => void;
@@ -185,7 +185,7 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const name = persisted.playerName || user?.displayName || 'Player';
     console.log('Room restored');
     setPlayerName(name);
-    void mp.joinRoom(persisted.roomCode, name);
+    void mp.joinRoom(persisted.roomCode, name, true);
   }, [hydrated, clientId, mp, user]);
 
   useEffect(() => {
@@ -406,9 +406,9 @@ export const MultiplayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     );
   };
 
-  const joinRoom = (code: string, name: string) => {
+  const joinRoom = (code: string, name: string, forceRejoin: boolean = false) => {
     setPlayerName(name);
-    void mp.joinRoom(code, name);
+    void mp.joinRoom(code, name, forceRejoin);
   };
 
   const selectUserTeam = (teamId: string) => {

@@ -173,7 +173,7 @@ export default function HomePage() {
         <div className="w-full max-w-md mx-auto text-center space-y-4 pt-6">
           <button
             onClick={() => router.push('/lobby')}
-            className="w-full py-4 rounded-xl text-sm font-semibold tracking-wide text-[#07111F] bg-[#D4AF37] hover:bg-[#FCE68A] hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-300 active:scale-95 cursor-pointer shadow-lg"
+            className="btn-primary btn-primary--highlight w-full py-4 text-sm font-semibold tracking-wide cursor-pointer"
           >
             Enter Auction
           </button>

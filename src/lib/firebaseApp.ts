@@ -72,6 +72,9 @@ export const app = getFirebaseApp();
 export const auth = getFirebaseAuth();
 export const database = getFirebaseDatabase();
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
 
 export const analytics: Analytics | undefined = 
   typeof window !== "undefined" ? getAnalytics(app) : undefined;

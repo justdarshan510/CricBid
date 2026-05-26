@@ -143,7 +143,9 @@ export const LiveBiddingBoard: React.FC = () => {
             <button
               onClick={placeUserBid}
               disabled={!canUserBid}
-              className="w-full py-4 rounded-xl"
+              className={`btn-primary w-full py-4 text-sm font-black uppercase tracking-wider shadow-lg transition-all duration-200 disabled:opacity-50 ${
+                canUserBid ? 'btn-primary--highlight cursor-pointer' : 'cursor-not-allowed'
+              }`}
             >
               {userHoldsBid
                 ? 'You Hold High Bid'
@@ -152,19 +154,28 @@ export const LiveBiddingBoard: React.FC = () => {
 
             <div className="grid grid-cols-3 gap-2 mt-3">
 
-              <button onClick={
-                isPaused
-                  ? resumeAuction
-                  : pauseAuction
-              }>
+              <button
+                onClick={
+                  isPaused
+                    ? resumeAuction
+                    : pauseAuction
+                }
+                className="btn-primary py-2.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+              >
                 {isPaused ? 'Resume' : 'Pause'}
               </button>
 
-              <button onClick={skipPlayer}>
+              <button
+                onClick={skipPlayer}
+                className="btn-primary py-2.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+              >
                 Skip
               </button>
 
-              <button onClick={autoSimulateActivePlayer}>
+              <button
+                onClick={autoSimulateActivePlayer}
+                className="btn-primary py-2.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+              >
                 Fast Solve
               </button>
 

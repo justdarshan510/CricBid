@@ -115,7 +115,7 @@ export interface IMultiplayerService {
   ): void;
   connect(): void;
   createRoom(hostName: string, players: Player[], teams: Team[]): Promise<void>;
-  joinRoom(roomCode: string, playerName: string): Promise<void>;
+  joinRoom(roomCode: string, playerName: string, forceRejoin?: boolean): Promise<void>;
   claimTeam(roomCode: string, teamId: string | null): Promise<void>;
   startAuction(roomCode: string): Promise<void>;
   pauseAuction(roomCode: string): Promise<void>;

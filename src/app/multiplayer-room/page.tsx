@@ -20,7 +20,7 @@ export default function MultiplayerRoomPage() {
   if (!roomCode) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB]"></div>
         <p className="mt-4 text-[#94A3B8]">Redirecting to multiplayer lobby...</p>
       </div>
     );

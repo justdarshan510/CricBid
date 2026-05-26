@@ -6,6 +6,8 @@ import {
   onAuthStateChanged, 
   setPersistence, 
   signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   User 
 } from 'firebase/auth';
 
@@ -13,6 +15,8 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   loginWithGoogle: () => Promise<void>;
+  loginWithEmail: (email: string, pass: string) => Promise<void>;
+  registerWithEmail: (email: string, pass: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -20,6 +24,8 @@ export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   loginWithGoogle: async () => {},
+  loginWithEmail: async () => {},
+  registerWithEmail: async () => {},
   logout: async () => {},
 });
 
@@ -38,6 +44,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     try {
       await setPersistence(auth, browserLocalPersistence);
+      
+      googleProvider.setCustomParameters({
+        prompt: 'select_account'
+      });
       
       const result = await signInWithPopup(auth, googleProvider);
 
@@ -61,6 +71,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithEmail = async (email: string, pass: string) => {
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (error: any) {
+      console.error("Email login failed", error);
+      throw error;
+    }
+  };
+
+  const registerWithEmail = async (email: string, pass: string) => {
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+      await createUserWithEmailAndPassword(auth, email, pass);
+    } catch (error: any) {
+      console.error("Email registration failed", error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     try {
       await auth.signOut();
@@ -79,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, loading, loginWithGoogle, loginWithEmail, registerWithEmail, logout }}>
       {children}
     </AuthContext.Provider>
   );

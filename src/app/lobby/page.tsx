@@ -6,6 +6,7 @@ import { useMultiplayer } from '../../context/MultiplayerContext';
 import { useAuth } from '../../context/AuthContext';
 import { LobbyBackgroundProvider } from '../../components/LobbyBackgroundProvider';
 import { Player } from '../../data/players';
+import { readPersistedMultiplayerSession, PersistedSession } from '../../utils/persistedMultiplayerSession';
 export default function LobbyPage() {
   const router = useRouter();
   const {
@@ -31,6 +32,17 @@ export default function LobbyPage() {
   const [activeTab, setActiveTab] = useState<'create' | 'join'>('create');
   const [localName, setLocalName] = useState('');
   const [localCode, setLocalCode] = useState('');
+  const [persistedSession, setPersistedSession] = useState<PersistedSession | null>(null);
+  const [rejoining, setRejoining] = useState(false);
+
+  // Check for a persisted session on mount
+  useEffect(() => {
+    if (!hydrated) return;
+    const session = readPersistedMultiplayerSession();
+    if (session && session.roomCode) {
+      setPersistedSession(session);
+    }
+  }, [hydrated]);
 
   useEffect(() => {
     if (user && !localName) {
@@ -57,6 +69,13 @@ export default function LobbyPage() {
     joinRoom(localCode.trim(), localName.trim());
   };
 
+  const handleRejoin = () => {
+    if (!persistedSession) return;
+    setRejoining(true);
+    const name = persistedSession.playerName || localName || user?.displayName || 'Player';
+    joinRoom(persistedSession.roomCode, name, true);
+  };
+
 
 
   // Render Lobby Setup Screen (Before entering room)
@@ -74,6 +93,43 @@ export default function LobbyPage() {
             Host a room to invite your friends using a room code, or enter an active room code to join their auction live.
           </p>
         </div>
+
+        {/* Rejoin Room Banner */}
+        {persistedSession && !roomCode && (
+          <div className="glass-card rounded-2xl p-5 border border-amber-500/20 bg-amber-500/5 backdrop-blur-md shadow-lg">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-black text-amber-300 uppercase tracking-wide">Previous Session Found</p>
+                  <p className="text-xs text-[#94A3B8] mt-0.5">
+                    Room <span className="font-mono font-bold text-amber-400 tracking-widest">{persistedSession.roomCode}</span>
+                    {persistedSession.playerName && <> as <span className="font-bold text-white">{persistedSession.playerName}</span></>}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleRejoin}
+                  disabled={rejoining}
+                  className="btn-primary px-6 py-2.5 text-xs font-black uppercase tracking-widest disabled:cursor-not-allowed"
+                >
+                  {rejoining ? 'Rejoining...' : '🔄 Rejoin Room'}
+                </button>
+                <button
+                  onClick={() => setPersistedSession(null)}
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-[#94A3B8] border border-white/10 hover:bg-white/5 transition cursor-pointer"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tabs switcher */}
         <div className="flex border-b border-white/5 justify-center space-x-8">
@@ -125,7 +181,7 @@ export default function LobbyPage() {
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-[0_4px_25px_rgba(37,99,235,0.3)] transition active:scale-98 cursor-pointer"
+                className="btn-primary btn-primary--highlight w-full py-4 text-xs font-black uppercase tracking-widest cursor-pointer"
               >
                 Create Room & Get Code
               </button>
@@ -155,7 +211,7 @@ export default function LobbyPage() {
                     type="text"
                     placeholder="Enter Code..."
                     value={localCode}
-                    onChange={(e) => setLocalCode(e.target.value)}
+                    onChange={(e) => setLocalCode(e.target.value.toUpperCase())}
                     maxLength={6}
                     required
                     className="w-full bg-slate-900/60 border border-white/5 focus:border-blue-500 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-colors tracking-widest font-black text-center"
@@ -165,7 +221,7 @@ export default function LobbyPage() {
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-[0_4px_25px_rgba(37,99,235,0.3)] transition active:scale-98 cursor-pointer"
+                className="btn-primary btn-primary--highlight w-full py-4 text-xs font-black uppercase tracking-widest cursor-pointer"
               >
                 Join Friends' Room
               </button>
@@ -365,10 +421,8 @@ export default function LobbyPage() {
                 <button
                   onClick={startAuction}
                   disabled={!userTeamId}
-                  className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 shadow-lg cursor-pointer ${
-                    userTeamId
-                      ? 'bg-gradient-to-r from-[#38BDF8] to-[#0284C7] hover:shadow-[0_4px_25px_rgba(56,189,248,0.3)] text-[#07111F] animate-pulse'
-                      : 'bg-white/5 border border-white/5 text-[#94A3B8]/40 cursor-not-allowed'
+                  className={`btn-primary w-full py-4 text-xs font-black uppercase tracking-wider shadow-lg transition-all duration-200 disabled:opacity-50 ${
+                    userTeamId ? 'btn-primary--highlight animate-pulse cursor-pointer' : 'cursor-not-allowed'
                   }`}
                 >
                   Start Multiplayer Auction →

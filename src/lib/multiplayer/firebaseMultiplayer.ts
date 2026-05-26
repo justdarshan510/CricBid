@@ -156,7 +156,11 @@ class FirebaseMultiplayerService implements IMultiplayerService {
 
   private registerPresence(roomCode: string): void {
     const clientRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/clients/${this.clientId}`);
-    onDisconnect(clientRef).remove();
+    // Mark as offline on disconnect instead of removing — preserves teamId for rejoin
+    const onlineRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/clients/${this.clientId}/online`);
+    onDisconnect(onlineRef).set(false);
+    // Also mark as online right now
+    set(onlineRef, true);
   }
 
   private stopHostTimer(): void {
@@ -367,30 +371,45 @@ class FirebaseMultiplayerService implements IMultiplayerService {
     }
   }
 
-  async joinRoom(roomCode: string, playerName: string): Promise<void> {
+  async joinRoom(roomCode: string, playerName: string, forceRejoin: boolean = false): Promise<void> {
     if (!isFirebaseConfigured()) {
       this.emit('join_error', 'Firebase is not configured for multiplayer.');
       return;
     }
 
     try {
-      const normalized = roomCode.trim();
+      const normalized = roomCode.trim().toUpperCase();
       const record = await this.readRoom(normalized);
       if (!record) {
         this.emit('join_error', 'Room not found. Please verify the code.');
         return;
       }
-      if (record.game.started) {
+      const clients = Object.values(record.clients || {}).filter(Boolean);
+      const existingClient = clients.find((c) => c.id === this.clientId);
+
+      // Block new players from joining started auctions, but allow rejoin
+      if (record.game.started && !existingClient && !forceRejoin) {
         this.emit('join_error', 'Auction has already started in this room.');
         return;
       }
 
-      const clients = Object.values(record.clients || {}).filter(Boolean);
-      const nextClients: ClientPlayer[] = [
-        ...clients.filter((c) => c.id !== this.clientId),
-        { id: this.clientId, name: playerName, teamId: null, isHost: false },
-      ];
-      const logs = [...record.game.logs, `${playerName} joined the room.`];
+      let nextClients: ClientPlayer[];
+      let logs = record.game.logs || [];
+      
+      if (existingClient) {
+        // Existing client: preserve their team and host status
+        nextClients = clients.map(c => 
+          c.id === this.clientId ? { ...c, name: playerName } : c
+        );
+        logs = [...logs, `${playerName} rejoined the room.`];
+      } else {
+        // New client or returning client removed by onDisconnect
+        nextClients = [
+          ...clients,
+          { id: this.clientId, name: playerName, teamId: null, isHost: false }
+        ];
+        logs = [...logs, `${playerName} ${forceRejoin ? 'rejoined' : 'joined'} the room.`];
+      }
 
       await update(roomRef(normalized), {
         clients: clientsRecord(nextClients),
