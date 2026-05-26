@@ -33,9 +33,11 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3">
-          <img src="/cric_bid_logo.png" alt="Cric Bid Logo" className="h-8 w-8 object-contain" />
-          <span className="text-xl font-extrabold text-[#38BDF8] tracking-wider font-display">CRIC BID</span>
-          <span className="text-[10px] tracking-widest uppercase bg-[#38BDF8]/10 text-[#38BDF8] border border-[#38BDF8]/20 font-extrabold px-2 py-0.5 rounded ml-2">STUDIO</span>
+          <img src="/cricbid-icon.svg" alt="Cric Bid Logo" className="h-9 w-9 object-contain" />
+          <span className="text-xl font-extrabold text-[#F8FAFC] tracking-wider font-display">
+            CRIC<span className="text-[#E63946]">BID</span>
+          </span>
+          <span className="text-[10px] tracking-widest uppercase bg-[#E63946]/10 text-[#E63946] border border-[#E63946]/20 font-extrabold px-2 py-0.5 rounded ml-1">STUDIO</span>
         </Link>
 
         {/* Desktop Navigation */}

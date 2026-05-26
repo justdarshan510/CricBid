@@ -154,10 +154,10 @@ export default function HomePage() {
           <div className="flex justify-center mb-4">
             <div className="text-4xl md:text-5xl font-black tracking-tighter select-none font-sans uppercase">
               <span className="text-[#F8FAFC]">CRIC</span>
-              <span className="text-[#D4AF37]">BID</span>
+              <span className="text-[#E63946]">BID</span>
             </div>
           </div>
-          <span className="text-xs tracking-widest font-semibold text-[#D4AF37] px-4 py-2 inline-block">
+          <span className="text-xs tracking-widest font-semibold text-[#E63946] px-4 py-2 inline-block">
             Live Draft & Auction Studio
           </span>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight text-[#F8FAFC]">

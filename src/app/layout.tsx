@@ -7,8 +7,13 @@ import { Navbar } from "../components/Navbar";
 import { GoogleSignInBubble } from "../components/GoogleSignInBubble";
 
 export const metadata: Metadata = {
-  title: "Cric Bid - Premium Live Auction Simulator",
-  description: "Experience the ultimate cricket draft arena. Claim your franchise, bid in real-time, and draft your elite Playing XI on the Cric Bid studio broadcast platform.",
+  title: "CricBid - Premium Live Auction Simulator",
+  description: "Experience the ultimate cricket draft arena. Claim your franchise, bid in real-time, and draft your elite Playing XI on the CricBid studio broadcast platform.",
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' }
+    ]
+  }
 };
 
 export default function RootLayout({
