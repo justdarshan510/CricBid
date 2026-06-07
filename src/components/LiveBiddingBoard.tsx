@@ -27,7 +27,7 @@ export const LiveBiddingBoard: React.FC = () => {
 
   if (!currentPlayer) {
     return (
-      <div className="glass p-12 text-center max-w-xl mx-auto">
+      <div className="glass p-12 text-center max-w-xl mx-auto shadow-md">
         <h3 className="text-lg font-bold mb-1" style={{ color: '#1D1D1F' }}>No Player Under the Hammer</h3>
         <p className="text-sm" style={{ color: '#6E6E73' }}>The draft pool is empty or the auction is complete.</p>
       </div>
@@ -65,7 +65,7 @@ export const LiveBiddingBoard: React.FC = () => {
   const timerUrgent = timer <= 5;
 
   /* Bid button label */
-  const bidBtnLabel = !userTeamId ? 'Select a Franchise to Begin Bidding'
+  const bidBtnLabel = !userTeamId ? 'Select a Franchise in Lobby to Bid'
     : userHoldsBid         ? '✓ You Hold High Bid'
     : userOverseasLimit    ? 'Overseas Limit Reached (Max 8)'
     : userSquadFull        ? 'Squad Full (Max 25)'
@@ -75,169 +75,175 @@ export const LiveBiddingBoard: React.FC = () => {
 
   return (
     <div className="flex flex-col space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative items-stretch">
 
         {/* LEFT: Player Card (Col 4) */}
         <div className="lg:col-span-4 flex flex-col justify-between">
-          <div className="mb-3">
+          <div className="h-full flex flex-col justify-between">
             <h4 className="section-label mb-2">Active Player</h4>
             <PlayerCard player={currentPlayer} showBidOverlay={false} />
           </div>
         </div>
 
-        {/* CENTER: Bidding Panel (Col 5) */}
-        <div className="lg:col-span-5 flex flex-col">
-          <div className="glass p-6 flex flex-col justify-between flex-grow min-h-[420px]">
+        {/* CENTER & RIGHT: Unified Command Center (Col 8) */}
+        <div className="lg:col-span-8 flex flex-col">
+          <h4 className="section-label mb-2">Auction Command Center</h4>
+          <div className="glass p-6 grid grid-cols-1 md:grid-cols-12 gap-6 flex-grow min-h-[420px] shadow-md">
             
-            {/* Status & Timer */}
-            <div className="flex justify-between items-center pb-4 mb-4 border-b border-[rgba(0,0,0,0.06)]">
-              <div>
-                <span className="section-label block mb-0.5">Status</span>
-                <div className="flex items-center gap-1.5">
-                  {!isPaused && <span className="live-dot" />}
+            {/* Left Column: Bidding Controls (Col 7) */}
+            <div className="md:col-span-7 flex flex-col justify-between">
+              
+              {/* Status & Timer */}
+              <div className="flex justify-between items-center pb-4 border-b border-[rgba(0,0,0,0.06)]">
+                <div>
+                  <span className="section-label block mb-0.5">Status</span>
+                  <div className="flex items-center gap-1.5">
+                    {!isPaused && <span className="live-dot" />}
+                    <span
+                      className="text-xs font-bold uppercase tracking-wide"
+                      style={{ color: isPaused ? '#FF453A' : '#32D74B' }}
+                    >
+                      {isPaused ? 'Paused' : 'Live Bidding'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Countdown ring */}
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 72 72">
+                    <circle cx="36" cy="36" r={radius} stroke="rgba(0,0,0,0.05)" strokeWidth="4" fill="transparent" />
+                    <circle
+                      cx="36"
+                      cy="36"
+                      r={radius}
+                      stroke={timerUrgent ? '#FF453A' : '#1D1D1F'}
+                      strokeWidth="4"
+                      fill="transparent"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={strokeOffset}
+                      className="transition-all duration-1000 ease-linear"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                   <span
-                    className="text-xs font-bold uppercase tracking-wide"
-                    style={{ color: isPaused ? '#FF453A' : '#32D74B' }}
+                    className={`absolute text-lg font-black ${timerUrgent ? 'timer-urgent' : ''}`}
+                    style={{ color: timerUrgent ? '#FF453A' : '#1D1D1F' }}
                   >
-                    {isPaused ? 'Paused' : 'Live Bidding'}
+                    {timer}
                   </span>
                 </div>
               </div>
 
-              {/* Countdown ring */}
-              <div className="relative w-16 h-16 flex items-center justify-center">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 72 72">
-                  <circle cx="36" cy="36" r={radius} stroke="rgba(0,0,0,0.05)" strokeWidth="4" fill="transparent" />
-                  <circle
-                    cx="36"
-                    cy="36"
-                    r={radius}
-                    stroke={timerUrgent ? '#FF453A' : '#1D1D1F'}
-                    strokeWidth="4"
-                    fill="transparent"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeOffset}
-                    className="transition-all duration-1000 ease-linear"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span
-                  className={`absolute text-lg font-black ${timerUrgent ? 'timer-urgent' : ''}`}
-                  style={{ color: timerUrgent ? '#FF453A' : '#1D1D1F' }}
-                >
-                  {timer}
-                </span>
-              </div>
-            </div>
-
-            {/* Price display */}
-            <div className="text-center py-6 flex-grow flex flex-col justify-center">
-              {currentBid === 0 ? (
-                <div className="space-y-1">
-                  <span className="section-label block">Base Draft Price</span>
-                  <div className="text-5xl font-bold tracking-tight text-[#1D1D1F]">
-                    ₹{currentPlayer.base_price.toFixed(2)}
-                    <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
-                  </div>
-                  <p className="text-xs text-[#6E6E73]">Awaiting the opening bid.</p>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  <span className="section-label block">Current Highest Bid</span>
-                  <div className="text-5xl font-bold tracking-tight text-[#1D1D1F]">
-                    ₹{currentBid.toFixed(2)}
-                    <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
-                  </div>
-                  {currentBidder && (
-                    <div className="flex items-center justify-center gap-2 mt-2">
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: currentBidder.color }} />
-                      {currentBidder.logoUrl && (
-                        <img
-                          src={currentBidder.logoUrl}
-                          alt={currentBidder.shortName}
-                          className="w-5 h-5 object-contain"
-                          referrerPolicy="no-referrer"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      )}
-                      <span className="text-xs font-semibold text-[#1D1D1F]">
-                        {currentBidder.name}
-                      </span>
+              {/* Price display */}
+              <div className="text-center py-6 flex-grow flex flex-col justify-center">
+                {currentBid === 0 ? (
+                  <div className="space-y-1">
+                    <span className="section-label block">Base Draft Price</span>
+                    <div className="text-5xl font-extrabold tracking-tight text-[#1D1D1F]">
+                      ₹{currentPlayer.base_price.toFixed(2)}
+                      <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
                     </div>
-                  )}
+                    <p className="text-xs text-[#6E6E73] font-semibold">Awaiting the opening bid.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <span className="section-label block">Current Highest Bid</span>
+                    <div className="text-5xl font-extrabold tracking-tight text-[#1D1D1F]">
+                      ₹{currentBid.toFixed(2)}
+                      <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
+                    </div>
+                    {currentBidder && (
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: currentBidder.color }} />
+                        {currentBidder.logoUrl && (
+                          <img
+                            src={currentBidder.logoUrl}
+                            alt={currentBidder.shortName}
+                            className="w-5 h-5 object-contain"
+                            referrerPolicy="no-referrer"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        )}
+                        <span className="text-xs font-bold text-[#1D1D1F]">
+                          {currentBidder.name}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Controls */}
+              <div className="space-y-3 pt-4 border-t border-[rgba(0,0,0,0.06)]">
+                <button
+                  onClick={placeUserBid}
+                  disabled={!canUserBid}
+                  className={`w-full py-4 text-sm btn-primary ${
+                    userHoldsBid ? 'bg-[#32D74B] hover:bg-[#32D74B] text-white shadow-none transform-none' : ''
+                  }`}
+                  style={userHoldsBid ? { background: '#32D74B', color: '#fff' } : undefined}
+                >
+                  {bidBtnLabel}
+                </button>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    onClick={isPaused ? resumeAuction : pauseAuction}
+                    className="btn-secondary py-2 text-[10px] font-bold uppercase tracking-wider"
+                  >
+                    {isPaused ? '▶ Resume' : '⏸ Pause'}
+                  </button>
+
+                  <button
+                    onClick={skipPlayer}
+                    className="btn-secondary py-2 text-[10px] font-bold uppercase tracking-wider"
+                  >
+                    ✕ Pass
+                  </button>
+
+                  <button
+                    onClick={autoSimulateActivePlayer}
+                    className="btn-secondary py-2 text-[10px] font-bold uppercase tracking-wider"
+                  >
+                    ⚡ Fast Solve
+                  </button>
                 </div>
-              )}
+              </div>
+
             </div>
 
-            {/* Controls */}
-            <div className="space-y-3 pt-4 border-t border-[rgba(0,0,0,0.06)]">
-              <button
-                onClick={placeUserBid}
-                disabled={!canUserBid}
-                className={`w-full py-4 text-sm btn-primary ${
-                  userHoldsBid ? 'bg-[#32D74B] hover:bg-[#32D74B] text-white shadow-none transform-none' : ''
-                }`}
-                style={userHoldsBid ? { background: '#32D74B', color: '#fff' } : undefined}
+            {/* Right Column: Bid Activity Log (Col 5) */}
+            <div className="md:col-span-5 flex flex-col pl-6 border-t md:border-t-0 md:border-l border-[rgba(0,0,0,0.06)] pt-6 md:pt-0">
+              <span className="section-label mb-3">Live Log Feed</span>
+              <div
+                className="flex flex-col-reverse gap-2 overflow-y-auto pr-1"
+                style={{ height: '320px' }}
               >
-                {bidBtnLabel}
-              </button>
+                {logs.length === 0 ? (
+                  <p className="text-xs text-center py-12 text-[#8E8E93] font-bold">
+                    Activity will appear here.
+                  </p>
+                ) : (
+                  logs.map((log, index) => {
+                    let logClass = 'log-entry';
+                    if (log.includes('SOLD!')) {
+                      logClass = 'log-entry log-entry-sold';
+                    } else if (log.includes('PASSED:') || log.includes('SKIPPED:')) {
+                      logClass = 'log-entry log-entry-passed';
+                    } else if (log.includes('Your Team') || log.includes('bids ')) {
+                      logClass = 'log-entry log-entry-user';
+                    }
 
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={isPaused ? resumeAuction : pauseAuction}
-                  className="btn-secondary py-2.5 text-[10px] font-bold uppercase tracking-wider"
-                >
-                  {isPaused ? '▶ Resume' : '⏸ Pause'}
-                </button>
-
-                <button
-                  onClick={skipPlayer}
-                  className="btn-secondary py-2.5 text-[10px] font-bold uppercase tracking-wider"
-                >
-                  ✕ Pass
-                </button>
-
-                <button
-                  onClick={autoSimulateActivePlayer}
-                  className="btn-secondary py-2.5 text-[10px] font-bold uppercase tracking-wider"
-                >
-                  ⚡ Fast Solve
-                </button>
+                    return (
+                      <div key={index} className={logClass}>
+                        {log}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
 
-          </div>
-        </div>
-
-        {/* RIGHT: Activity Log (Col 3) */}
-        <div className="lg:col-span-3 flex flex-col">
-          <h4 className="section-label mb-2">Bid Activity</h4>
-          <div
-            className="glass p-3 flex flex-col-reverse gap-2 overflow-y-auto"
-            style={{ height: '420px' }}
-          >
-            {logs.length === 0 ? (
-              <p className="text-xs text-center py-12 text-[#9A9AA0]">
-                Activity will appear here.
-              </p>
-            ) : (
-              logs.map((log, index) => {
-                let logClass = 'log-entry';
-                if (log.includes('SOLD!')) {
-                  logClass = 'log-entry log-entry-sold';
-                } else if (log.includes('PASSED:') || log.includes('SKIPPED:')) {
-                  logClass = 'log-entry log-entry-passed';
-                } else if (log.includes('Your Team') || log.includes('bids ')) {
-                  logClass = 'log-entry log-entry-user';
-                }
-
-                return (
-                  <div key={index} className={logClass}>
-                    {log}
-                  </div>
-                );
-              })
-            )}
           </div>
         </div>
 
@@ -253,7 +259,7 @@ export const LiveBiddingBoard: React.FC = () => {
                   className="glass p-3 relative overflow-hidden transition-all duration-200 hover:translate-y-[-1px] hover:shadow-sm"
                   style={{
                     borderLeft: `3px solid ${t.color}`,
-                    background: isUserTeam ? 'rgba(255, 255, 255, 0.25)' : undefined
+                    background: isUserTeam ? 'rgba(255, 255, 255, 0.40)' : undefined
                   }}
                 >
                   <div className="flex justify-between items-center mb-1">
@@ -261,12 +267,12 @@ export const LiveBiddingBoard: React.FC = () => {
                       {t.shortName}
                       {isUserTeam && <span className="text-[10px]" title="Your Team">👤</span>}
                     </span>
-                    <span className="text-[10px] font-medium text-[#6E6E73]">
+                    <span className="text-[10px] font-bold text-[#6E6E73]">
                       {t.players.length}/25
                     </span>
                   </div>
                   <div className="text-sm font-black text-[#1D1D1F]">
-                    ₹{t.purse.toFixed(2)} <span className="text-[10px] font-semibold text-[#6E6E73]">Cr</span>
+                    ₹{t.purse.toFixed(2)} <span className="text-[10px] font-bold text-[#6E6E73]">Cr</span>
                   </div>
                 </div>
               );

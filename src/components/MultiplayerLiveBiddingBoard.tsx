@@ -19,7 +19,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
 
   if (!currentPlayer) {
     return (
-      <div className="glass p-12 text-center max-w-xl mx-auto">
+      <div className="glass p-12 text-center max-w-xl mx-auto shadow-md">
         <h3 className="text-lg font-bold mb-1" style={{ color: '#1D1D1F' }}>No Player Under the Hammer</h3>
         <p className="text-sm" style={{ color: '#6E6E73' }}>The draft pool is empty or the auction is complete.</p>
       </div>
@@ -63,157 +63,163 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative items-stretch">
 
         {/* ── LEFT: Player Card (col 4) ── */}
-        <div className="lg:col-span-4 flex flex-col justify-between">
-          <div className="mb-3">
+        <div className="lg:col-span-4 flex flex-col">
+          <div className="h-full flex flex-col justify-between">
             <h4 className="section-label mb-2">Active Player</h4>
             <PlayerCard player={currentPlayer} showBidOverlay={false} />
           </div>
         </div>
 
-        {/* ── CENTER: Bidding Dashboard (col 5) ── */}
-        <div className="lg:col-span-5 flex flex-col">
-          <div className="glass p-6 flex flex-col justify-between flex-grow min-h-[420px]">
+        {/* ── CENTER & RIGHT: Unified Command Center (col 8) ── */}
+        <div className="lg:col-span-8 flex flex-col">
+          <h4 className="section-label mb-2">Auction Command Center</h4>
+          <div className="glass p-6 grid grid-cols-1 md:grid-cols-12 gap-6 flex-grow min-h-[420px] shadow-md">
 
-            {/* Status + Timer */}
-            <div className="flex justify-between items-center pb-4 mb-4 border-b border-[rgba(0,0,0,0.06)]">
-              <div>
-                <span className="section-label block mb-0.5">Status</span>
-                <div className="flex items-center gap-1.5">
-                  {!isPaused && <span className="live-dot" />}
+            {/* Left side: Bidding Info and controls (Col 7) */}
+            <div className="md:col-span-7 flex flex-col justify-between">
+              
+              {/* Status + Timer */}
+              <div className="flex justify-between items-center pb-4 border-b border-[rgba(0,0,0,0.06)]">
+                <div>
+                  <span className="section-label block mb-0.5">Status</span>
+                  <div className="flex items-center gap-1.5">
+                    {!isPaused && <span className="live-dot" />}
+                    <span
+                      className="text-xs font-bold uppercase tracking-wide"
+                      style={{ color: isPaused ? '#FF453A' : '#32D74B' }}
+                    >
+                      {isPaused ? 'Paused' : 'Live Bidding'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Countdown ring */}
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 72 72">
+                    <circle cx="36" cy="36" r={radius} stroke="rgba(0,0,0,0.05)" strokeWidth="4" fill="transparent" />
+                    <circle
+                      cx="36" cy="36" r={radius}
+                      stroke={timerUrgent ? '#FF453A' : '#1D1D1F'}
+                      strokeWidth="4" fill="transparent"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={strokeOffset}
+                      className="transition-all duration-1000 ease-linear"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                   <span
-                    className="text-xs font-bold uppercase tracking-wide"
-                    style={{ color: isPaused ? '#FF453A' : '#32D74B' }}
+                    className={`absolute text-lg font-black ${timerUrgent ? 'timer-urgent' : ''}`}
+                    style={{ color: timerUrgent ? '#FF453A' : '#1D1D1F' }}
                   >
-                    {isPaused ? 'Paused' : 'Live Bidding'}
+                    {timer}
                   </span>
                 </div>
               </div>
 
-              {/* Countdown ring */}
-              <div className="relative w-16 h-16 flex items-center justify-center">
-                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 72 72">
-                  <circle cx="36" cy="36" r={radius} stroke="rgba(0,0,0,0.05)" strokeWidth="4" fill="transparent" />
-                  <circle
-                    cx="36" cy="36" r={radius}
-                    stroke={timerUrgent ? '#FF453A' : '#1D1D1F'}
-                    strokeWidth="4" fill="transparent"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeOffset}
-                    className="transition-all duration-1000 ease-linear"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span
-                  className={`absolute text-lg font-black ${timerUrgent ? 'timer-urgent' : ''}`}
-                  style={{ color: timerUrgent ? '#FF453A' : '#1D1D1F' }}
+              {/* Bid display */}
+              <div className="text-center py-6 flex-grow flex flex-col justify-center">
+                {currentBid === 0 ? (
+                  <div className="space-y-1">
+                    <span className="section-label block">Base Draft Price</span>
+                    <div className="text-5xl font-extrabold tracking-tight text-[#1D1D1F]">
+                      ₹{currentPlayer.base_price.toFixed(2)}
+                      <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
+                    </div>
+                    <p className="text-xs text-[#6E6E73] font-semibold">Awaiting the opening bid.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <span className="section-label block">Current Highest Bid</span>
+                    <div className="text-5xl font-extrabold tracking-tight text-[#1D1D1F]">
+                      ₹{currentBid.toFixed(2)}
+                      <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
+                    </div>
+                    {currentBidder && (
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: currentBidder.color }} />
+                        {currentBidder.logoUrl && (
+                          <img src={currentBidder.logoUrl} alt={currentBidder.shortName}
+                            className="w-5 h-5 object-contain" referrerPolicy="no-referrer"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        )}
+                        <span className="text-xs font-bold text-[#1D1D1F]">
+                          {currentBidder.name}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Action buttons */}
+              <div className="space-y-3 pt-4 border-t border-[rgba(0,0,0,0.06)]">
+                <button
+                  id="place-bid-btn"
+                  onClick={placeUserBid}
+                  disabled={!canUserBid}
+                  className={`w-full py-4 text-sm btn-primary ${
+                    userHoldsBid ? 'bg-[#32D74B] hover:bg-[#32D74B] text-white shadow-none transform-none' : ''
+                  }`}
+                  style={userHoldsBid ? { background: '#32D74B', color: '#fff' } : undefined}
                 >
-                  {timer}
-                </span>
+                  {bidBtnLabel}
+                </button>
+
+                {isHost ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'btn-pause-resume', label: isPaused ? '▶ Resume' : '⏸ Pause', action: isPaused ? resumeAuction : pauseAuction },
+                      { id: 'btn-pass',         label: '✕ Pass',                           action: skipPlayer },
+                      { id: 'btn-sell-now',     label: '🔨 Sell',                          action: sellNow },
+                    ].map(ctrl => (
+                      <button
+                        key={ctrl.id}
+                        id={ctrl.id}
+                        onClick={ctrl.action}
+                        className="btn-secondary py-2 text-[10px] font-bold uppercase tracking-wider"
+                      >
+                        {ctrl.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl text-center text-[10px] font-semibold text-[#55555A] bg-[rgba(0,0,0,0.02)] border border-[rgba(0,0,0,0.04)]">
+                    🔒 {clients.find(c => c.isHost)?.name || 'Host'} controls auction flow
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Bid display */}
-            <div className="text-center py-6 flex-grow flex flex-col justify-center">
-              {currentBid === 0 ? (
-                <div className="space-y-1">
-                  <span className="section-label block">Base Draft Price</span>
-                  <div className="text-5xl font-bold tracking-tight text-[#1D1D1F]">
-                    ₹{currentPlayer.base_price.toFixed(2)}
-                    <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
-                  </div>
-                  <p className="text-xs text-[#6E6E73]">Awaiting the opening bid.</p>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  <span className="section-label block">Current Highest Bid</span>
-                  <div className="text-5xl font-bold tracking-tight text-[#1D1D1F]">
-                    ₹{currentBid.toFixed(2)}
-                    <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
-                  </div>
-                  {currentBidder && (
-                    <div className="flex items-center justify-center gap-2 mt-2">
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: currentBidder.color }} />
-                      {currentBidder.logoUrl && (
-                        <img src={currentBidder.logoUrl} alt={currentBidder.shortName}
-                          className="w-5 h-5 object-contain" referrerPolicy="no-referrer"
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      )}
-                      <span className="text-xs font-semibold text-[#1D1D1F]">
-                        {currentBidder.name}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Action buttons */}
-            <div className="space-y-3 pt-4 border-t border-[rgba(0,0,0,0.06)]">
-              <button
-                id="place-bid-btn"
-                onClick={placeUserBid}
-                disabled={!canUserBid}
-                className={`w-full py-4 text-sm btn-primary ${
-                  userHoldsBid ? 'bg-[#32D74B] hover:bg-[#32D74B] text-white shadow-none transform-none' : ''
-                }`}
-                style={userHoldsBid ? { background: '#32D74B', color: '#fff' } : undefined}
+            {/* Right side: Bid Activity Log (Col 5) */}
+            <div className="md:col-span-5 flex flex-col pl-6 border-t md:border-t-0 md:border-l border-[rgba(0,0,0,0.06)] pt-6 md:pt-0">
+              <span className="section-label mb-3">Live Log Feed</span>
+              <div
+                className="flex flex-col-reverse gap-2 overflow-y-auto pr-1"
+                style={{ height: '320px' }}
               >
-                {bidBtnLabel}
-              </button>
-
-              {isHost ? (
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { id: 'btn-pause-resume', label: isPaused ? '▶ Resume' : '⏸ Pause', action: isPaused ? resumeAuction : pauseAuction },
-                    { id: 'btn-pass',         label: '✕ Pass',                           action: skipPlayer },
-                    { id: 'btn-sell-now',     label: '🔨 Sell',                          action: sellNow },
-                  ].map(ctrl => (
-                    <button
-                      key={ctrl.id}
-                      id={ctrl.id}
-                      onClick={ctrl.action}
-                      className="btn-secondary py-2.5 text-[10px] font-bold uppercase tracking-wider"
-                    >
-                      {ctrl.label}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-3 rounded-xl text-center text-[10px] font-medium text-[#6E6E73] bg-[rgba(0,0,0,0.02)] border border-[rgba(0,0,0,0.04)]">
-                  🔒 {clients.find(c => c.isHost)?.name || 'Host'} controls auction flow
-                </div>
-              )}
+                {logs.length === 0 ? (
+                  <p className="text-xs text-center py-12 text-[#8E8E93] font-bold">
+                    Activity will appear here.
+                  </p>
+                ) : (
+                  logs.map((log, i) => {
+                    const isSold   = log.startsWith('SOLD!');
+                    const isPassed = log.startsWith('PASSED') || log.startsWith('SKIPPED');
+                    const isUserLog= log.includes(playerName) || (userTeam && log.includes(userTeam.shortName));
+                    const cls = isSold ? 'log-entry log-entry-sold'
+                      : isPassed     ? 'log-entry log-entry-passed'
+                      : isUserLog    ? 'log-entry log-entry-user'
+                      :                'log-entry';
+                    return <div key={i} className={cls}>{log}</div>;
+                  })
+                )}
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* ── RIGHT: Bid Activity Log (col 3) ── */}
-        <div className="lg:col-span-3 flex flex-col">
-          <h4 className="section-label mb-2">Bid Activity</h4>
-          <div
-            className="glass p-3 flex flex-col-reverse gap-2 overflow-y-auto"
-            style={{ height: '420px' }}
-          >
-            {logs.length === 0 ? (
-              <p className="text-xs text-center py-12 text-[#9A9AA0]">
-                Activity will appear here.
-              </p>
-            ) : (
-              logs.map((log, i) => {
-                const isSold   = log.startsWith('SOLD!');
-                const isPassed = log.startsWith('PASSED') || log.startsWith('SKIPPED');
-                const isUserLog= log.includes(playerName) || (userTeam && log.includes(userTeam.shortName));
-                const cls = isSold ? 'log-entry log-entry-sold'
-                  : isPassed     ? 'log-entry log-entry-passed'
-                  : isUserLog    ? 'log-entry log-entry-user'
-                  :                'log-entry';
-                return <div key={i} className={cls}>{log}</div>;
-              })
-            )}
           </div>
         </div>
 
@@ -221,7 +227,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
         <div className="lg:col-span-12">
           <div className="flex items-center justify-between mb-3">
             <h4 className="section-label">Live Competitor Dashboard</h4>
-            <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full border border-[rgba(0,0,0,0.08)] bg-[rgba(255,255,255,0.30)] text-[#6E6E73]">
+            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border border-[rgba(0,0,0,0.08)] bg-white/40 text-[#55555A] shadow-sm">
               Room Code: {roomCode}
             </span>
           </div>
@@ -239,7 +245,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
                   style={{
                     borderLeft: `3px solid ${t.color}`,
                     borderColor: isCurrentBidder ? t.color : undefined,
-                    background: isCurrentBidder ? 'rgba(255, 255, 255, 0.35)' : (isUser ? 'rgba(255, 255, 255, 0.20)' : undefined),
+                    background: isCurrentBidder ? 'rgba(255, 255, 255, 0.40)' : (isUser ? 'rgba(255, 255, 255, 0.20)' : undefined),
                     boxShadow: isCurrentBidder ? `inset 0 0 0 1px ${t.color}40, 0 4px 16px ${t.color}15` : undefined
                   }}
                 >
@@ -283,7 +289,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
                   </div>
 
                   {claimedBy && (
-                    <div className="mt-1.5 pt-1 text-[8px] font-medium text-[#6E6E73] truncate border-t border-[rgba(0,0,0,0.04)]">
+                    <div className="mt-1.5 pt-1 text-[8px] font-medium text-[#55555A] truncate border-t border-[rgba(0,0,0,0.04)]">
                       {claimedBy.name}
                     </div>
                   )}
