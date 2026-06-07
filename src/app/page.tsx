@@ -30,7 +30,7 @@ export default function HomePage() {
       {showSplash && (
         <div
           className={`fixed inset-0 z-50 flex flex-col justify-center items-center overflow-hidden ${isFadeOut ? 'splash-fade-out' : ''}`}
-          style={{ background: '#F5F0E8' }}
+          style={{ background: '#C2A77C' }}
         >
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-slow-zoom animate-cinematic-reveal pointer-events-none"

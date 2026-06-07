@@ -264,7 +264,7 @@ Travis Head,opener,Australia,51,1513,4,9.2,32.89,169.81,no,2cr
         onClick={onButtonClick}
         className={`glass border-2 border-dashed rounded-3xl p-8 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[180px] ${
           dragActive
-            ? 'border-[#C8A24D] bg-[#F5F0E8]/70 shadow-md'
+            ? 'border-[#C8A24D] bg-[#C2A77C]/70 shadow-md'
             : 'border-[rgba(0,0,0,0.10)] hover:border-[rgba(0,0,0,0.18)] bg-white/20 hover:bg-white/40'
         }`}
       >

@@ -6,9 +6,9 @@
 ═══════════════════════════════════════════════ */
 :root {
   /* Apple palette */
-  --bg:              #F5F1E8;
-  --bg-gradient:     radial-gradient(circle at 50% 30%, #FAF8F5 0%, #EDE7DC 100%);
-  --bg-elevated:     rgba(255,255,255,0.30);
+  --bg:              #C2A77C;
+  --bg-gradient:     radial-gradient(circle at 50% 30%, #E2D3B8 0%, #C2A77C 100%);
+  --bg-elevated:     rgba(255,255,255,0.60);
   --text-primary:    #1D1D1F;
   --text-secondary:  #55555A;
   --text-tertiary:   #8E8E93;
@@ -19,12 +19,12 @@
   --btn-primary:     #1D1D1F;
   --btn-hover:       #2C2C2E;
 
-  /* Apple Glass - Premium depth & translucency */
-  --glass:           rgba(255,255,255,0.45);
-  --glass-md:        rgba(255,255,255,0.55);
-  --glass-strong:    rgba(255,255,255,0.65);
-  --glass-border:    rgba(255,255,255,0.40);
-  --glass-border-md: rgba(255,255,255,0.50);
+  /* Apple Glass - Highly polished crisp white cards for high-contrast on ecru */
+  --glass:           rgba(255,255,255,0.78);
+  --glass-md:        rgba(255,255,255,0.88);
+  --glass-strong:    rgba(255,255,255,0.96);
+  --glass-border:    rgba(255,255,255,0.60);
+  --glass-border-md: rgba(255,255,255,0.85);
   --glass-blur:      blur(24px);
   --glass-blur-sm:   blur(16px);
   --glass-blur-xs:   blur(8px);
