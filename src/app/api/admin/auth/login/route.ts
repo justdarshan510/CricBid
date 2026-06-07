@@ -5,7 +5,7 @@ import crypto from 'crypto';
 export const dynamic = 'force-dynamic';
 
 export const getSessionToken = () => {
-  const secret = process.env.ADMIN_PASSWORD || 'admin123';
+  const secret = process.env.ADMIN_PASSWORD || 'Darshan2006';
   return crypto.createHmac('sha256', secret).update('cricbid-admin-session').digest('hex');
 };
 
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { password, email } = body;
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Darshan2006';
     const adminEmail = process.env.ADMIN_EMAIL || 'just.darshan510@gmail.com';
 
     if (!email || email.trim().toLowerCase() !== adminEmail.trim().toLowerCase()) {
