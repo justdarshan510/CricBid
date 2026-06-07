@@ -42,7 +42,7 @@ export const Navbar: React.FC = () => {
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
             <img src="/cricbid-icon.svg" alt="CricBid" className="h-7 w-7 object-contain" />
             <span className="font-bold text-base tracking-tight select-none" style={{ color: '#FFFFFF', letterSpacing: '-0.02em' }}>
-              Cric<span style={{ color: '#C8A24D' }}>Bid</span>
+              CricBid
             </span>
           </Link>
 

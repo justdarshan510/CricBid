@@ -52,7 +52,7 @@ export default function HomePage() {
                   className="splash-letter font-bold text-6xl md:text-9xl tracking-tight"
                   style={{
                     animationDelay: `${1.2 + i * 0.10}s`,
-                    color: i >= 4 ? '#C8A24D' : '#FFFFFF',
+                    color: '#FFFFFF',
                     letterSpacing: '-0.04em',
                   }}
                 >
@@ -74,16 +74,16 @@ export default function HomePage() {
 
         {/* Hero */}
         <div className="text-center max-w-3xl mx-auto" style={{ marginBottom: '80px' }}>
-          <div className="inline-flex items-center gap-2 mb-8 px-3.5 py-1.5 rounded-full" style={{ background: 'rgba(200,162,77,0.12)', border: '1px solid rgba(200,162,77,0.25)', backdropFilter: 'blur(12px)' }}>
+          <div className="inline-flex items-center gap-2 mb-8 px-3.5 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.16)', backdropFilter: 'blur(12px)' }}>
             <span className="live-dot" />
-            <span className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: '#C8A24D', letterSpacing: '0.08em' }}>
+            <span className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: 'rgba(255,255,255,0.75)', letterSpacing: '0.08em' }}>
               Live Draft &amp; Auction Platform
             </span>
           </div>
 
           <h1 className="display-large mb-6">
             Build Your<br />
-            <span style={{ color: '#C8A24D' }}>Dream Squad.</span>
+            <span style={{ color: '#FFFFFF' }}>Dream Squad.</span>
           </h1>
 
           <p className="text-lg font-normal max-w-lg mx-auto mb-10 leading-relaxed text-white/70" style={{ fontWeight: 400 }}>
