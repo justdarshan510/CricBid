@@ -29,58 +29,58 @@ export const PlayingXIDisplay: React.FC<PlayingXIDisplayProps> = ({ squad }) => 
     (p.role === 'spinner' || p.role === 'death_bowler' || p.role === 'powerplay_bowler')
   );
 
-  // Fill in placeholders if we have missing slots
   const renderPlayerBadge = (player: Player | undefined, slotLabel: string) => {
     if (!player) {
       return (
-        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-[#030810]/30 border border-dashed border-white/5 w-20 h-20 transition-all duration-300 hover:scale-105 hover:border-[#38BDF8]/30 hover:bg-[#030810]/50 group cursor-pointer shadow-inner">
-          <span className="text-xs text-[#38BDF8]/40 group-hover:text-[#38BDF8]/80 group-hover:rotate-90 transition-all duration-300">✦</span>
-          <span className="text-[8px] uppercase tracking-wider text-[#94A3B8]/30 group-hover:text-[#F8FAFC]/60 transition-colors font-bold mt-1 text-center leading-tight px-1">
+        <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-[rgba(0,0,0,0.03)] border border-dashed border-[rgba(0,0,0,0.12)] w-20 h-20 transition-all duration-300 hover:scale-105 hover:border-[#C8A24D]/40 hover:bg-[rgba(255,255,255,0.30)] group cursor-pointer shadow-sm">
+          <span className="text-xs text-[#6E6E73]/40 group-hover:text-[#C8A24D] transition-all duration-300">＋</span>
+          <span className="text-[8px] uppercase tracking-wider text-[#6E6E73]/50 group-hover:text-[#1D1D1F] transition-colors font-bold mt-1 text-center leading-tight px-1">
             {slotLabel}
           </span>
         </div>
       );
     }
 
-    const roleBorders: Record<string, string> = {
-      opener: 'border-[#38BDF8] shadow-[#38BDF8]/5',
-      middle_order: 'border-white/20 shadow-white/5',
-      finisher: 'border-purple-500/40 shadow-purple-500/5',
-      spinner: 'border-emerald-500/40 shadow-emerald-500/5',
-      death_bowler: 'border-blue-500/40 shadow-blue-500/5',
-      powerplay_bowler: 'border-cyan-500/40 shadow-cyan-500/5',
-      all_rounder: 'border-pink-500/40 shadow-pink-500/5'
+    const roleColors: Record<string, string> = {
+      opener: '#FF453A',
+      middle_order: '#FF9F0A',
+      finisher: '#5E5CE6',
+      spinner: '#30A64A',
+      death_bowler: '#0A84FF',
+      powerplay_bowler: '#2A9FCC',
+      all_rounder: '#C8A24D'
     };
 
-    const borderStyle = roleBorders[player.role] || 'border-white/10';
+    const accentColor = roleColors[player.role] || '#1D1D1F';
 
     return (
       <div 
-        className={`flex flex-col items-center justify-center p-1.5 rounded-2xl bg-[#030810]/95 border-2 ${borderStyle} w-20 h-20 shadow-lg relative group transition-all duration-300 hover:scale-105 hover:shadow-[#38BDF8]/10`}
+        className="flex flex-col items-center justify-center p-1.5 rounded-2xl bg-white/75 backdrop-blur-md border border-[rgba(0,0,0,0.08)] w-20 h-20 shadow-md relative group transition-all duration-300 hover:scale-105 hover:shadow-lg"
+        style={{ borderTop: `3px solid ${accentColor}` }}
         title={`${player.name} (${player.role.replace('_', ' ')}) - Rating: ${player.rating}`}
       >
         {/* Overseas icon */}
         {player.overseas && (
-          <span className="absolute top-1.5 right-2 text-[8px] text-[#38BDF8] drop-shadow-[0_0_2px_rgba(56,189,248,0.4)]">✈</span>
+          <span className="absolute top-1 right-1.5 text-[8px] text-[#C8A24D]">✈</span>
         )}
 
         {/* Rating overlay */}
-        <span className="absolute top-1.5 left-2 text-[8px] font-black text-[#38BDF8] tracking-tighter">
+        <span className="absolute top-1 left-1.5 text-[8px] font-bold text-[#1D1D1F]">
           {player.rating}
         </span>
 
         {/* Small Jersey Icon */}
-        <div className="w-7 h-7 flex items-center justify-center text-xs bg-white/5 rounded-full border border-white/5 group-hover:bg-[#38BDF8]/10 group-hover:border-[#38BDF8]/20 transition-all duration-300">
+        <div className="w-7 h-7 flex items-center justify-center text-xs bg-[rgba(0,0,0,0.02)] rounded-full border border-[rgba(0,0,0,0.04)] group-hover:bg-[rgba(200,162,77,0.08)] transition-all duration-300 mt-1">
           👕
         </div>
 
         {/* Player Name */}
-        <span className="text-[9px] font-black text-[#F8FAFC] mt-1 truncate w-full text-center tracking-tight px-0.5">
+        <span className="text-[9px] font-bold text-[#1D1D1F] mt-1 truncate w-full text-center tracking-tight px-0.5">
           {player.name.split(' ').pop()}
         </span>
 
         {/* Role label */}
-        <span className="text-[7px] text-[#94A3B8]/70 uppercase tracking-widest truncate w-full text-center mt-0.5 leading-none">
+        <span className="text-[7px] text-[#6E6E73] uppercase tracking-widest truncate w-full text-center mt-0.5 leading-none font-semibold">
           {player.is_wicketkeeper ? 'Keeper' : player.role.replace('_', ' ')}
         </span>
       </div>
@@ -90,20 +90,17 @@ export const PlayingXIDisplay: React.FC<PlayingXIDisplayProps> = ({ squad }) => 
   return (
     <div className="space-y-4">
       {/* Pitch Layout Plate */}
-      <div className="glass-card rounded-3xl border border-white/5 p-4 overflow-hidden relative shadow-2xl bg-gradient-to-b from-[#0a1610]/40 to-[#030810]/50">
-        {/* Background grass pattern */}
-        <div className="absolute inset-0 pitch-bg opacity-30 pointer-events-none"></div>
+      <div className="glass rounded-3xl p-4 overflow-hidden relative shadow-md" style={{ background: 'rgba(215, 230, 219, 0.55)', border: '1px solid rgba(255,255,255,0.35)' }}>
+        {/* Pitch Lines (Crease Layout) */}
+        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 h-0.5 bg-white/35 border-t border-dashed pointer-events-none"></div>
         
-        {/* Pitch Lines (Authentic Crease Layout) */}
-        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 h-0.5 bg-white/5 border-t border-dashed pointer-events-none"></div>
-        
-        {/* Cricket Crease Boundaries (Top & Bottom pitch areas) */}
-        <div className="absolute inset-x-12 top-6 h-10 border-x border-b border-white/15 pointer-events-none rounded-b-lg"></div>
-        <div className="absolute inset-x-12 bottom-6 h-10 border-x border-t border-white/15 pointer-events-none rounded-t-lg"></div>
+        {/* Cricket Crease Boundaries */}
+        <div className="absolute inset-x-12 top-6 h-10 border-x border-b border-white/25 pointer-events-none rounded-b-lg"></div>
+        <div className="absolute inset-x-12 bottom-6 h-10 border-x border-t border-white/25 pointer-events-none rounded-t-lg"></div>
         
         {/* Pitch crease marks */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-10 w-12 h-0.5 bg-white/25 rounded pointer-events-none"></div>
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-10 w-12 h-0.5 bg-white/25 rounded pointer-events-none"></div>
+        <div className="absolute left-1/2 -translate-x-1/2 top-10 w-12 h-0.5 bg-white/45 rounded pointer-events-none"></div>
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-10 w-12 h-0.5 bg-white/45 rounded pointer-events-none"></div>
 
         {/* Visual stadium content */}
         <div className="relative z-10 flex flex-col justify-between h-[420px] max-w-sm mx-auto">
@@ -143,12 +140,12 @@ export const PlayingXIDisplay: React.FC<PlayingXIDisplayProps> = ({ squad }) => 
 
       {/* Warnings & Guidelines block */}
       {warnings.length > 0 && (
-        <div className="p-3.5 bg-[#38BDF8]/10 border border-[#38BDF8]/20 text-[#38BDF8] rounded-2xl text-[11px] space-y-1">
-          <span className="font-extrabold uppercase block tracking-wider text-[9px] mb-1">
+        <div className="p-3.5 bg-[#FF9F0A]/10 border border-[#FF9F0A]/20 text-[#B25E00] rounded-2xl text-[11px] space-y-1">
+          <span className="font-bold uppercase block tracking-wider text-[9px] mb-1">
             Playing XI Assembly Flags:
           </span>
           {warnings.map((warn, i) => (
-            <div key={i} className="flex items-start space-x-1.5 font-medium">
+            <div key={i} className="flex items-start space-x-1.5 font-semibold">
               <span>•</span>
               <span>{warn}</span>
             </div>
@@ -158,4 +155,5 @@ export const PlayingXIDisplay: React.FC<PlayingXIDisplayProps> = ({ squad }) => 
     </div>
   );
 };
+
 export default PlayingXIDisplay;

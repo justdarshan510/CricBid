@@ -9,26 +9,21 @@ import { GoogleSignInBubble } from "../components/GoogleSignInBubble";
 export const metadata: Metadata = {
   title: "CricBid – Bid. Draft. Dominate.",
   description: "Real-time IPL-style player auctions with friends. Claim your franchise, manage your purse, and build a championship squad — live.",
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' }
-    ]
-  }
+  icons: { icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }] },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col antialiased" style={{ background: '#F5EFE4', color: '#1E1E1E' }}>
+      <body
+        className="min-h-screen flex flex-col antialiased"
+        style={{ background: '#F5F0E8', color: '#1D1D1F', fontFamily: "'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif" }}
+      >
         <AuthProvider>
           <AuctionProvider>
             <MultiplayerProvider>
               <Navbar />
-              <main className="flex-grow px-4 py-6 md:px-8 md:py-10 max-w-7xl w-full mx-auto relative">
+              <main className="flex-grow w-full max-w-7xl mx-auto px-5 md:px-8 relative" style={{ paddingTop: '32px', paddingBottom: '48px' }}>
                 {children}
               </main>
               <GoogleSignInBubble />

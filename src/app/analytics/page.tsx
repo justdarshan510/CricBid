@@ -93,19 +93,19 @@ export default function PlayerAnalyticsPage() {
   return (
     <div className="py-6 space-y-6">
       {/* Header Desk */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[rgba(0,0,0,0.06)] pb-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-black text-[#F8FAFC] uppercase tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#1D1D1F] tracking-tight">
             Draft Analytics
           </h1>
-          <p className="text-xs text-[#94A3B8] mt-1">
+          <p className="text-xs text-[#6E6E73] mt-1">
             Search, filter, and inspect the performance metrics of all {players.length} players in the pool.
           </p>
         </div>
         <div className="mt-4 md:mt-0 flex items-center space-x-3">
           <button
             onClick={() => setShowUploader(!showUploader)}
-            className="px-4 py-2 text-xs font-black uppercase rounded-xl bg-[#030810]/60 border border-white/5 text-[#38BDF8] hover:bg-white/5 transition cursor-pointer"
+            className="px-4 py-2 text-xs font-bold uppercase rounded-full bg-white border border-[rgba(0,0,0,0.08)] text-[#1D1D1F] hover:bg-white/80 shadow-sm transition cursor-pointer"
           >
             {showUploader ? 'Close Uploader' : '📂 Seed Custom CSV'}
           </button>
@@ -114,11 +114,11 @@ export default function PlayerAnalyticsPage() {
 
       {/* CSV Uploader panel */}
       {showUploader && (
-        <div className="glass-card p-6 rounded-3xl border border-white/8 shadow-2xl max-w-xl mx-auto animate-fade-in">
-          <h3 className="text-sm font-black text-[#F8FAFC] uppercase tracking-wider mb-2">
+        <div className="glass p-6 max-w-xl mx-auto shadow-md animate-fade-in">
+          <h3 className="text-sm font-bold text-[#1D1D1F] uppercase tracking-wider mb-2">
             Import Roster Sheet
           </h3>
-          <p className="text-xs text-[#94A3B8] mb-4">
+          <p className="text-xs text-[#6E6E73] mb-4">
             Uploading a custom CSV sheet here will override the active player pool and reset any ongoing simulations.
           </p>
           <CSVUploader onUploadSuccess={handleCSVSuccess} />
@@ -126,17 +126,17 @@ export default function PlayerAnalyticsPage() {
       )}
 
       {csvUploadedMsg && (
-        <div className="max-w-xl mx-auto text-xs font-semibold text-emerald-400 bg-emerald-950/20 border border-emerald-500/20 p-2.5 rounded-xl text-center">
+        <div className="max-w-xl mx-auto text-xs font-semibold text-[#248A3D] bg-[#32D74B]/10 border border-[#32D74B]/20 p-2.5 rounded-xl text-center">
           {csvUploadedMsg}
         </div>
       )}
 
       {/* Controls: Search and Filters */}
-      <div className="glass-card rounded-2xl border border-white/5 p-4 grid grid-cols-1 md:grid-cols-12 gap-3.5 items-center">
+      <div className="glass p-4 grid grid-cols-1 md:grid-cols-12 gap-3.5 items-center">
         
         {/* Search */}
         <div className="md:col-span-3">
-          <label className="block text-[8px] uppercase tracking-wider text-[#94A3B8] font-bold mb-1">
+          <label className="block text-[8px] uppercase tracking-wider text-[#6E6E73] font-bold mb-1">
             Player Name Search
           </label>
           <input
@@ -147,13 +147,13 @@ export default function PlayerAnalyticsPage() {
               setCurrentPage(1);
             }}
             placeholder="Search e.g. Kohli, Bumrah..."
-            className="w-full text-xs bg-[#030810]/80 border border-white/5 rounded-xl px-3 py-2 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]/50"
+            className="w-full text-xs bg-white/40 border border-[rgba(0,0,0,0.08)] rounded-xl px-3 py-2 text-[#1D1D1F] focus:outline-none focus:border-[#C8A24D]/50 focus:bg-white"
           />
         </div>
 
         {/* Filter Role */}
         <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-[#94A3B8] font-bold mb-1">
+          <label className="block text-[8px] uppercase tracking-wider text-[#6E6E73] font-bold mb-1">
             Specialist Role
           </label>
           <select
@@ -162,7 +162,7 @@ export default function PlayerAnalyticsPage() {
               setSelectedRole(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full text-xs bg-[#030810]/80 border border-white/5 rounded-xl px-2.5 py-2 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]/50"
+            className="w-full text-xs bg-white/40 border border-[rgba(0,0,0,0.08)] rounded-xl px-2 py-2 text-[#1D1D1F] focus:outline-none focus:border-[#C8A24D]/50 focus:bg-white"
           >
             <option value="all">All Roles</option>
             <option value="opener">Openers</option>
@@ -177,7 +177,7 @@ export default function PlayerAnalyticsPage() {
 
         {/* Filter Nationality */}
         <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-[#94A3B8] font-bold mb-1">
+          <label className="block text-[8px] uppercase tracking-wider text-[#6E6E73] font-bold mb-1">
             Nationality
           </label>
           <select
@@ -186,7 +186,7 @@ export default function PlayerAnalyticsPage() {
               setSelectedNationality(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full text-xs bg-[#030810]/80 border border-white/5 rounded-xl px-2.5 py-2 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]/50"
+            className="w-full text-xs bg-white/40 border border-[rgba(0,0,0,0.08)] rounded-xl px-2 py-2 text-[#1D1D1F] focus:outline-none focus:border-[#C8A24D]/50 focus:bg-white"
           >
             <option value="all">All Players</option>
             <option value="domestic">Indian (Domestic)</option>
@@ -196,7 +196,7 @@ export default function PlayerAnalyticsPage() {
 
         {/* Filter Status */}
         <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-[#94A3B8] font-bold mb-1">
+          <label className="block text-[8px] uppercase tracking-wider text-[#6E6E73] font-bold mb-1">
             Draft Status
           </label>
           <select
@@ -205,7 +205,7 @@ export default function PlayerAnalyticsPage() {
               setSelectedStatus(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full text-xs bg-[#030810]/80 border border-white/5 rounded-xl px-2.5 py-2 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]/50"
+            className="w-full text-xs bg-white/40 border border-[rgba(0,0,0,0.08)] rounded-xl px-2 py-2 text-[#1D1D1F] focus:outline-none focus:border-[#C8A24D]/50 focus:bg-white"
           >
             <option value="all">All States</option>
             <option value="pool">Available in Pool</option>
@@ -216,13 +216,13 @@ export default function PlayerAnalyticsPage() {
 
         {/* Sort By */}
         <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-[#94A3B8] font-bold mb-1">
+          <label className="block text-[8px] uppercase tracking-wider text-[#6E6E73] font-bold mb-1">
             Sort Order
           </label>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="w-full text-xs bg-[#030810]/80 border border-white/5 rounded-xl px-2.5 py-2 text-[#F8FAFC] focus:outline-none focus:border-[#38BDF8]/50"
+            className="w-full text-xs bg-white/40 border border-[rgba(0,0,0,0.08)] rounded-xl px-2 py-2 text-[#1D1D1F] focus:outline-none focus:border-[#C8A24D]/50 focus:bg-white"
           >
             <option value="rating-desc">Rating: High to Low</option>
             <option value="rating-asc">Rating: Low to High</option>
@@ -238,8 +238,8 @@ export default function PlayerAnalyticsPage() {
             onClick={() => setViewMode('grid')}
             className={`p-2 rounded-lg border text-xs transition cursor-pointer ${
               viewMode === 'grid'
-                ? 'bg-[#07111F]/80 border-white/8 text-[#38BDF8] font-bold'
-                : 'bg-[#030810]/60 border-white/5 text-[#94A3B8] hover:text-[#F8FAFC]'
+                ? 'bg-white border border-[rgba(0,0,0,0.08)] text-[#1D1D1F] font-bold shadow-sm'
+                : 'bg-[rgba(0,0,0,0.02)] border border-[rgba(0,0,0,0.06)] text-[#6E6E73]'
             }`}
             title="Grid Card View"
           >
@@ -249,8 +249,8 @@ export default function PlayerAnalyticsPage() {
             onClick={() => setViewMode('table')}
             className={`p-2 rounded-lg border text-xs transition cursor-pointer ${
               viewMode === 'table'
-                ? 'bg-[#07111F]/80 border-white/8 text-[#38BDF8] font-bold'
-                : 'bg-[#030810]/60 border-white/5 text-[#94A3B8] hover:text-[#F8FAFC]'
+                ? 'bg-white border border-[rgba(0,0,0,0.08)] text-[#1D1D1F] font-bold shadow-sm'
+                : 'bg-[rgba(0,0,0,0.02)] border border-[rgba(0,0,0,0.06)] text-[#6E6E73]'
             }`}
             title="Stats Sheet Table"
           >
@@ -262,9 +262,9 @@ export default function PlayerAnalyticsPage() {
       {/* Main Results Listing */}
       <div className="space-y-4">
         {processedPlayers.length === 0 ? (
-          <div className="glass-card rounded-3xl border border-white/5 p-12 text-center">
-            <h3 className="text-lg font-bold text-[#94A3B8]">No Match Found</h3>
-            <p className="text-xs text-[#94A3B8]/60 mt-1">
+          <div className="glass p-12 text-center">
+            <h3 className="text-lg font-bold text-[#6E6E73]">No Match Found</h3>
+            <p className="text-xs text-[#6E6E73]/60 mt-1">
               Adjust your filter criteria or search queries to find player matches.
             </p>
           </div>
@@ -279,21 +279,21 @@ export default function PlayerAnalyticsPage() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex justify-between items-center bg-[#030810]/60 border border-white/5 px-4 py-2.5 rounded-2xl text-xs font-semibold">
+              <div className="flex justify-between items-center bg-white/40 border border-[rgba(0,0,0,0.06)] px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-sm">
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((c) => Math.max(1, c - 1))}
-                  className="px-3 py-1.5 rounded-lg bg-[#07111F]/85 border border-white/5 text-[#94A3B8] hover:text-[#F8FAFC] disabled:text-[#94A3B8]/25 disabled:bg-transparent disabled:border-transparent transition cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-white/60 border border-[rgba(0,0,0,0.06)] text-[#6E6E73] hover:text-[#1D1D1F] disabled:text-[#6E6E73]/25 disabled:bg-transparent disabled:border-transparent transition cursor-pointer"
                 >
                   ← Previous
                 </button>
-                <span className="text-[#94A3B8]">
-                  Page <span className="font-bold text-[#F8FAFC]">{currentPage}</span> of {totalPages} ({processedPlayers.length} matches)
+                <span className="text-[#6E6E73]">
+                  Page <span className="font-bold text-[#1D1D1F]">{currentPage}</span> of {totalPages} ({processedPlayers.length} matches)
                 </span>
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage((c) => Math.min(totalPages, c + 1))}
-                  className="px-3 py-1.5 rounded-lg bg-[#07111F]/85 border border-white/5 text-[#94A3B8] hover:text-[#F8FAFC] disabled:text-[#94A3B8]/25 disabled:bg-transparent disabled:border-transparent transition cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-white/60 border border-[rgba(0,0,0,0.06)] text-[#6E6E73] hover:text-[#1D1D1F] disabled:text-[#6E6E73]/25 disabled:bg-transparent disabled:border-transparent transition cursor-pointer"
                 >
                   Next →
                 </button>
@@ -302,10 +302,10 @@ export default function PlayerAnalyticsPage() {
           </>
         ) : (
           /* Table Stats View */
-          <div className="glass-card rounded-2xl border border-white/5 overflow-hidden shadow-xl">
+          <div className="glass overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left text-[#94A3B8]">
-                <thead className="bg-[#030810]/90 border-b border-white/5 text-[#94A3B8]/60 uppercase tracking-widest text-[9px] font-bold">
+              <table className="w-full text-xs text-left text-[#6E6E73]">
+                <thead className="bg-[rgba(0,0,0,0.02)] border-b border-[rgba(0,0,0,0.06)] text-[#6E6E73] uppercase tracking-widest text-[9px] font-bold">
                   <tr>
                     <th scope="col" className="px-4 py-3">Player</th>
                     <th scope="col" className="px-4 py-3">Role</th>
@@ -319,55 +319,55 @@ export default function PlayerAnalyticsPage() {
                     <th scope="col" className="px-4 py-3 text-right">Draft Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5 bg-[#030810]/10">
+                <tbody className="divide-y divide-[rgba(0,0,0,0.04)] bg-white/10">
                   {processedPlayers.map((player) => {
                     const mappedRole = roleLabels[player.role] || player.role;
                     return (
                       <tr
                         key={player.id}
-                        className="hover:bg-white/5 transition-colors"
+                        className="hover:bg-[rgba(0,0,0,0.01)] transition-colors"
                       >
-                        <td className="px-4 py-3.5 font-bold text-[#F8FAFC] flex items-center space-x-1.5">
+                        <td className="px-4 py-3.5 font-bold text-[#1D1D1F] flex items-center space-x-1.5">
                           <span>{player.name}</span>
                           {player.is_wicketkeeper && (
-                            <span className="text-[8px] bg-teal-950/40 border border-teal-500/20 text-teal-400 font-extrabold px-1 rounded">
+                            <span className="text-[8px] bg-[#32D74B]/10 border border-[#32D74B]/20 text-[#248A3D] font-extrabold px-1 rounded">
                               WK
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3.5 text-[#94A3B8]/80">{mappedRole}</td>
-                        <td className="px-4 py-3.5 text-center font-extrabold text-[#38BDF8]">
+                        <td className="px-4 py-3.5 text-[#6E6E73]/80">{mappedRole}</td>
+                        <td className="px-4 py-3.5 text-center font-extrabold text-[#C8A24D]">
                           {player.rating}
                         </td>
-                        <td className="px-4 py-3.5 text-center text-[#94A3B8]/80">
+                        <td className="px-4 py-3.5 text-center text-[#6E6E73]/80">
                           {player.nationality} {player.overseas && '✈'}
                         </td>
-                        <td className="px-4 py-3.5 text-right font-bold text-[#F8FAFC]">
+                        <td className="px-4 py-3.5 text-right font-bold text-[#1D1D1F]">
                           {player.base_price.toFixed(2)} Cr
                         </td>
-                        <td className="px-4 py-3.5 text-center text-sky-300 font-medium">
+                        <td className="px-4 py-3.5 text-center text-[#1D1D1F] font-medium">
                           {player.strike_rate !== undefined ? player.strike_rate : '-'}
                         </td>
-                        <td className="px-4 py-3.5 text-center text-[#F8FAFC]">
+                        <td className="px-4 py-3.5 text-center text-[#1D1D1F]">
                           {player.batting_average !== undefined ? player.batting_average : '-'}
                         </td>
-                        <td className="px-4 py-3.5 text-center text-teal-400">
+                        <td className="px-4 py-3.5 text-center text-[#30A64A] font-semibold">
                           {player.wickets !== undefined ? player.wickets : '-'}
                         </td>
-                        <td className="px-4 py-3.5 text-center text-red-400">
+                        <td className="px-4 py-3.5 text-center text-[#FF453A] font-semibold">
                           {player.economy !== undefined ? player.economy : '-'}
                         </td>
                         <td className="px-4 py-3.5 text-right font-semibold">
                           {player.status === 'sold' ? (
-                            <span className="font-extrabold text-[#38BDF8]">
+                            <span className="font-bold text-[#C8A24D]">
                               SOLD ({player.sold_price?.toFixed(2)} Cr)
                             </span>
                           ) : player.status === 'unsold' ? (
-                            <span className="text-[#94A3B8]/40 font-bold uppercase tracking-wider text-[10px]">
+                            <span className="text-[#6E6E73]/40 font-bold uppercase tracking-wider text-[10px]">
                               Unsold
                             </span>
                           ) : (
-                            <span className="text-emerald-400 font-bold uppercase tracking-wider text-[10px] animate-pulse">
+                            <span className="text-[#32D74B] font-bold uppercase tracking-wider text-[10px] animate-pulse">
                               Available
                             </span>
                           )}

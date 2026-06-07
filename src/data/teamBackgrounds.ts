@@ -65,4 +65,4 @@ export const FALLBACK_BACKGROUND = 'linear-gradient(135deg, #0f172a 0%, #1e293b 
  * Overlay gradient for readability
  * Medium dark overlay to ensure UI elements are readable over background
  */
-export const OVERLAY_GRADIENT = 'linear-gradient(rgba(243,238,230,0.60), rgba(230,220,206,0.68))';
+export const OVERLAY_GRADIENT = 'linear-gradient(180deg, rgba(245,240,232,0.18) 0%, rgba(235,228,218,0.22) 100%)';
