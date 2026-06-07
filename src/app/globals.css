@@ -1,36 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    DESIGN TOKENS
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 :root {
-  --bg-base:       #F5EFE4;
-  --bg-surface:    #FFFDF8;
-  --bg-surface-2:  #F9F4EC;
-  --text-primary:  #1E1E1E;
-  --text-secondary:#666666;
-  --text-muted:    #999999;
-  --border:        #E7DFD1;
-  --border-strong: #D4C9B8;
-  --accent:        #2F2F2F;
-  --btn-bg:        #2B2B2B;
-  --btn-hover:     #1F1F1F;
-  --success:       #3BA55D;
-  --error:         #C0392B;
-  --font-main:     'Inter', system-ui, -apple-system, sans-serif;
+  /* Palette */
+  --bg-base:        #F3EEE6;
+  --bg-card:        #EFE7DC;
+  --bg-soft:        #E7DDD0;
+  --text-primary:   #2B2B2B;
+  --text-secondary: #6B645D;
+  --text-muted:     #9C9389;
+  --border:         rgba(255, 255, 255, 0.28);
+  --border-strong:  rgba(201, 162, 39, 0.22);
+  --accent-gold:    #C9A227;
+  --success:        #5E9F73;
+  --danger:         #C75C5C;
+  --btn-bg:         #2B2B2B;
+  --btn-hover:      #1A1A1A;
+
+  /* Glass */
+  --glass-bg:       rgba(245, 240, 232, 0.70);
+  --glass-bg-light: rgba(243, 238, 230, 0.60);
+  --glass-bg-panel: rgba(243, 238, 230, 0.72);
+  --glass-blur:     blur(18px);
+  --glass-blur-lg:  blur(22px);
+  --glass-shadow:   0 8px 32px rgba(0,0,0,0.12), 0 2px 12px rgba(0,0,0,0.08);
+  --glass-shadow-sm:0 4px 16px rgba(0,0,0,0.09), 0 1px 6px rgba(0,0,0,0.06);
+
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-@theme {
-  --font-sans: var(--font-main);
-}
+@theme { --font-sans: var(--font-main); }
 
-/* ─────────────────────────────────────────
-   BASE RESET
-───────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+/* ═══════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
   -webkit-font-smoothing: antialiased;
@@ -39,89 +46,107 @@ html {
 }
 
 body {
-  background-color: var(--bg-base);
+  background: var(--bg-base);
   color: var(--text-primary);
   font-family: var(--font-main);
   overflow-x: hidden;
   line-height: 1.6;
 }
 
-/* ─────────────────────────────────────────
-   SURFACE CARD — primary content container
-───────────────────────────────────────── */
-.surface-card {
-  background: var(--bg-surface);
+/* ═══════════════════════════════════════════════
+   GLASS CARDS — core visual language
+═══════════════════════════════════════════════ */
+
+/* Standard glass card */
+.glass-beige {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1.25rem;
+}
+
+/* Lighter / more transparent variant */
+.glass-beige-light {
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow-sm);
+  border-radius: 1.25rem;
+}
+
+/* Main auction panel — stronger blur */
+.glass-beige-panel {
+  background: var(--glass-bg-panel);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
   border-radius: 1.5rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.surface-card-sm {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+/* Alias kept for backward compat */
+.surface-card      { background: var(--glass-bg);       backdrop-filter: var(--glass-blur);    -webkit-backdrop-filter: var(--glass-blur);    border: 1px solid var(--border); box-shadow: var(--glass-shadow);    border-radius: 1.5rem; }
+.surface-card-sm   { background: var(--glass-bg-light); backdrop-filter: var(--glass-blur);    -webkit-backdrop-filter: var(--glass-blur);    border: 1px solid var(--border); box-shadow: var(--glass-shadow-sm); border-radius: 1.25rem; }
+
+/* Hover lift — used on franchise + competitor cards */
+.glass-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+.glass-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.15), 0 4px 14px rgba(0,0,0,0.10);
+  background: rgba(250, 245, 237, 0.82);
 }
 
-/* Hover lift variant */
 .surface-card-hover {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 .surface-card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.09), 0 2px 6px rgba(0, 0, 0, 0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.14), 0 3px 12px rgba(0,0,0,0.09);
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    BUTTONS
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 .btn-primary {
   background: var(--btn-bg);
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
   border-radius: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.10);
   cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.22), 0 1px 3px rgba(0,0,0,0.14);
 }
-.btn-primary:hover {
-  background: var(--btn-hover);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.22), 0 6px 16px rgba(0,0,0,0.14);
-}
-.btn-primary:active {
-  transform: scale(0.98);
-}
-.btn-primary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
+.btn-primary:hover   { background: var(--btn-hover); box-shadow: 0 4px 14px rgba(0,0,0,0.28); }
+.btn-primary:active  { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.40; cursor: not-allowed; transform: none; box-shadow: none; }
 
-/* Secondary / ghost button */
 .btn-secondary {
-  background: transparent;
+  background: rgba(245,240,232,0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: var(--text-primary);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
   font-weight: 600;
-  transition: background 0.15s ease, border-color 0.15s ease;
   cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
-.btn-secondary:hover {
-  background: var(--bg-surface-2);
-  border-color: var(--border);
-}
+.btn-secondary:hover { background: rgba(245,240,232,0.80); box-shadow: var(--glass-shadow-sm); }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════════
    INPUTS
-───────────────────────────────────────── */
+═══════════════════════════════════════════════ */
 .form-input {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
+  background: rgba(255, 252, 245, 0.70);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.35);
   color: var(--text-primary);
   border-radius: 0.625rem;
   padding: 0.625rem 0.875rem;
@@ -129,18 +154,16 @@ body {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   width: 100%;
 }
-.form-input::placeholder {
-  color: var(--text-muted);
-}
+.form-input::placeholder { color: var(--text-muted); }
 .form-input:focus {
   outline: none;
-  border-color: var(--border-strong);
-  box-shadow: 0 0 0 3px rgba(43, 43, 43, 0.08);
+  border-color: rgba(201,162,39,0.45);
+  box-shadow: 0 0 0 3px rgba(201,162,39,0.12);
 }
 
-/* ─────────────────────────────────────────
-   LABEL UTILITIES
-───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   LABELS & BADGES
+═══════════════════════════════════════════════ */
 .section-label {
   font-size: 0.65rem;
   font-weight: 700;
@@ -154,12 +177,14 @@ body {
   align-items: center;
   font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 0.25rem 0.625rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg-surface-2);
+  border: 1px solid rgba(255,255,255,0.30);
+  background: rgba(255,252,245,0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--text-secondary);
 }
 
@@ -169,43 +194,41 @@ body {
   border-color: var(--btn-bg);
 }
 
-/* Role badges — pastel semantic */
-.badge-role-opener         { background:#FEF2F2; color:#B91C1C; border-color:#FECACA; }
-.badge-role-middle_order   { background:#FFFBEB; color:#B45309; border-color:#FDE68A; }
-.badge-role-finisher       { background:#F5F3FF; color:#6D28D9; border-color:#DDD6FE; }
-.badge-role-spinner        { background:#ECFDF5; color:#065F46; border-color:#A7F3D0; }
-.badge-role-death_bowler   { background:#EFF6FF; color:#1D4ED8; border-color:#BFDBFE; }
-.badge-role-powerplay_bowler { background:#ECFEFF; color:#0E7490; border-color:#A5F3FC; }
-.badge-role-all_rounder    { background:#FFF7ED; color:#C2410C; border-color:#FED7AA; }
-.badge-role-wk             { background:#F0FDF4; color:#166534; border-color:#BBF7D0; }
+/* Pastel role badges */
+.badge-role-opener           { background: rgba(254,242,242,0.75); color:#B91C1C; border-color:rgba(254,202,202,0.6); }
+.badge-role-middle_order     { background: rgba(255,251,235,0.75); color:#B45309; border-color:rgba(253,230,138,0.6); }
+.badge-role-finisher         { background: rgba(245,243,255,0.75); color:#6D28D9; border-color:rgba(221,214,254,0.6); }
+.badge-role-spinner          { background: rgba(236,253,245,0.75); color:#065F46; border-color:rgba(167,243,208,0.6); }
+.badge-role-death_bowler     { background: rgba(239,246,255,0.75); color:#1D4ED8; border-color:rgba(191,219,254,0.6); }
+.badge-role-powerplay_bowler { background: rgba(236,254,255,0.75); color:#0E7490; border-color:rgba(165,243,252,0.6); }
+.badge-role-all_rounder      { background: rgba(255,247,237,0.75); color:#C2410C; border-color:rgba(254,215,170,0.6); }
+.badge-role-wk               { background: rgba(240,253,244,0.75); color:#166534; border-color:rgba(187,247,208,0.6); }
 
-/* ─────────────────────────────────────────
-   SCROLLBARS — subtle warm tone
-───────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-base); }
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover { background: #BFB4A4; }
+/* ═══════════════════════════════════════════════
+   SCROLLBARS
+═══════════════════════════════════════════════ */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(201,162,39,0.25); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,162,39,0.45); }
 
-/* ─────────────────────────────────────────
-   NAVBAR
-───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   NAVBAR — premium frosted beige glass
+═══════════════════════════════════════════════ */
 .navbar {
-  background: rgba(255, 253, 248, 0.9);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(243, 238, 230, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.32);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
   position: sticky;
   top: 0;
   z-index: 50;
 }
 
-/* ─────────────────────────────────────────
-   SPLASH SCREEN — beige repaint
-───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   SPLASH SCREEN
+═══════════════════════════════════════════════ */
 .splash-letter {
   display: inline-block;
   opacity: 0;
@@ -215,16 +238,8 @@ body {
 }
 
 @keyframes letter-reveal {
-  0% {
-    opacity: 0;
-    transform: scale(1.3) translateY(16px);
-    filter: blur(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    filter: blur(0);
-  }
+  0%   { opacity: 0; transform: scale(1.3) translateY(16px); filter: blur(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0);      filter: blur(0); }
 }
 
 .animate-subtitle-fade {
@@ -240,7 +255,6 @@ body {
 .splash-fade-out {
   animation: splash-fade-out-anim 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
-
 @keyframes splash-fade-out-anim {
   0%   { opacity: 1; transform: scale(1); }
   100% { opacity: 0; transform: scale(0.97); }
@@ -249,210 +263,153 @@ body {
 .animate-slow-zoom {
   animation: slow-zoom 12s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
 }
-
 @keyframes slow-zoom {
   0%   { transform: scale(1.0); }
   100% { transform: scale(1.06); }
 }
 
-/* Cinematic reveal for splash player image */
 .animate-cinematic-reveal {
   animation: cinematic-reveal 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
-
 @keyframes cinematic-reveal {
   0%   { opacity: 0; filter: brightness(0.4) saturate(0.3); }
-  100% { opacity: 0.12; filter: brightness(1) saturate(1); }
+  100% { opacity: 0.18; filter: brightness(1) saturate(0.9); }
 }
 
-/* ─────────────────────────────────────────
-   TEAM BACKGROUND PROVIDER (light version)
-   Keep team image at very low opacity as a
-   subtle texture behind the beige surface.
-───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   TEAM BACKGROUND PROVIDER — light beige wash
+═══════════════════════════════════════════════ */
 .team-bg-container {
-  position: fixed;
-  top: 0; left: 0;
+  position: fixed; top: 0; left: 0;
   width: 100vw; height: 100vh;
-  z-index: -10;
-  overflow: hidden;
-  pointer-events: none;
+  z-index: -10; overflow: hidden; pointer-events: none;
 }
 
 .team-bg-image {
-  position: absolute;
-  top: 0; left: 0;
+  position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center;
+  object-fit: cover; object-position: center;
   z-index: -2;
   transition: opacity 0.6s ease;
-  opacity: 0.06; /* very subtle texture */
-  filter: grayscale(60%) sepia(20%);
+  opacity: 0.30;                      /* MORE visible now */
+  filter: saturate(0.7) brightness(1.05);
 }
 
 .team-bg-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  z-index: -9;
-  background: rgba(245, 239, 228, 0.82); /* warm beige wash */
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh; z-index: -9;
+  /* Gradient controlled by OVERLAY_GRADIENT in teamBackgrounds.ts */
   pointer-events: none;
 }
 
-.team-bg-blur { display: none; } /* not needed on light theme */
+.team-bg-blur   { display: none; }    /* not needed on light glass theme */
 
-.team-bg-content {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-}
+.team-bg-content { position: relative; z-index: 1; min-height: 100vh; }
+.team-bg-fallback { background: var(--bg-base); width: 100%; height: 100%; position: absolute; }
 
-.team-bg-fallback { background: var(--bg-base); }
-
-@keyframes team-bg-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+@keyframes team-bg-fade-in { from { opacity: 0; } to { opacity: 1; } }
 .team-bg-fade-in { animation: team-bg-fade-in 0.6s ease-out; }
 
-.bidding-page  { position: relative; min-height: 100vh; width: 100%; }
+.bidding-page   { position: relative; min-height: 100vh; width: 100%; }
 .bidding-content { position: relative; z-index: 2; }
 
-/* ─────────────────────────────────────────
-   LOBBY BACKGROUND PROVIDER (same approach)
-───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   LOBBY BACKGROUND PROVIDER
+═══════════════════════════════════════════════ */
 .lobby-bg-container {
-  position: fixed;
-  top: 0; left: 0;
+  position: fixed; top: 0; left: 0;
   width: 100vw; height: 100vh;
-  z-index: -10;
-  overflow: hidden;
-  pointer-events: none;
+  z-index: -10; overflow: hidden; pointer-events: none;
 }
 
 .lobby-bg-image {
-  position: absolute;
-  top: 0; left: 0;
+  position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center;
+  object-fit: cover; object-position: center;
   z-index: -2;
   transition: opacity 0.5s ease;
-  opacity: 0.06;
-  filter: grayscale(60%) sepia(20%);
+  opacity: 0.28;
+  filter: saturate(0.7) brightness(1.05);
 }
 
 .lobby-bg-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  z-index: -9;
-  background: rgba(245, 239, 228, 0.82);
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh; z-index: -9;
   pointer-events: none;
 }
 
-.lobby-bg-blur { display: none; }
+.lobby-bg-blur   { display: none; }
 
-.lobby-bg-content {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-}
+.lobby-bg-content { position: relative; z-index: 1; min-height: 100vh; }
+.lobby-bg-fallback { background: var(--bg-base); width: 100%; height: 100%; position: absolute; }
 
-.lobby-bg-fallback { background: var(--bg-base); }
-
-@keyframes lobby-bg-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+@keyframes lobby-bg-fade-in { from { opacity: 0; } to { opacity: 1; } }
 .lobby-bg-fade-in { animation: lobby-bg-fade-in 0.6s ease-out; }
 
-/* ─────────────────────────────────────────
-   AUCTION LOG FEED ENTRIES
-───────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   BID LOG ENTRIES
+═══════════════════════════════════════════════ */
 .log-entry {
   font-size: 0.75rem;
   padding: 0.5rem 0.75rem;
   border-radius: 0.625rem;
-  border: 1px solid var(--border);
-  background: var(--bg-surface-2);
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(243,238,230,0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--text-secondary);
 }
 .log-entry-sold {
-  background: #F0FDF4;
-  border-color: #BBF7D0;
-  color: #166534;
+  background: rgba(94,159,115,0.14);
+  border-color: rgba(94,159,115,0.35);
+  color: #3D7A55;
   font-weight: 700;
 }
 .log-entry-passed {
-  background: var(--bg-surface-2);
-  border-color: var(--border);
+  background: rgba(243,238,230,0.40);
+  border-color: rgba(255,255,255,0.20);
   color: var(--text-muted);
 }
 .log-entry-user {
-  background: #F5F3FF;
-  border-color: #DDD6FE;
-  color: #5B21B6;
+  background: rgba(201,162,39,0.10);
+  border-color: rgba(201,162,39,0.30);
+  color: #8B6914;
   font-weight: 600;
 }
 
-/* ─────────────────────────────────────────
-   COMPETITOR TEAM CARD
-───────────────────────────────────────── */
-.team-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  transition: box-shadow 0.2s ease;
-}
-.team-card-active {
-  box-shadow: 0 0 0 2px currentColor;
-}
-
-/* ─────────────────────────────────────────
-   MISC UTILITIES
-───────────────────────────────────────── */
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 0;
-}
-
-.stat-chip {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
+/* ═══════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════ */
+.stat-chip { display: inline-flex; flex-direction: column; gap: 0.1rem; }
 .stat-chip__label {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--text-muted);
 }
-.stat-chip__value {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
+.stat-chip__value { font-size: 0.8rem; font-weight: 700; color: var(--text-primary); }
 
-/* Pulsing live dot */
+/* Live pulsing dot */
 .live-dot {
   display: inline-block;
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: #3BA55D;
+  background: var(--success);
   animation: live-pulse 1.6s ease infinite;
 }
 @keyframes live-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(0.8); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
 }
 
-/* Countdown timer urgency animation */
+/* Timer urgency animation */
 @keyframes timer-urgent {
-  0%, 100% { color: #C0392B; }
-  50%       { color: #E74C3C; }
+  0%, 100% { color: var(--danger); }
+  50%       { color: #E07070; }
 }
 .timer-urgent { animation: timer-urgent 0.5s ease infinite; }
+
+/* Gold shimmer border — used on player image */
+.gold-ring {
+  border: 2px solid var(--accent-gold);
+  box-shadow: 0 0 0 1px rgba(201,162,39,0.18), inset 0 0 12px rgba(201,162,39,0.08);
+}

@@ -103,19 +103,26 @@ export function GoogleSignInBubble() {
       {isModalOpen && !user && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(30,30,30,0.4)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'rgba(43,43,43,0.35)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="surface-card w-full max-w-md relative"
-            style={{ borderRadius: '1.5rem' }}
+            className="glass-beige-panel w-full max-w-md relative"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Gold accent bar */}
+            <div className="h-1 rounded-t-3xl" style={{ background: 'linear-gradient(90deg, #C9A227, #E8C84A, #C9A227)' }} />
             {/* Close */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-full border transition-colors"
-              style={{ borderColor: '#E7DFD1', background: '#F5EFE4', color: '#666666' }}
+              className="absolute top-4 right-4 p-1.5 rounded-full transition-colors"
+              style={{
+                background: 'rgba(255,252,245,0.60)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255,255,255,0.35)',
+                color: '#6B645D',
+              }}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -123,17 +130,17 @@ export function GoogleSignInBubble() {
             </button>
 
             <div className="p-6 md:p-8">
-              <h2 className="text-2xl font-black mb-1" style={{ color: '#1E1E1E', letterSpacing: '-0.02em' }}>
+              <h2 className="text-2xl font-black mb-1" style={{ color: '#2B2B2B', letterSpacing: '-0.02em' }}>
                 Sign In
               </h2>
-              <p className="text-sm mb-6" style={{ color: '#666666' }}>
+              <p className="text-sm mb-6" style={{ color: '#6B645D' }}>
                 Sign in to save your progress and join multiplayer rooms.
               </p>
 
               {authError && (
                 <div
-                  className="mb-4 p-3 rounded-xl text-xs font-semibold border text-center"
-                  style={{ background: '#FEF2F2', borderColor: '#FECACA', color: '#B91C1C' }}
+                  className="mb-4 p-3 rounded-xl text-xs font-semibold text-center"
+                  style={{ background: 'rgba(199,92,92,0.12)', border: '1px solid rgba(199,92,92,0.28)', color: '#C75C5C' }}
                 >
                   {authError}
                 </div>
@@ -188,19 +195,26 @@ export function GoogleSignInBubble() {
 
               {/* Divider */}
               <div className="my-5 flex items-center gap-3">
-                <div className="h-px flex-1" style={{ background: '#E7DFD1' }} />
-                <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#BBBBBB' }}>
+                <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.30)' }} />
+                <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#9C9389' }}>
                   Or continue with
                 </span>
-                <div className="h-px flex-1" style={{ background: '#E7DFD1' }} />
+                <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.30)' }} />
               </div>
 
               {/* Google */}
               <button
                 id="auth-google-btn"
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border font-semibold text-sm transition-colors duration-150 hover:bg-gray-50 active:scale-98"
-                style={{ background: '#fff', borderColor: '#E7DFD1', color: '#1E1E1E' }}
+                className="w-full flex items-center justify-center gap-3 py-3 rounded-xl font-semibold text-sm transition-all duration-150 active:scale-98"
+                style={{
+                  background: 'rgba(255,255,255,0.75)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(255,255,255,0.50)',
+                  color: '#2B2B2B',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                }}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

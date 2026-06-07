@@ -78,18 +78,18 @@ export default function LobbyPage() {
         {/* Header */}
         <div className="text-center space-y-3">
           <span
-            className="inline-block text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border"
-            style={{ background: '#1E1E1E', color: '#fff', borderColor: '#1E1E1E' }}
+            className="inline-block text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full"
+            style={{ background: '#2B2B2B', color: '#fff' }}
           >
             ⚡ Multiplayer
           </span>
           <h1
             className="text-3xl md:text-4xl font-black tracking-tight"
-            style={{ color: '#1E1E1E', letterSpacing: '-0.025em' }}
+            style={{ color: '#2B2B2B', letterSpacing: '-0.025em' }}
           >
             Auction Lobby
           </h1>
-          <p className="text-sm" style={{ color: '#666666' }}>
+          <p className="text-sm" style={{ color: '#6B645D' }}>
             Host a room and invite friends with a code, or join an active auction room.
           </p>
         </div>
@@ -97,8 +97,14 @@ export default function LobbyPage() {
         {/* Rejoin banner */}
         {persistedSession && !roomCode && (
           <div
-            className="rounded-2xl p-4 border"
-            style={{ background: '#FFFBEB', borderColor: '#FDE68A' }}
+            className="rounded-2xl p-4"
+            style={{
+              background: 'rgba(255,251,235,0.72)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(253,230,138,0.50)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+            }}
           >
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -166,15 +172,18 @@ export default function LobbyPage() {
 
         {error && (
           <div
-            className="text-xs font-semibold p-3 rounded-xl text-center border"
-            style={{ background: '#FEF2F2', borderColor: '#FECACA', color: '#B91C1C' }}
+            className="text-xs font-semibold p-3 rounded-xl text-center"
+            style={{ background: 'rgba(199,92,92,0.12)', border: '1px solid rgba(199,92,92,0.28)', color: '#C75C5C' }}
           >
             {error}
           </div>
         )}
 
         {/* Form card */}
-        <div className="surface-card p-6">
+        <div
+          className="glass-beige-panel"
+          style={{ padding: '1.5rem' }}
+        >
           {activeTab === 'create' ? (
             <form onSubmit={handleCreate} className="space-y-5">
               <div className="space-y-1.5">
@@ -287,29 +296,47 @@ export default function LobbyPage() {
             </div>
 
             <div
-              className="surface-card-sm p-3 space-y-2 flex-grow overflow-y-auto"
-              style={{ maxHeight: '360px' }}
+              style={{
+                background: 'rgba(243,238,230,0.60)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
+                border: '1px solid rgba(255,255,255,0.26)',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.09)',
+                borderRadius: '1.25rem',
+                padding: '0.75rem',
+                flexGrow: 1,
+                overflowY: 'auto',
+                maxHeight: '360px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+              }}
             >
               {clients.map((c) => {
                 const clientTeam = teams.find(t => t.id === c.teamId);
                 return (
                   <div
                     key={c.id}
-                    className="flex items-center justify-between p-3 rounded-xl border"
-                    style={{ background: '#F9F4EC', borderColor: '#E7DFD1' }}
+                    className="flex items-center justify-between p-3 rounded-xl"
+                    style={{
+                      background: 'rgba(255,252,245,0.50)',
+                      backdropFilter: 'blur(8px)',
+                      WebkitBackdropFilter: 'blur(8px)',
+                      border: '1px solid rgba(255,255,255,0.30)',
+                    }}
                   >
                     <div className="flex items-center space-x-2.5">
                       <div
                         className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
-                        style={{ background: '#FFFDF8', border: '1px solid #E7DFD1', color: '#666666' }}
+                        style={{ background: 'rgba(255,252,245,0.60)', border: '1px solid rgba(255,255,255,0.35)', color: '#6B645D' }}
                       >
                         {c.name.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <span className="text-xs font-bold block" style={{ color: '#1E1E1E' }}>
+                        <span className="text-xs font-bold block" style={{ color: '#2B2B2B' }}>
                           {c.name}{hydrated && c.id === clientId ? ' (You)' : ''}
                         </span>
-                        <span className="text-[10px] block uppercase font-medium" style={{ color: '#999999' }}>
+                        <span className="text-[10px] block uppercase font-medium" style={{ color: '#9C9389' }}>
                           {c.isHost ? '👑 Host' : 'Player'}
                         </span>
                       </div>
@@ -366,7 +393,7 @@ export default function LobbyPage() {
               </div>
             )}
 
-            {/* Franchise cards — SaaS pricing card style */}
+            {/* Franchise cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {(teams ?? []).map((t) => {
                 const claimedBy = clients.find(c => c.teamId === t.id);
@@ -378,16 +405,20 @@ export default function LobbyPage() {
                     key={t.id}
                     id={`franchise-card-${t.id}`}
                     onClick={() => !isClaimedByOther && selectUserTeam(isMine ? '' : t.id)}
-                    className="relative overflow-hidden rounded-2xl border flex flex-col transition-all duration-200 select-none"
+                    className="relative overflow-hidden rounded-2xl flex flex-col select-none glass-hover"
                     style={{
-                      background: isMine ? '#FFFDF8' : '#FAFAF8',
-                      borderColor: isMine ? t.color : '#E7DFD1',
+                      background: isMine
+                        ? 'rgba(255,252,245,0.82)'
+                        : 'rgba(243,238,230,0.62)',
+                      backdropFilter: 'blur(18px)',
+                      WebkitBackdropFilter: 'blur(18px)',
+                      border: isMine ? `2px solid ${t.color}` : '1px solid rgba(255,255,255,0.28)',
                       boxShadow: isMine
-                        ? `0 4px 20px ${t.color}22, 0 1px 4px rgba(0,0,0,0.06)`
-                        : '0 1px 4px rgba(0,0,0,0.04)',
-                      opacity: isClaimedByOther ? 0.45 : 1,
+                        ? `0 8px 28px ${t.color}28, 0 2px 10px rgba(0,0,0,0.10)`
+                        : '0 4px 16px rgba(0,0,0,0.08)',
+                      opacity: isClaimedByOther ? 0.40 : 1,
                       cursor: isClaimedByOther ? 'not-allowed' : 'pointer',
-                      transform: isMine ? 'translateY(-2px)' : undefined,
+                      transform: isMine ? 'translateY(-3px)' : undefined,
                     }}
                   >
                     {/* Team color accent bar */}
@@ -429,17 +460,17 @@ export default function LobbyPage() {
                       </div>
 
                       <div
-                        className="pt-2.5 border-t text-[10px] font-semibold uppercase tracking-wide"
-                        style={{ borderColor: '#E7DFD1' }}
+                        className="pt-2.5 text-[10px] font-semibold uppercase tracking-wide"
+                        style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}
                       >
                         {isMine ? (
-                          <span style={{ color: '#3BA55D' }}>✓ Claimed By You</span>
+                          <span style={{ color: '#5E9F73' }}>✓ Claimed By You</span>
                         ) : isClaimedByOther ? (
-                          <span style={{ color: '#B91C1C' }} className="truncate block">
+                          <span style={{ color: '#C75C5C' }} className="truncate block">
                             Taken by {claimedBy?.name}
                           </span>
                         ) : (
-                          <span style={{ color: '#BBBBBB' }}>Available</span>
+                          <span style={{ color: '#C4BDB5' }}>Available</span>
                         )}
                       </div>
                     </div>
@@ -450,8 +481,8 @@ export default function LobbyPage() {
 
             {/* Start / Waiting area */}
             <div
-              className="border-t pt-5"
-              style={{ borderColor: '#E7DFD1' }}
+              className="pt-5"
+              style={{ borderTop: '1px solid rgba(255,255,255,0.25)' }}
             >
               {isHost ? (
                 <div className="space-y-2 max-w-sm">
@@ -471,8 +502,14 @@ export default function LobbyPage() {
                 </div>
               ) : (
                 <div
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-medium"
-                  style={{ background: '#F9F4EC', borderColor: '#E7DFD1', color: '#666666' }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium"
+                  style={{
+                    background: 'rgba(243,238,230,0.60)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.28)',
+                    color: '#6B645D',
+                  }}
                 >
                   <span className="live-dot" />
                   <span>

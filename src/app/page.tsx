@@ -109,8 +109,12 @@ export default function HomePage() {
           {/* Brand */}
           <div className="flex justify-center mb-2">
             <span
-              className="text-[10px] font-bold uppercase tracking-[0.18em] px-3 py-1 rounded-full border"
-              style={{ color: '#2B2B2B', background: 'rgba(43,43,43,0.06)', borderColor: 'rgba(43,43,43,0.14)' }}
+              className="text-[10px] font-bold uppercase tracking-[0.18em] px-3 py-1 rounded-full"
+              style={{
+                color: '#2B2B2B',
+                background: 'rgba(43,43,43,0.06)',
+                border: '1px solid rgba(201,162,39,0.25)',
+              }}
             >
               ⚡ Live Draft &amp; Auction Platform
             </span>
@@ -168,7 +172,7 @@ export default function HomePage() {
           ].map((card) => (
             <div
               key={card.title}
-              className="surface-card surface-card-hover p-6 space-y-2"
+              className="glass-beige glass-hover p-6 space-y-2"
             >
               <span className="text-2xl">{card.icon}</span>
               <h3 className="font-bold text-sm" style={{ color: '#1E1E1E' }}>
