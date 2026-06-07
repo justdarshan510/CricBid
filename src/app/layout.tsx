@@ -17,7 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body
         className="min-h-screen flex flex-col antialiased"
-        style={{ color: '#1D1D1F', fontFamily: "'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif" }}
+        style={{ color: '#FFFFFF', fontFamily: "'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif" }}
       >
         <AuthProvider>
           <AuctionProvider>

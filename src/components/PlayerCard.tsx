@@ -66,7 +66,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
   const StatRow = ({ label, value, accent }: { label:string; value:string|number; accent?:string }) => (
     <div className="stat-chip">
       <span className="stat-chip__label">{label}</span>
-      <span className="stat-chip__value font-bold text-[#1D1D1F]" style={accent ? { color: accent } : undefined}>{value}</span>
+      <span className="stat-chip__value font-bold text-white" style={accent ? { color: accent } : undefined}>{value}</span>
     </div>
   );
 
@@ -76,16 +76,16 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
         onClick={() => setIsModalOpen(true)}
         className="holo-sheen relative overflow-hidden cursor-pointer group flex flex-col justify-between"
         style={{
-          borderRadius: '28px',
-          background: 'rgba(255,255,255,0.45)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
+          borderRadius: 'var(--radius-xl)',
+          background: 'var(--glass)',
+          backdropFilter: 'var(--glass-blur)',
+          WebkitBackdropFilter: 'var(--glass-blur)',
           border: player.rating >= 87 
-            ? '2px solid rgba(200, 162, 77, 0.60)' 
-            : '1px solid rgba(255, 255, 255, 0.40)',
+            ? '2.5px solid rgba(200, 162, 77, 0.75)' 
+            : '1px solid var(--glass-border)',
           boxShadow: player.rating >= 87 
-            ? '0 20px 60px rgba(200, 162, 77, 0.12), 0 20px 60px rgba(0,0,0,0.06)' 
-            : '0 20px 60px rgba(0,0,0,0.08)'
+            ? '0 30px 80px rgba(200, 162, 77, 0.22), var(--glass-shadow-lg)' 
+            : 'var(--glass-shadow)'
         }}
       >
         {/* Avatar plate */}
@@ -93,18 +93,18 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
           className="h-48 flex items-center justify-center relative overflow-hidden"
           style={{ 
             background: player.rating >= 87 
-              ? 'linear-gradient(135deg, rgba(200, 162, 77, 0.08) 0%, rgba(255, 255, 255, 0.3) 100%)' 
-              : 'linear-gradient(135deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.05) 100%)' 
+               ? 'linear-gradient(135deg, rgba(200, 162, 77, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%)' 
+               : 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)' 
           }}
         >
           {/* Gold ring avatar frame */}
           <div
             className="gold-ring w-32 h-32 rounded-full flex items-center justify-center overflow-hidden"
             style={{ 
-              background: 'rgba(255,255,255,0.40)', 
-              borderColor: player.rating >= 87 ? '#C8A24D' : 'rgba(255,255,255,0.60)',
+              background: 'rgba(255,255,255,0.06)', 
+              borderColor: player.rating >= 87 ? '#C8A24D' : 'rgba(255,255,255,0.20)',
               borderWidth: player.rating >= 87 ? '2px' : '1px',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.03)'
+              boxShadow: '0 8px 24px rgba(0,0,0,0.15)'
             }}
           >
             {avatar}
@@ -131,15 +131,15 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
                 ELITE
               </span>
             ) : null}
-            <div className="px-2 py-1 rounded-full text-[9px] font-bold shadow-sm"
-              style={{ background: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.85)', color: '#1D1D1F' }}>
+            <div className="px-2.5 py-1 rounded-full text-[9px] font-bold shadow-sm"
+              style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.16)', color: '#FFFFFF' }}>
               {player.nationality}{player.overseas ? ' ✈' : ''}
             </div>
           </div>
         </div>
 
         {/* Info Area */}
-        <div className="p-5 flex-grow flex flex-col justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.35)' }}>
+        <div className="p-5 flex-grow flex flex-col justify-between" style={{ borderTop: '1px solid var(--glass-border)' }}>
           <div>
             <div className="flex flex-wrap gap-1.5 mb-2.5">
               <span className={`badge-pill ${style.badgeClass}`}>{style.label}</span>
@@ -150,29 +150,29 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
               {getFlagUrl(player.nationality) && (
                 <img src={getFlagUrl(player.nationality)} alt={player.nationality}
                   className="w-4 h-4 rounded-full object-cover flex-shrink-0"
-                  style={{ border: '1px solid rgba(0,0,0,0.08)' }}
+                  style={{ border: '1px solid rgba(255,255,255,0.15)' }}
                   onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }}
                 />
               )}
-              <h3 className="text-[16px] font-bold truncate text-[#1D1D1F]" style={{ letterSpacing:'-0.02em' }}>{player.name}</h3>
+              <h3 className="text-[16px] font-bold truncate text-white" style={{ letterSpacing:'-0.02em' }}>{player.name}</h3>
             </div>
 
-            <p className="text-xs mb-4 truncate text-[#55555A] font-medium">{player.batting_style} · {player.bowling_style}</p>
+            <p className="text-xs mb-4 truncate text-white/60 font-medium">{player.batting_style} · {player.bowling_style}</p>
           </div>
 
-          <div className="flex items-center justify-between pt-3.5 border-t border-[rgba(0,0,0,0.06)]">
+          <div className="flex items-center justify-between pt-3.5 border-t border-[rgba(255,255,255,0.08)]">
             <div>
-              <span className="block text-[9px] font-bold uppercase tracking-wider mb-0.5 text-[#8E8E93]">Base Price</span>
-              <span className="text-[15px] font-extrabold text-[#1D1D1F]">₹{player.base_price.toFixed(2)} Cr</span>
+              <span className="block text-[9px] font-bold uppercase tracking-wider mb-0.5 text-white/40">Base Price</span>
+              <span className="text-[15px] font-extrabold text-white">₹{player.base_price.toFixed(2)} Cr</span>
             </div>
             {player.status === 'sold' ? (
               <div className="text-right">
-                <span className="block text-[9px] font-bold uppercase tracking-wider text-[#32D74B]">Signed</span>
-                <span className="text-[15px] font-extrabold text-[#1D1D1F]">₹{player.sold_price?.toFixed(2)} Cr</span>
+                <span className="block text-[9px] font-bold uppercase tracking-wider text-[#30D158]">Signed</span>
+                <span className="text-[15px] font-extrabold text-white">₹{player.sold_price?.toFixed(2)} Cr</span>
               </div>
             ) : player.status === 'unsold' ? (
               <span className="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider" 
-                style={{ background:'rgba(0,0,0,0.03)', border:'1px solid rgba(0,0,0,0.06)', color:'#8E8E93' }}>Unsold</span>
+                style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.40)' }}>Unsold</span>
             ) : (
               <span className="text-xs font-bold text-[#C8A24D] group-hover:translate-x-1 transition-transform duration-200">View stats →</span>
             )}
@@ -182,7 +182,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
         {/* Signed watermark overlay */}
         {player.status === 'sold' && teamAcquiring && (
           <div className="absolute bottom-24 right-4 rotate-[-12deg] z-10 pointer-events-none opacity-90 shadow-sm">
-            <div className="border-2 border-dashed font-black text-[9px] px-2.5 py-0.5 rounded uppercase tracking-widest bg-white"
+            <div className="border-2 border-dashed font-black text-[9px] px-2.5 py-0.5 rounded uppercase tracking-widest bg-black/80"
               style={{ borderColor: teamAcquiring.color, color: teamAcquiring.color }}>
               SIGNED · {teamAcquiring.shortName}
             </div>
@@ -193,13 +193,13 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
         {showBidOverlay && bidAmount !== undefined && bidAmount > 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-20 rounded-[28px]"
             style={{ 
-              background: 'rgba(250, 248, 245, 0.92)', 
-              backdropFilter: 'blur(20px)', 
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '2px solid rgba(200, 162, 77, 0.40)'
+              background: 'rgba(20, 20, 25, 0.92)', 
+              backdropFilter: 'var(--glass-blur)', 
+              WebkitBackdropFilter: 'var(--glass-blur)',
+              border: '2px solid rgba(200, 162, 77, 0.45)'
             }}>
-            <span className="section-label mb-1">Current High Bid</span>
-            <div className="text-4xl font-extrabold mb-3 text-[#1D1D1F]" style={{ letterSpacing:'-0.03em' }}>₹{bidAmount.toFixed(2)} Cr</div>
+            <span className="section-label mb-1 text-white/40">Current High Bid</span>
+            <div className="text-4xl font-extrabold mb-3 text-white" style={{ letterSpacing:'-0.03em' }}>₹{bidAmount.toFixed(2)} Cr</div>
             <div className="text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider" 
               style={{ 
                 background: bidderColor ? `${bidderColor}15` : 'rgba(200,162,77,0.10)', 
@@ -219,54 +219,54 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay=f
           onClick={() => setIsModalOpen(false)}>
           <div onClick={e => e.stopPropagation()}
             className="glass-elevated max-w-lg w-full overflow-hidden relative shadow-2xl"
-            style={{ borderRadius:'28px', background: 'rgba(255,255,255,0.70)', border: '1px solid rgba(255,255,255,0.50)' }}>
+            style={{ borderRadius:'var(--radius-xl)', background: 'rgba(30,30,35,0.85)', border: '1px solid var(--glass-border-md)' }}>
             <div className="h-1.5" style={{ background:'linear-gradient(90deg,#C8A24D,#E4C26A,#C8A24D)' }} />
             <button onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-black/5 transition-colors"
-              style={{ background:'rgba(255,255,255,0.40)', border:'1px solid rgba(0,0,0,0.06)', color:'#1D1D1F' }}>
+              className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-white/10 transition-colors"
+              style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.12)', color:'#FFFFFF' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <div className="p-7">
+            <div className="p-7 text-white">
               <div className="flex items-start gap-4 mb-6">
                 <div className="gold-ring w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden" 
-                  style={{ background:'rgba(255,255,255,0.50)', borderColor: player.rating >= 87 ? '#C8A24D' : 'rgba(0,0,0,0.06)' }}>
+                  style={{ background:'rgba(255,255,255,0.06)', borderColor: player.rating >= 87 ? '#C8A24D' : 'rgba(255,255,255,0.12)' }}>
                   {avatar}
                 </div>
                 <div className="min-w-0">
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     <span className={`badge-pill ${style.badgeClass}`}>{style.label}</span>
-                    <span className="badge-pill badge-dark" style={{ background: '#1D1D1F' }}>OVR {player.rating}</span>
+                    <span className="badge-pill badge-dark" style={{ background: 'rgba(255,255,255,0.15)' }}>OVR {player.rating}</span>
                   </div>
-                  <h2 className="text-xl font-bold truncate mb-1 text-[#1D1D1F]" style={{ letterSpacing:'-0.02em' }}>{player.name}</h2>
-                  <p className="text-xs font-semibold text-[#55555A]">{player.nationality} · {player.overseas ? 'Overseas Player' : 'Indian Domestic'}</p>
+                  <h2 className="text-xl font-bold truncate mb-1 text-white" style={{ letterSpacing:'-0.02em' }}>{player.name}</h2>
+                  <p className="text-xs font-semibold text-white/60">{player.nationality} · {player.overseas ? 'Overseas Player' : 'Indian Domestic'}</p>
                 </div>
               </div>
 
-              <div className="rounded-2xl p-5 mb-6 shadow-sm" style={{ background:'rgba(255,255,255,0.50)', border:'1px solid rgba(255,255,255,0.60)' }}>
-                <p className="section-label mb-4">Career Statistics</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+              <div className="rounded-2xl p-5 mb-6 shadow-sm" style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.10)' }}>
+                <p className="section-label mb-4 text-white/40">Career Statistics</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-5 text-white">
                   <StatRow label="Batting Style" value={player.batting_style} />
                   <StatRow label="Bowling Style" value={player.bowling_style} />
                   <StatRow label="Wicketkeeper" value={player.is_wicketkeeper ? 'Yes' : 'No'} />
                   {player.strike_rate !== undefined && <StatRow label="Strike Rate" value={player.strike_rate} accent="#0A84FF" />}
                   {player.batting_average !== undefined && <StatRow label="Batting Avg" value={player.batting_average} />}
-                  {player.wickets !== undefined && <StatRow label="Wickets" value={player.wickets} accent="#30A64A" />}
+                  {player.wickets !== undefined && <StatRow label="Wickets" value={player.wickets} accent="#30D158" />}
                   {player.economy !== undefined && <StatRow label="Economy" value={player.economy} accent="#FF453A" />}
                 </div>
               </div>
 
-              <div className="flex items-center justify-between" style={{ borderTop:'1px solid rgba(0,0,0,0.06)', paddingTop:'1.25rem' }}>
+              <div className="flex items-center justify-between" style={{ borderTop:'1px solid rgba(255,255,255,0.12)', paddingTop:'1.25rem' }}>
                 <div>
-                  <span className="section-label block mb-1">Base Draft Price</span>
-                  <span className="text-lg font-bold text-[#1D1D1F]">₹{player.base_price.toFixed(2)} Cr</span>
+                  <span className="section-label block mb-1 text-white/40">Base Draft Price</span>
+                  <span className="text-lg font-bold text-white">₹{player.base_price.toFixed(2)} Cr</span>
                 </div>
                 {player.status === 'sold'
-                  ? <div className="text-right"><span className="section-label block mb-1">Sold To</span><span className="text-lg font-bold text-[#32D74B]">{teamAcquiring?.name || player.sold_to} · ₹{player.sold_price?.toFixed(2)} Cr</span></div>
+                  ? <div className="text-right"><span className="section-label block mb-1 text-white/40">Sold To</span><span className="text-lg font-bold text-[#30D158]">{teamAcquiring?.name || player.sold_to} · ₹{player.sold_price?.toFixed(2)} Cr</span></div>
                   : player.status === 'unsold'
-                  ? <span className="text-xs font-bold px-3 py-1.5 rounded-full uppercase" style={{ background:'rgba(0,0,0,0.03)', border:'1px solid rgba(0,0,0,0.06)', color:'#8E8E93' }}>Unsold / Passed</span>
-                  : <span className="text-xs font-bold px-3 py-1.5 rounded-full uppercase" style={{ background:'rgba(50,215,75,0.12)', border:'1px solid rgba(50,215,75,0.25)', color:'#248A3D' }}>Available</span>}
+                  ? <span className="text-xs font-bold px-3 py-1.5 rounded-full uppercase" style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.40)' }}>Unsold / Passed</span>
+                  : <span className="text-xs font-bold px-3 py-1.5 rounded-full uppercase" style={{ background:'rgba(48,209,88,0.12)', border:'1px solid rgba(48,209,88,0.25)', color:'#30D158' }}>Available</span>}
               </div>
             </div>
           </div>

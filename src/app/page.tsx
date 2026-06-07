@@ -30,7 +30,7 @@ export default function HomePage() {
       {showSplash && (
         <div
           className={`fixed inset-0 z-50 flex flex-col justify-center items-center overflow-hidden ${isFadeOut ? 'splash-fade-out' : ''}`}
-          style={{ background: '#C2A77C' }}
+          style={{ background: '#121214' }}
         >
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-slow-zoom animate-cinematic-reveal pointer-events-none"
@@ -52,7 +52,7 @@ export default function HomePage() {
                   className="splash-letter font-bold text-6xl md:text-9xl tracking-tight"
                   style={{
                     animationDelay: `${1.2 + i * 0.10}s`,
-                    color: i >= 4 ? '#C8A24D' : '#1D1D1F',
+                    color: i >= 4 ? '#C8A24D' : '#FFFFFF',
                     letterSpacing: '-0.04em',
                   }}
                 >
@@ -61,7 +61,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="animate-subtitle-fade" style={{ animationDelay: '2.4s' }}>
-              <p className="text-xs md:text-sm tracking-[0.25em] font-medium uppercase" style={{ color: '#6E6E73' }}>
+              <p className="text-xs md:text-sm tracking-[0.25em] font-medium uppercase" style={{ color: 'rgba(255,255,255,0.60)' }}>
                 Bid · Draft · Dominate
               </p>
             </div>
@@ -70,13 +70,13 @@ export default function HomePage() {
       )}
 
       {/* ── Home ── */}
-      <div className="min-h-[85vh] flex flex-col justify-center items-center py-20 px-4">
+      <div className="min-h-[85vh] flex flex-col justify-center items-center py-20 px-4 text-white">
 
         {/* Hero */}
         <div className="text-center max-w-3xl mx-auto" style={{ marginBottom: '80px' }}>
           <div className="inline-flex items-center gap-2 mb-8 px-3.5 py-1.5 rounded-full" style={{ background: 'rgba(200,162,77,0.12)', border: '1px solid rgba(200,162,77,0.25)', backdropFilter: 'blur(12px)' }}>
             <span className="live-dot" />
-            <span className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: '#9A7430', letterSpacing: '0.08em' }}>
+            <span className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: '#C8A24D', letterSpacing: '0.08em' }}>
               Live Draft &amp; Auction Platform
             </span>
           </div>
@@ -86,7 +86,7 @@ export default function HomePage() {
             <span style={{ color: '#C8A24D' }}>Dream Squad.</span>
           </h1>
 
-          <p className="text-lg font-normal max-w-lg mx-auto mb-10 leading-relaxed" style={{ color: '#6E6E73', fontWeight: 400 }}>
+          <p className="text-lg font-normal max-w-lg mx-auto mb-10 leading-relaxed text-white/70" style={{ fontWeight: 400 }}>
             Real-time multiplayer IPL-style auctions. Claim a franchise, bid strategically,
             and assemble a championship squad — all synced live.
           </p>
@@ -134,10 +134,10 @@ export default function HomePage() {
               className="glass glass-hover p-7"
             >
               <span className="text-3xl mb-4 block">{card.icon}</span>
-              <h3 className="text-[15px] font-semibold mb-2" style={{ color: '#1D1D1F', letterSpacing: '-0.01em' }}>
+              <h3 className="text-[15px] font-semibold mb-2 text-white" style={{ letterSpacing: '-0.01em' }}>
                 {card.title}
               </h3>
-              <p className="text-sm leading-relaxed font-normal" style={{ color: '#6E6E73' }}>
+              <p className="text-sm leading-relaxed font-normal text-white/60">
                 {card.body}
               </p>
             </div>

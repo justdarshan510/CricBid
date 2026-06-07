@@ -29,11 +29,11 @@ export const Navbar: React.FC = () => {
       <nav
         className="w-full max-w-7xl mx-auto rounded-full pointer-events-auto"
         style={{
-          background: 'rgba(255,255,255,0.45)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255,255,255,0.4)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.08)',
+          background: 'rgba(28, 28, 30, 0.55)',
+          backdropFilter: 'blur(40px) saturate(1.8)',
+          WebkitBackdropFilter: 'blur(40px) saturate(1.8)',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 30px 100px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12)',
         }}
       >
         <div className="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between" style={{ height: '60px' }}>
@@ -41,7 +41,7 @@ export const Navbar: React.FC = () => {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
             <img src="/cricbid-icon.svg" alt="CricBid" className="h-7 w-7 object-contain" />
-            <span className="font-bold text-base tracking-tight select-none" style={{ color: '#1D1D1F', letterSpacing: '-0.02em' }}>
+            <span className="font-bold text-base tracking-tight select-none" style={{ color: '#FFFFFF', letterSpacing: '-0.02em' }}>
               Cric<span style={{ color: '#C8A24D' }}>Bid</span>
             </span>
           </Link>
@@ -51,9 +51,9 @@ export const Navbar: React.FC = () => {
             <div
               className="flex items-center gap-1 px-1.5 py-1.5 rounded-full"
               style={{
-                background: 'rgba(255,255,255,0.30)',
-                border: '1px solid rgba(255,255,255,0.50)',
-                boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
+                background: 'rgba(0, 0, 0, 0.18)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.20)',
               }}
             >
               {navLinks.map((link) => {
@@ -63,7 +63,7 @@ export const Navbar: React.FC = () => {
                     <span
                       key={link.path}
                       className="px-4 py-1.5 rounded-full text-[13px] font-semibold select-none cursor-not-allowed"
-                      style={{ color: 'rgba(142,142,147,0.45)' }}
+                      style={{ color: 'rgba(255, 255, 255, 0.25)' }}
                     >
                       {link.name}
                     </span>
@@ -75,9 +75,10 @@ export const Navbar: React.FC = () => {
                     href={link.path}
                     className="px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-200"
                     style={{
-                      color: isActive ? '#1D1D1F' : '#55555A',
-                      background: isActive ? 'rgba(255,255,255,0.75)' : 'transparent',
-                      boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.06)' : undefined,
+                      color: isActive ? '#FFFFFF' : 'rgba(255, 255, 255, 0.65)',
+                      background: isActive ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+                      border: isActive ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid transparent',
+                      boxShadow: isActive ? 'inset 0 1px 0 rgba(255, 255, 255, 0.06)' : undefined,
                     }}
                   >
                     {link.name}
@@ -93,16 +94,16 @@ export const Navbar: React.FC = () => {
               <div
                 className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs"
                 style={{
-                  background: 'rgba(255,255,255,0.30)',
-                  border: '1px solid rgba(255,255,255,0.50)',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                  background: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.10)',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.10)',
                 }}
               >
                 <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: userTeam.color }} />
-                <span className="font-semibold text-[#55555A]">{userTeam.shortName}</span>
-                <span className="font-bold text-[#1D1D1F]">₹{userTeam.purse.toFixed(2)} Cr</span>
-                <span style={{ color: 'rgba(0,0,0,0.15)' }}>·</span>
-                <span className="font-semibold text-[#8E8E93]">{userTeam.players.length}/25</span>
+                <span className="font-semibold text-white/75">{userTeam.shortName}</span>
+                <span className="font-bold text-[#FFFFFF]">₹{userTeam.purse.toFixed(2)} Cr</span>
+                <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>·</span>
+                <span className="font-semibold text-white/45">{userTeam.players.length}/25</span>
               </div>
             )}
 
@@ -112,9 +113,9 @@ export const Navbar: React.FC = () => {
               title={voiceEnabled ? 'Mute auctioneer' : 'Enable auctioneer'}
               className="btn-icon"
               style={{
-                background: voiceEnabled ? 'rgba(255,255,255,0.30)' : 'rgba(255,69,58,0.12)',
-                borderColor: voiceEnabled ? 'rgba(255,255,255,0.50)' : 'rgba(255,69,58,0.30)',
-                color: voiceEnabled ? '#55555A' : '#FF453A',
+                background: voiceEnabled ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 69, 58, 0.15)',
+                borderColor: voiceEnabled ? 'rgba(255, 255, 255, 0.10)' : 'rgba(255, 69, 58, 0.25)',
+                color: voiceEnabled ? 'rgba(255, 255, 255, 0.75)' : '#FF453A',
               }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -127,8 +128,9 @@ export const Navbar: React.FC = () => {
             {/* Sound */}
             <button id="nav-sound-toggle" onClick={toggleSound} title={soundEnabled ? 'Mute' : 'Unmute'} className="btn-icon"
               style={{
-                background: 'rgba(255,255,255,0.30)',
-                borderColor: 'rgba(255,255,255,0.50)',
+                background: 'rgba(255, 255, 255, 0.06)',
+                borderColor: 'rgba(255, 255, 255, 0.10)',
+                color: 'rgba(255, 255, 255, 0.75)',
               }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -142,7 +144,7 @@ export const Navbar: React.FC = () => {
               <button
                 onClick={() => { if (confirm('Reset the auction? All draft progress will be lost.')) { resetAuction(); window.location.href = '/'; } }}
                 className="text-xs font-bold px-3 py-1.5 rounded-full transition-all duration-200"
-                style={{ color: '#FF453A', background: 'rgba(255,69,58,0.12)', border: '1px solid rgba(255,69,58,0.25)' }}
+                style={{ color: '#FF453A', background: 'rgba(255, 69, 58, 0.15)', border: '1px solid rgba(255, 69, 58, 0.25)' }}
               >
                 Reset
               </button>
@@ -151,7 +153,7 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile hamburger */}
           <div className="md:hidden flex items-center gap-2">
-            <button onClick={toggleVoice} className="btn-icon" style={{ color: voiceEnabled ? '#55555A' : '#FF453A' }}>
+            <button onClick={toggleVoice} className="btn-icon" style={{ color: voiceEnabled ? 'rgba(255,255,255,0.70)' : '#FF453A' }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-2.08c3.39-.49 6-3.39 6-6.92h-2z" />
               </svg>
@@ -170,7 +172,7 @@ export const Navbar: React.FC = () => {
         {isOpen && (
           <div
             className="md:hidden border-t px-4 pt-3 pb-4 flex flex-col gap-1 rounded-3xl mt-1"
-            style={{ borderColor: 'rgba(255,255,255,0.20)', background: 'rgba(255,255,255,0.70)', backdropFilter: 'blur(20px)' }}
+            style={{ borderColor: 'rgba(255, 255, 255, 0.15)', background: 'rgba(28, 28, 30, 0.85)', backdropFilter: 'blur(20px)' }}
           >
             {navLinks.map((link) => {
               if (link.disabled) return null;
@@ -178,23 +180,23 @@ export const Navbar: React.FC = () => {
               return (
                 <Link key={link.path} href={link.path} onClick={() => setIsOpen(false)}
                   className="px-3 py-2 rounded-2xl text-sm font-semibold"
-                  style={{ color: isActive ? '#1D1D1F' : '#55555A', background: isActive ? 'rgba(255,255,255,0.50)' : 'transparent' }}
+                  style={{ color: isActive ? '#FFFFFF' : 'rgba(255, 255, 255, 0.70)', background: isActive ? 'rgba(255, 255, 255, 0.10)' : 'transparent' }}
                 >
                   {link.name}
                 </Link>
               );
             })}
             {userTeam && (
-              <div className="mt-2 px-3 py-2 rounded-2xl flex justify-between text-sm" style={{ background: 'rgba(255,255,255,0.30)', border: '1px solid rgba(255,255,255,0.40)' }}>
-                <span style={{ color: '#55555A' }}>{userTeam.name}</span>
-                <span className="font-bold" style={{ color: '#1D1D1F' }}>₹{userTeam.purse.toFixed(2)} Cr</span>
+              <div className="mt-2 px-3 py-2 rounded-2xl flex justify-between text-sm" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.10)' }}>
+                <span style={{ color: 'rgba(255, 255, 255, 0.70)' }}>{userTeam.name}</span>
+                <span className="font-bold text-white">₹{userTeam.purse.toFixed(2)} Cr</span>
               </div>
             )}
             {userTeamId && (
               <button
                 onClick={() => { if (confirm('Reset?')) { resetAuction(); window.location.href = '/'; } }}
                 className="px-3 py-2 rounded-2xl text-xs font-bold text-left mt-1"
-                style={{ color: '#FF453A', background: 'rgba(255,69,58,0.12)' }}
+                style={{ color: '#FF453A', background: 'rgba(255, 69, 58, 0.15)' }}
               >
                 Reset Simulation
               </button>

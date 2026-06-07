@@ -6,31 +6,31 @@
 ═══════════════════════════════════════════════ */
 :root {
   /* Apple palette */
-  --bg:              #C2A77C;
-  --bg-gradient:     radial-gradient(circle at 50% 30%, #E2D3B8 0%, #C2A77C 100%);
-  --bg-elevated:     rgba(255,255,255,0.60);
-  --text-primary:    #1D1D1F;
-  --text-secondary:  #55555A;
-  --text-tertiary:   #8E8E93;
+  --bg:              #121214;
+  --bg-gradient:     radial-gradient(circle at 50% 30%, #202024 0%, #121214 100%);
+  --bg-elevated:     rgba(255,255,255,0.08);
+  --text-primary:    #FFFFFF;
+  --text-secondary:  rgba(255,255,255,0.65);
+  --text-tertiary:   rgba(255,255,255,0.40);
   --accent:          #C8A24D;
   --accent-dim:      rgba(200,162,77,0.18);
-  --success:         #32D74B;
+  --success:         #30D158;
   --danger:          #FF453A;
-  --btn-primary:     #1D1D1F;
-  --btn-hover:       #2C2C2E;
+  --btn-primary:     #FFFFFF;
+  --btn-hover:       #E5E5EA;
 
-  /* Apple Glass - Highly polished crisp white cards for high-contrast on ecru */
-  --glass:           rgba(255,255,255,0.78);
-  --glass-md:        rgba(255,255,255,0.88);
-  --glass-strong:    rgba(255,255,255,0.96);
-  --glass-border:    rgba(255,255,255,0.60);
-  --glass-border-md: rgba(255,255,255,0.85);
-  --glass-blur:      blur(24px);
-  --glass-blur-sm:   blur(16px);
-  --glass-blur-xs:   blur(8px);
-  --glass-shadow:    0 20px 60px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
-  --glass-shadow-sm: 0 10px 30px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.02);
-  --glass-shadow-lg: 0 30px 80px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+  /* Apple Glass - Highly polished crisp dark glass for visionOS */
+  --glass:           rgba(28,28,30,0.45);
+  --glass-md:        rgba(40,40,45,0.60);
+  --glass-strong:    rgba(50,50,55,0.75);
+  --glass-border:    rgba(255,255,255,0.16);
+  --glass-border-md: rgba(255,255,255,0.22);
+  --glass-blur:      blur(40px) saturate(1.8);
+  --glass-blur-sm:   blur(24px) saturate(1.6);
+  --glass-blur-xs:   blur(12px) saturate(1.4);
+  --glass-shadow:    0 30px 80px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.12);
+  --glass-shadow-sm: 0 12px 40px rgba(0,0,0,0.18);
+  --glass-shadow-lg: 0 40px 120px rgba(0,0,0,0.40), inset 0 1.5px 0 rgba(255,255,255,0.18);
 
   /* Apple Spacing - Tighter for higher density */
   --space-xs:  6px;
@@ -113,7 +113,7 @@ body {
 .holo-sheen:hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow: var(--glass-shadow-lg);
-  background: rgba(255,255,255,0.60);
+  background: var(--glass-md);
 }
 
 /* ═══════════════════════════════════════════════
@@ -204,7 +204,7 @@ body {
 ═══════════════════════════════════════════════ */
 .btn-primary {
   background: var(--btn-primary);
-  color: #ffffff;
+  color: #1D1D1F;
   border: none;
   border-radius: var(--radius-sm);
   font-weight: 500;
@@ -437,9 +437,9 @@ body {
   -webkit-backdrop-filter: var(--glass-blur-xs);
   transition: all 0.2s var(--ease-apple);
 }
-.log-entry-sold    { background:rgba(50,215,75,0.10);  border-color:rgba(50,215,75,0.25);  color:#248A3D; font-weight:600; }
+.log-entry-sold    { background:rgba(48,209,88,0.12);  border-color:rgba(48,209,88,0.25);  color:#30D158; font-weight:600; }
 .log-entry-passed  { background:rgba(255,255,255,0.04); border-color:var(--glass-border);  color:var(--text-tertiary); }
-.log-entry-user    { background:rgba(200,162,77,0.10);  border-color:rgba(200,162,77,0.25); color:#9A7430; font-weight:600; }
+.log-entry-user    { background:rgba(200,162,77,0.12);  border-color:rgba(200,162,77,0.25); color:#C8A24D; font-weight:600; }
 
 /* ═══════════════════════════════════════════════
    STAT CHIP

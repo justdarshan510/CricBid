@@ -27,9 +27,9 @@ export const LiveBiddingBoard: React.FC = () => {
 
   if (!currentPlayer) {
     return (
-      <div className="glass p-12 text-center max-w-xl mx-auto shadow-md">
-        <h3 className="text-lg font-bold mb-1" style={{ color: '#1D1D1F' }}>No Player Under the Hammer</h3>
-        <p className="text-sm" style={{ color: '#6E6E73' }}>The draft pool is empty or the auction is complete.</p>
+      <div className="glass p-12 text-center max-w-xl mx-auto shadow-md text-white">
+        <h3 className="text-lg font-bold mb-1">No Player Under the Hammer</h3>
+        <p className="text-sm text-white/60">The draft pool is empty or the auction is complete.</p>
       </div>
     );
   }
@@ -94,14 +94,14 @@ export const LiveBiddingBoard: React.FC = () => {
             <div className="md:col-span-7 flex flex-col justify-between">
               
               {/* Status & Timer */}
-              <div className="flex justify-between items-center pb-4 border-b border-[rgba(0,0,0,0.06)]">
+              <div className="flex justify-between items-center pb-4 border-b border-[rgba(255,255,255,0.08)]">
                 <div>
                   <span className="section-label block mb-0.5">Status</span>
                   <div className="flex items-center gap-1.5">
                     {!isPaused && <span className="live-dot" />}
                     <span
                       className="text-xs font-bold uppercase tracking-wide"
-                      style={{ color: isPaused ? '#FF453A' : '#32D74B' }}
+                      style={{ color: isPaused ? '#FF453A' : '#30D158' }}
                     >
                       {isPaused ? 'Paused' : 'Live Bidding'}
                     </span>
@@ -111,12 +111,12 @@ export const LiveBiddingBoard: React.FC = () => {
                 {/* Countdown ring */}
                 <div className="relative w-16 h-16 flex items-center justify-center">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 72 72">
-                    <circle cx="36" cy="36" r={radius} stroke="rgba(0,0,0,0.05)" strokeWidth="4" fill="transparent" />
+                    <circle cx="36" cy="36" r={radius} stroke="rgba(255,255,255,0.08)" strokeWidth="4" fill="transparent" />
                     <circle
                       cx="36"
                       cy="36"
                       r={radius}
-                      stroke={timerUrgent ? '#FF453A' : '#1D1D1F'}
+                      stroke={timerUrgent ? '#FF453A' : '#FFFFFF'}
                       strokeWidth="4"
                       fill="transparent"
                       strokeDasharray={circumference}
@@ -127,7 +127,7 @@ export const LiveBiddingBoard: React.FC = () => {
                   </svg>
                   <span
                     className={`absolute text-lg font-black ${timerUrgent ? 'timer-urgent' : ''}`}
-                    style={{ color: timerUrgent ? '#FF453A' : '#1D1D1F' }}
+                    style={{ color: timerUrgent ? '#FF453A' : '#FFFFFF' }}
                   >
                     {timer}
                   </span>
@@ -138,19 +138,19 @@ export const LiveBiddingBoard: React.FC = () => {
               <div className="text-center py-6 flex-grow flex flex-col justify-center">
                 {currentBid === 0 ? (
                   <div className="space-y-1">
-                    <span className="section-label block">Base Draft Price</span>
-                    <div className="text-5xl font-extrabold tracking-tight text-[#1D1D1F]">
+                    <span className="section-label block text-white/40">Base Draft Price</span>
+                    <div className="text-5xl font-extrabold tracking-tight text-white">
                       ₹{currentPlayer.base_price.toFixed(2)}
-                      <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
+                      <span className="text-xl font-semibold ml-1 text-white/60">Cr</span>
                     </div>
-                    <p className="text-xs text-[#6E6E73] font-semibold">Awaiting the opening bid.</p>
+                    <p className="text-xs text-white/40 font-semibold">Awaiting the opening bid.</p>
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    <span className="section-label block">Current Highest Bid</span>
-                    <div className="text-5xl font-extrabold tracking-tight text-[#1D1D1F]">
+                    <span className="section-label block text-white/40">Current Highest Bid</span>
+                    <div className="text-5xl font-extrabold tracking-tight text-white">
                       ₹{currentBid.toFixed(2)}
-                      <span className="text-xl font-semibold ml-1 text-[#6E6E73]">Cr</span>
+                      <span className="text-xl font-semibold ml-1 text-white/60">Cr</span>
                     </div>
                     {currentBidder && (
                       <div className="flex items-center justify-center gap-2 mt-2">
@@ -164,7 +164,7 @@ export const LiveBiddingBoard: React.FC = () => {
                             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                           />
                         )}
-                        <span className="text-xs font-bold text-[#1D1D1F]">
+                        <span className="text-xs font-bold text-white">
                           {currentBidder.name}
                         </span>
                       </div>
@@ -174,14 +174,14 @@ export const LiveBiddingBoard: React.FC = () => {
               </div>
 
               {/* Controls */}
-              <div className="space-y-3 pt-4 border-t border-[rgba(0,0,0,0.06)]">
+              <div className="space-y-3 pt-4 border-t border-[rgba(255,255,255,0.08)]">
                 <button
                   onClick={placeUserBid}
                   disabled={!canUserBid}
                   className={`w-full py-4 text-sm btn-primary ${
-                    userHoldsBid ? 'bg-[#32D74B] hover:bg-[#32D74B] text-white shadow-none transform-none' : ''
+                    userHoldsBid ? 'bg-[#30D158] hover:bg-[#30D158] text-white shadow-none transform-none border-none' : ''
                   }`}
-                  style={userHoldsBid ? { background: '#32D74B', color: '#fff' } : undefined}
+                  style={userHoldsBid ? { background: '#30D158', color: '#fff' } : undefined}
                 >
                   {bidBtnLabel}
                 </button>
@@ -213,14 +213,14 @@ export const LiveBiddingBoard: React.FC = () => {
             </div>
 
             {/* Right Column: Bid Activity Log (Col 5) */}
-            <div className="md:col-span-5 flex flex-col pl-6 border-t md:border-t-0 md:border-l border-[rgba(0,0,0,0.06)] pt-6 md:pt-0">
+            <div className="md:col-span-5 flex flex-col pl-6 border-t md:border-t-0 md:border-l border-[rgba(255,255,255,0.08)] pt-6 md:pt-0">
               <span className="section-label mb-3">Live Log Feed</span>
               <div
                 className="flex flex-col-reverse gap-2 overflow-y-auto pr-1"
                 style={{ height: '320px' }}
               >
                 {logs.length === 0 ? (
-                  <p className="text-xs text-center py-12 text-[#8E8E93] font-bold">
+                  <p className="text-xs text-center py-12 text-white/40 font-bold">
                     Activity will appear here.
                   </p>
                 ) : (
@@ -259,20 +259,20 @@ export const LiveBiddingBoard: React.FC = () => {
                   className="glass p-3 relative overflow-hidden transition-all duration-200 hover:translate-y-[-1px] hover:shadow-sm"
                   style={{
                     borderLeft: `3px solid ${t.color}`,
-                    background: isUserTeam ? 'rgba(255, 255, 255, 0.40)' : undefined
+                    background: isUserTeam ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)'
                   }}
                 >
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-bold text-xs text-[#1D1D1F] flex items-center gap-1">
+                    <span className="font-bold text-xs text-white flex items-center gap-1">
                       {t.shortName}
                       {isUserTeam && <span className="text-[10px]" title="Your Team">👤</span>}
                     </span>
-                    <span className="text-[10px] font-bold text-[#6E6E73]">
+                    <span className="text-[10px] font-bold text-white/60">
                       {t.players.length}/25
                     </span>
                   </div>
-                  <div className="text-sm font-black text-[#1D1D1F]">
-                    ₹{t.purse.toFixed(2)} <span className="text-[10px] font-bold text-[#6E6E73]">Cr</span>
+                  <div className="text-sm font-black text-white">
+                    ₹{t.purse.toFixed(2)} <span className="text-[10px] font-bold text-white/60">Cr</span>
                   </div>
                 </div>
               );
