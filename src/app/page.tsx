@@ -95,13 +95,24 @@ export default function HomePage() {
               }} 
             />
 
-            <h1 className="display-large text-center xl:text-left">
+            <h1 className="display-large text-center xl:text-left tracking-tight"
+                style={{
+                  color: 'rgba(255, 245, 235, 0.12)',
+                  WebkitTextStroke: '1px rgba(255, 255, 255, 0.55)',
+                  textShadow: '0 12px 36px rgba(0, 0, 0, 0.35), 0 1px 1px rgba(255, 255, 255, 0.25)',
+                  mixBlendMode: 'plus-lighter' as any,
+                }}>
               Build Your<br />
-              <span style={{ color: 'var(--text-primary)' }}>Dream Squad.</span>
+              <span>Dream Squad</span>
             </h1>
           </div>
 
-          <p className="text-lg font-normal max-w-lg mx-auto mb-10 leading-relaxed text-white/70" style={{ fontWeight: 400 }}>
+          <p className="text-lg font-normal max-w-lg mx-auto mb-10 leading-relaxed" 
+             style={{ 
+               fontWeight: 400,
+               color: 'rgba(255, 255, 255, 0.70)',
+               mixBlendMode: 'overlay' as any
+             }}>
             Real-time multiplayer IPL-style auctions. Claim a franchise, bid strategically,
             and assemble a championship squad — all synced live.
           </p>

@@ -5,6 +5,7 @@ import { AuctionProvider } from "../context/AuctionContext";
 import { MultiplayerProvider } from "../context/MultiplayerContext";
 import { Navbar } from "../components/Navbar";
 import { GoogleSignInBubble } from "../components/GoogleSignInBubble";
+import { VideoBackground } from "../components/VideoBackground";
 
 export const metadata: Metadata = {
   title: "CricBid – Bid. Draft. Dominate.",
@@ -22,8 +23,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AuthProvider>
           <AuctionProvider>
             <MultiplayerProvider>
+              <VideoBackground />
               <Navbar />
-              <main className="flex-grow w-full max-w-7xl mx-auto px-5 md:px-8 relative" style={{ paddingTop: '96px', paddingBottom: '48px' }}>
+              <main className="flex-grow w-full max-w-7xl mx-auto px-5 md:px-8 relative" style={{ zIndex: 1, paddingTop: '96px', paddingBottom: '48px' }}>
                 {children}
               </main>
               <GoogleSignInBubble />
