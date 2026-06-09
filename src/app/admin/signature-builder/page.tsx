@@ -3,6 +3,68 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 
+// AI Helper: Maps user drawn strokes to the closest target template strokes, aligning drawing directions
+const mapUserStrokesToTemplate = (
+  userStrokes: { x: number; y: number }[][],
+  templateStrokes: { x: number; y: number }[][]
+) => {
+  if (userStrokes.length === 0 || templateStrokes.length === 0) return [];
+
+  const availableTemplates = templateStrokes.map((stroke, index) => ({
+    stroke,
+    index,
+    used: false
+  }));
+
+  return userStrokes.map(userStroke => {
+    if (userStroke.length === 0) return [];
+
+    let bestIndex = -1;
+    let minDistance = Infinity;
+
+    availableTemplates.forEach((temp, idx) => {
+      if (temp.used) return;
+
+      let sumDist = 0;
+      const sample = userStroke.filter((_, i) => i % 5 === 0);
+      if (sample.length === 0) return;
+
+      sample.forEach(u => {
+        let nearest = Infinity;
+        temp.stroke.forEach(t => {
+          const d = (u.x - t.x) ** 2 + (u.y - t.y) ** 2;
+          if (d < nearest) nearest = d;
+        });
+        sumDist += Math.sqrt(nearest);
+      });
+      const avgDist = sumDist / sample.length;
+
+      if (avgDist < minDistance) {
+        minDistance = avgDist;
+        bestIndex = idx;
+      }
+    });
+
+    if (bestIndex === -1) {
+      return userStroke;
+    }
+
+    availableTemplates[bestIndex].used = true;
+    const matchedTemplate = availableTemplates[bestIndex].stroke;
+
+    const userStart = userStroke[0];
+    const tempStart = matchedTemplate[0];
+    const tempEnd = matchedTemplate[matchedTemplate.length - 1];
+
+    const distToStart = (userStart.x - tempStart.x) ** 2 + (userStart.y - tempStart.y) ** 2;
+    const distToEnd = (userStart.x - tempEnd.x) ** 2 + (userStart.y - tempEnd.y) ** 2;
+
+    const finalStroke = distToEnd < distToStart ? [...matchedTemplate].reverse() : matchedTemplate;
+
+    return finalStroke;
+  });
+};
+
 export default function SignatureBuilderPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentStrokeRef = useRef<{ x: number; y: number }[]>([]);
@@ -17,6 +79,8 @@ export default function SignatureBuilderPage() {
   const [animationStyle, setAnimationStyle] = useState<'single' | 'sequential'>('sequential');
   const [targetPoints, setTargetPoints] = useState<{ x: number; y: number }[]>([]);
   const [matchScore, setMatchScore] = useState<number | null>(null);
+  const templateStrokesRef = useRef<{ x: number; y: number }[][]>([]);
+  const [useAISnap, setUseAISnap] = useState(true);
 
   // Load target template strokes for AI matching on mount
   useEffect(() => {
@@ -25,6 +89,7 @@ export default function SignatureBuilderPage() {
         const res = await fetch('/dhoni-traced-strokes.json');
         if (res.ok) {
           const data = await res.json();
+          templateStrokesRef.current = data;
           setTargetPoints(data.flat());
         }
       } catch (err) {
@@ -166,8 +231,13 @@ export default function SignatureBuilderPage() {
       return;
     }
 
+    // Map strokes using AI snap if enabled
+    const finalStrokes = useAISnap && templateStrokesRef.current.length > 0
+      ? mapUserStrokesToTemplate(strokes, templateStrokesRef.current)
+      : strokes;
+
     // Convert strokes array to SVG path D string components
-    const dPaths = strokes.map(stroke => {
+    const dPaths = finalStrokes.map(stroke => {
       if (stroke.length === 0) return '';
       let d = `M ${stroke[0].x} ${stroke[0].y}`;
       for (let i = 1; i < stroke.length; i++) {
@@ -579,6 +649,25 @@ export default function SignatureBuilderPage() {
                     <span>Continuous (Single sweep)</span>
                   </label>
                 </div>
+              </div>
+
+              {/* AI Snapping / Redrawing Mode Toggle */}
+              <div className="space-y-1.5 pt-3 border-t border-white/5">
+                <label className="text-[10px] uppercase font-bold text-[#F2EAD8]/60 tracking-wider block">AI Processing Mode</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center space-x-2 text-xs font-semibold cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={useAISnap} 
+                      onChange={e => setUseAISnap(e.target.checked)}
+                      className="accent-[#D4963A] rounded border-white/10"
+                    />
+                    <span className="text-white">AI Snap &amp; Redraw (Smooths shaky strokes into perfect template curves)</span>
+                  </label>
+                </div>
+                <span className="text-[9px] text-[#F2EAD8]/40 block">
+                  Captures the direction and order of your hand strokes, but redraws them using perfectly smooth vector curves instead of shaky hand lines.
+                </span>
               </div>
             </div>
 
