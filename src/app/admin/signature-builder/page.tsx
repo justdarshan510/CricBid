@@ -262,7 +262,12 @@ export default function SignatureBuilderPage() {
 
     const pos = getMousePos(e);
     const last = currentStrokeRef.current[currentStrokeRef.current.length - 1];
-    if (last && last.x === pos.x && last.y === pos.y) return;
+    if (last) {
+      // Filter out small mouse jitters and pauses (must move at least 3 pixels)
+      const dx = pos.x - last.x;
+      const dy = pos.y - last.y;
+      if (dx * dx + dy * dy < 9) return;
+    }
 
     currentStrokeRef.current.push(pos);
 
