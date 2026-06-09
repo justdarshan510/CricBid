@@ -15,6 +15,75 @@ export default function SignatureBuilderPage() {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [animationStyle, setAnimationStyle] = useState<'single' | 'sequential'>('sequential');
+  const [targetPoints, setTargetPoints] = useState<{ x: number; y: number }[]>([]);
+  const [matchScore, setMatchScore] = useState<number | null>(null);
+
+  // Load target template strokes for AI matching on mount
+  useEffect(() => {
+    async function loadTargetStrokes() {
+      try {
+        const res = await fetch('/dhoni-traced-strokes.json');
+        if (res.ok) {
+          const data = await res.json();
+          setTargetPoints(data.flat());
+        }
+      } catch (err) {
+        console.error('Error loading target strokes:', err);
+      }
+    }
+    loadTargetStrokes();
+  }, []);
+
+  // AI Matching Score Calculation using Modified Chamfer Distance
+  useEffect(() => {
+    if (strokes.length === 0 || targetPoints.length === 0) {
+      setMatchScore(null);
+      return;
+    }
+
+    const userPoints = strokes.flat();
+    if (userPoints.length === 0) {
+      setMatchScore(null);
+      return;
+    }
+
+    // Subsample to optimize speed
+    const userSample = userPoints.length > 500 
+      ? userPoints.filter((_, i) => i % Math.ceil(userPoints.length / 500) === 0)
+      : userPoints;
+      
+    const targetSample = targetPoints.length > 500
+      ? targetPoints.filter((_, i) => i % Math.ceil(targetPoints.length / 500) === 0)
+      : targetPoints;
+
+    let sumUserToTarget = 0;
+    for (const u of userSample) {
+      let minDist = Infinity;
+      for (const t of targetSample) {
+        const d = (u.x - t.x) ** 2 + (u.y - t.y) ** 2;
+        if (d < minDist) minDist = d;
+      }
+      sumUserToTarget += Math.sqrt(minDist);
+    }
+    const avgUserToTarget = sumUserToTarget / userSample.length;
+
+    let sumTargetToUser = 0;
+    for (const t of targetSample) {
+      let minDist = Infinity;
+      for (const u of userSample) {
+        const d = (t.x - u.x) ** 2 + (t.y - u.y) ** 2;
+        if (d < minDist) minDist = d;
+      }
+      sumTargetToUser += Math.sqrt(minDist);
+    }
+    const avgTargetToUser = sumTargetToUser / targetSample.length;
+
+    const chamferDist = (avgUserToTarget + avgTargetToUser) / 2;
+
+    // Scale score: average of 35px error sets it to 0%
+    const score = Math.max(0, Math.min(100, Math.round(100 - (chamferDist * 2.8))));
+    setMatchScore(score);
+  }, [strokes, targetPoints]);
 
   // Load the gold signature PNG and convert to base64 on mount
   useEffect(() => {
@@ -423,6 +492,34 @@ export default function SignatureBuilderPage() {
           <div className="lg:col-span-6 flex flex-col space-y-6">
             <h2 className="section-label">2. Settings &amp; Live Writing Preview</h2>
             
+            {/* AI Similarity Analyzer Panel */}
+            <div className="glass p-5 rounded-2xl space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs uppercase font-bold text-[#F2EAD8]/60 tracking-wider">AI Tracing Match Analyzer</h3>
+                <span className="text-[9px] font-bold bg-[#D4963A]/10 text-[#D4963A] border border-[#D4963A]/25 px-2 py-0.5 rounded-full">Modified Chamfer Distance</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="text-4xl font-black text-white w-16">
+                  {matchScore !== null ? `${matchScore}%` : '—'}
+                </div>
+                <div className="flex-1 space-y-1">
+                  <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-red-500 via-[#F1C40F] to-emerald-500 transition-all duration-300"
+                      style={{ width: `${matchScore ?? 0}%` }}
+                    />
+                  </div>
+                  <div className="text-[10px] text-[#F2EAD8]/40">
+                    {matchScore === null && 'Start tracing to analyze matching accuracy...'}
+                    {matchScore !== null && matchScore < 50 && 'Keep drawing to cover all guidelines...'}
+                    {matchScore !== null && matchScore >= 50 && matchScore < 75 && 'Good start! Refine your alignment...'}
+                    {matchScore !== null && matchScore >= 75 && matchScore < 90 && 'Great accuracy! Almost perfect!'}
+                    {matchScore !== null && matchScore >= 90 && 'Master class tracing! Click apply to update!'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Tuning Panel */}
             <div className="glass p-5 rounded-2xl space-y-4">
               <div className="grid grid-cols-2 gap-4">
