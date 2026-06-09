@@ -322,7 +322,7 @@ export default function SignatureBuilderPage() {
             <h2 className="section-label">1. Draw Stroke Flow</h2>
             <div 
               className="relative rounded-2xl border border-white/10 overflow-hidden bg-black/40 shadow-xl"
-              style={{ width: '482px', height: '467px' }}
+              style={{ width: '602px', height: '584px' }}
             >
               {/* Dhoni guideline background image */}
               <img 
@@ -435,7 +435,7 @@ export default function SignatureBuilderPage() {
               <span className="text-[10px] uppercase font-bold text-[#F2EAD8]/60 tracking-wider">Live Animated SVG Preview</span>
               <div 
                 className="relative border border-white/10 rounded-2xl bg-black/60 shadow-xl overflow-hidden flex items-center justify-center"
-                style={{ width: '482px', height: '467px' }}
+                style={{ width: '602px', height: '584px' }}
               >
                 {svgPreview ? (
                   <div 
