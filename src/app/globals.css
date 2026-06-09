@@ -387,8 +387,8 @@ body {
   top: 0; left: 0;
   width: 100vw; height: 100vh;
   object-fit: cover;
-  opacity: 0.65;
-  filter: saturate(1.1) brightness(0.95) blur(3px);
+  opacity: 0.88;
+  filter: saturate(1.1) brightness(1.05);
   border: none;
   box-shadow: none;
   transition: opacity 0.8s var(--ease-apple);
@@ -405,7 +405,7 @@ body {
 .team-bg-overlay::after, .lobby-bg-overlay::after {
   content: '';
   position: absolute; inset: 0;
-  background: rgba(103, 79, 45, 0.35);
+  background: rgba(103, 79, 45, 0.15);
   pointer-events: none;
 }
 

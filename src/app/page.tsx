@@ -95,11 +95,10 @@ export default function HomePage() {
               }} 
             />
 
-            <h1 className="display-large text-center xl:text-left tracking-tighter bg-clip-text bg-gradient-to-b from-white via-white/85 to-white/12"
+            <h1 className="display-large text-center xl:text-left tracking-tighter"
                 style={{
-                  color: 'transparent',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                  color: 'rgba(255, 255, 255, 0.35)',
+                  textShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
                 }}>
               Build Your<br />
               <span>Dream Squad</span>
