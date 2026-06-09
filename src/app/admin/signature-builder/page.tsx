@@ -297,6 +297,18 @@ export default function SignatureBuilderPage() {
     setStrokes([]);
   };
 
+  const loadTracedSignature = async () => {
+    try {
+      const res = await fetch('/dhoni-traced-strokes.json');
+      if (!res.ok) throw new Error('Could not load auto-traced signature');
+      const data = await res.json();
+      setStrokes(data);
+    } catch (err: any) {
+      console.error(err);
+      setErrorMessage('Failed to load auto-traced coordinates. Please try again.');
+    }
+  };
+
   const handleSaveSignature = async () => {
     if (!svgPreview) return;
     setSaveStatus('saving');
@@ -384,6 +396,12 @@ export default function SignatureBuilderPage() {
 
             {/* Controls */}
             <div className="flex flex-wrap gap-2.5">
+              <button 
+                onClick={loadTracedSignature} 
+                className="btn-primary px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg"
+              >
+                ✨ Auto-Trace Template
+              </button>
               <button 
                 onClick={undoLastStroke} 
                 disabled={strokes.length === 0}
