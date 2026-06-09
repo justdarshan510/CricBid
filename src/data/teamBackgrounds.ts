@@ -7,7 +7,7 @@
 // 1. Create team mapping exactly as requested:
 export const teamBackgrounds = {
   CSK: "/team-backgrounds/csk-background.png",
-  MI: "/team-backgrounds/mi-background.jpg",
+  MI: "/team-backgrounds/mi-background.png",
   RCB: "/team-backgrounds/rcb-background.jpg",
   KKR: "/team-backgrounds/kkr-background.jpg",
   SRH: "/team-backgrounds/srh-background.jpg",
@@ -21,7 +21,7 @@ export const teamBackgrounds = {
 // Mapping using full team IDs for consistency with database
 const teamIdToBackground: Record<string, string> = {
   'team_csk': '/team-backgrounds/csk-background.png',
-  'team_mi': '/team-backgrounds/mi-background.jpg',
+  'team_mi': '/team-backgrounds/mi-background.png',
   'team_rcb': '/team-backgrounds/rcb-background.jpg',
   'team_kkr': '/team-backgrounds/kkr-background.jpg',
   'team_srh': '/team-backgrounds/srh-background.jpg',
