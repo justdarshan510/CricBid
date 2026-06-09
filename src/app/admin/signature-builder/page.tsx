@@ -423,7 +423,8 @@ export default function SignatureBuilderPage() {
     isDrawingRef.current = false;
     
     if (currentStrokeRef.current.length > 0) {
-      setStrokes(prev => [...prev, currentStrokeRef.current]);
+      const completedStroke = [...currentStrokeRef.current];
+      setStrokes(prev => [...prev, completedStroke]);
     }
     currentStrokeRef.current = [];
   };
