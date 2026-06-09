@@ -129,16 +129,16 @@ export default function SignatureBuilderPage() {
       opacity: 1;
     }
     .stroke-single {
-      stroke-dasharray: 4000;
-      stroke-dashoffset: 4000;
+      stroke-dasharray: 10000;
+      stroke-dashoffset: 10000;
       animation: draw-sig-single ${animationDuration}s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
     @keyframes draw-sig-single {
-      0% { stroke-dashoffset: 4000; opacity: 1; }
+      0% { stroke-dashoffset: 10000; opacity: 1; }
       55% { stroke-dashoffset: 0; opacity: 1; }
       82% { stroke-dashoffset: 0; opacity: 1; }
       92% { stroke-dashoffset: 0; opacity: 0; }
-      100% { stroke-dashoffset: 4000; opacity: 0; }
+      100% { stroke-dashoffset: 10000; opacity: 0; }
     }
   </style>
   <image href="data:image/png;base64,${base64PNG}" width="482" height="467" mask="url(#sig-mask)" />
@@ -160,13 +160,13 @@ export default function SignatureBuilderPage() {
 
         return `
     .stroke-${idx} {
-      stroke-dasharray: 4000;
-      stroke-dashoffset: 4000;
+      stroke-dasharray: 10000;
+      stroke-dashoffset: 10000;
       animation: draw-seq-${idx} ${animationDuration}s ease-in-out infinite;
     }
     @keyframes draw-seq-${idx} {
       0%, ${startPct.toFixed(1)}% {
-        stroke-dashoffset: 4000;
+        stroke-dashoffset: 10000;
         opacity: 0;
       }
       ${(startPct + 0.5).toFixed(1)}% {
@@ -181,7 +181,7 @@ export default function SignatureBuilderPage() {
         opacity: 0;
       }
       100% {
-        stroke-dashoffset: 4000;
+        stroke-dashoffset: 10000;
         opacity: 0;
       }
     }`;

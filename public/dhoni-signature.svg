@@ -24,26 +24,26 @@
     }
     
     .stroke-loops {
-      stroke-dasharray: 5500;
-      stroke-dashoffset: 5500;
+      stroke-dasharray: 10000;
+      stroke-dashoffset: 10000;
       animation: draw-loops 12.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
     
     .stroke-underline {
-      stroke-dasharray: 1500;
-      stroke-dashoffset: 1500;
+      stroke-dasharray: 5000;
+      stroke-dashoffset: 5000;
       animation: draw-underline 12.0s cubic-bezier(0.1, 0.9, 0.1, 1) infinite;
     }
     
     .stroke-dot {
-      stroke-dasharray: 500;
-      stroke-dashoffset: 500;
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
       animation: draw-dot 12.0s ease-in-out infinite;
     }
     
     @keyframes draw-loops {
       0% {
-        stroke-dashoffset: 5500;
+        stroke-dashoffset: 10000;
         opacity: 1;
       }
       50% {
@@ -59,14 +59,14 @@
         opacity: 0;
       }
       100% {
-        stroke-dashoffset: 5500;
+        stroke-dashoffset: 10000;
         opacity: 0;
       }
     }
     
     @keyframes draw-underline {
       0%, 50% {
-        stroke-dashoffset: 1500;
+        stroke-dashoffset: 5000;
         opacity: 0;
       }
       51% {
@@ -85,14 +85,14 @@
         opacity: 0;
       }
       100% {
-        stroke-dashoffset: 1500;
+        stroke-dashoffset: 5000;
         opacity: 0;
       }
     }
     
     @keyframes draw-dot {
       0%, 64% {
-        stroke-dashoffset: 500;
+        stroke-dashoffset: 2000;
         opacity: 0;
       }
       65% {
@@ -111,7 +111,7 @@
         opacity: 0;
       }
       100% {
-        stroke-dashoffset: 500;
+        stroke-dashoffset: 2000;
         opacity: 0;
       }
     }
