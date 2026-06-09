@@ -160,13 +160,13 @@ export default function SignatureBuilderPage() {
 
         return `
     .stroke-${idx} {
-      stroke-dasharray: 1500;
-      stroke-dashoffset: 1500;
+      stroke-dasharray: 4000;
+      stroke-dashoffset: 4000;
       animation: draw-seq-${idx} ${animationDuration}s ease-in-out infinite;
     }
     @keyframes draw-seq-${idx} {
       0%, ${startPct.toFixed(1)}% {
-        stroke-dashoffset: 1500;
+        stroke-dashoffset: 4000;
         opacity: 0;
       }
       ${(startPct + 0.5).toFixed(1)}% {
@@ -181,7 +181,7 @@ export default function SignatureBuilderPage() {
         opacity: 0;
       }
       100% {
-        stroke-dashoffset: 1500;
+        stroke-dashoffset: 4000;
         opacity: 0;
       }
     }`;
