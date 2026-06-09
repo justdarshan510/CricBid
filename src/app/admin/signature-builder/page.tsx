@@ -5,8 +5,9 @@ import Link from 'next/link';
 
 export default function SignatureBuilderPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const currentStrokeRef = useRef<{ x: number; y: number }[]>([]);
+  const isDrawingRef = useRef(false);
   const [strokes, setStrokes] = useState<{ x: number; y: number }[][]>([]);
-  const [isDrawing, setIsDrawing] = useState(false);
   const [brushWidth, setBrushWidth] = useState(38);
   const [animationDuration, setAnimationDuration] = useState(7);
   const [base64PNG, setBase64PNG] = useState<string>('');
@@ -225,31 +226,62 @@ export default function SignatureBuilderPage() {
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     e.preventDefault();
-    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    isDrawingRef.current = true;
     const pos = getMousePos(e);
-    setStrokes(prev => [...prev, [pos]]);
+    currentStrokeRef.current = [pos];
+
+    // Begin drawing locally
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    
+    // Draw initial dot
+    ctx.beginPath();
+    const colors = ['#E74C3C', '#3498DB', '#2ECC71', '#F1C40F', '#9B59B6'];
+    ctx.strokeStyle = colors[strokes.length % colors.length];
+    ctx.lineWidth = 4;
+    ctx.moveTo(pos.x, pos.y);
+    ctx.lineTo(pos.x + 0.1, pos.y + 0.1);
+    ctx.stroke();
+
+    // Start tracking lines
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || strokes.length === 0) return;
+    if (!isDrawingRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     const pos = getMousePos(e);
-    
-    setStrokes(prev => {
-      const updated = [...prev];
-      const current = [...updated[updated.length - 1]];
-      
-      // Prevent duplicating coordinates
-      const last = current[current.length - 1];
-      if (last.x === pos.x && last.y === pos.y) return prev;
-      
-      current.push(pos);
-      updated[updated.length - 1] = current;
-      return updated;
-    });
+    const last = currentStrokeRef.current[currentStrokeRef.current.length - 1];
+    if (last && last.x === pos.x && last.y === pos.y) return;
+
+    currentStrokeRef.current.push(pos);
+
+    // Draw segment directly with zero lag
+    const colors = ['#E74C3C', '#3498DB', '#2ECC71', '#F1C40F', '#9B59B6'];
+    ctx.strokeStyle = colors[strokes.length % colors.length];
+    ctx.lineWidth = 4;
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
   };
 
   const handleMouseUp = () => {
-    setIsDrawing(false);
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
+    
+    if (currentStrokeRef.current.length > 0) {
+      setStrokes(prev => [...prev, currentStrokeRef.current]);
+    }
+    currentStrokeRef.current = [];
   };
 
   const undoLastStroke = () => {
@@ -328,7 +360,7 @@ export default function SignatureBuilderPage() {
               <img 
                 src="/dhoni-raw-signature.png" 
                 alt="Guideline"
-                className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none opacity-25 z-0"
+                className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none opacity-25 z-0"
                 referrerPolicy="no-referrer"
               />
 
