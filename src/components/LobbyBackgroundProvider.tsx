@@ -55,7 +55,16 @@ export const LobbyBackgroundProvider: React.FC<LobbyBackgroundProviderProps> = (
     <div className="relative w-full min-h-screen overflow-hidden">
       <div className="lobby-bg-container lobby-bg-fade-in">
         {!imageError && backgroundUrl ? (
-          <img src={backgroundUrl} alt="Team Background" className="lobby-bg-image" />
+          <img 
+            src={backgroundUrl} 
+            alt="Team Background" 
+            className="lobby-bg-image" 
+            style={
+              teamId === 'team_csk' || teamId === 'CSK' 
+                ? { objectPosition: 'left top' } 
+                : undefined
+            } 
+          />
         ) : (
           <div className="lobby-bg-fallback" />
         )}
@@ -101,6 +110,17 @@ export const LobbyBackgroundProvider: React.FC<LobbyBackgroundProviderProps> = (
       <div className="lobby-bg-content">
         {children}
       </div>
+
+      {/* Dhoni signature for CSK background at right bottom */}
+      {(teamId === 'team_csk' || teamId === 'CSK') && (
+        <div className="fixed right-6 bottom-6 w-36 h-36 md:w-48 md:h-48 pointer-events-none z-[20] opacity-80 lobby-bg-fade-in">
+          <img 
+            src="/dhoni-signature.svg" 
+            alt="MS Dhoni Signature" 
+            className="w-full h-full object-contain"
+          />
+        </div>
+      )}
     </div>
   );
 };

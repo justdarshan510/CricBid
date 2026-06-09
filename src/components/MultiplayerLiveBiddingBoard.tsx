@@ -161,7 +161,7 @@ export const MultiplayerLiveBiddingBoard: React.FC = () => {
                 className={`w-full py-4 text-sm btn-primary ${
                   userHoldsBid ? 'shadow-none transform-none border-none' : ''
                 }`}
-                style={userHoldsBid ? { background: '#8F6E3C', color: '#FDF6E8' } : undefined}
+                style={userHoldsBid ? { background: '#2B8246', color: '#FFFFFF', opacity: 1, cursor: 'default' } : undefined}
               >
                 {bidBtnLabel}
               </button>

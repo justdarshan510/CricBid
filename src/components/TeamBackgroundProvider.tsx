@@ -52,7 +52,16 @@ export const TeamBackgroundProvider: React.FC<TeamBackgroundProviderProps> = ({
     <div className="relative w-full min-h-screen">
       <div className="team-bg-container team-bg-fade-in">
         {!imageError && backgroundUrl ? (
-          <img src={backgroundUrl} alt="Team Background" className="team-bg-image" />
+          <img 
+            src={backgroundUrl} 
+            alt="Team Background" 
+            className="team-bg-image" 
+            style={
+              teamId === 'team_csk' || teamId === 'CSK' 
+                ? { objectPosition: 'left top' } 
+                : undefined
+            } 
+          />
         ) : (
           <div className="team-bg-fallback" />
         )}

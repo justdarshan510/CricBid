@@ -19,7 +19,7 @@ export const initialTeams: Team[] = [
     color: '#FFD60A',
     secondaryColor: '#005CA5',
     purse: 120.0,
-    logoUrl: '/logos/csk.png?v=11',
+    logoUrl: '/logos/csk.svg?v=1',
     players: []
   },
   {
