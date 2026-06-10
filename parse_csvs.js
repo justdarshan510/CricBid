@@ -273,6 +273,7 @@ const finalPlayers = Object.values(playersMap).map((p, idx) => {
     rating,
     strike_rate: p.strike_rate ? parseFloat(p.strike_rate.toFixed(2)) : undefined,
     batting_average: p.batting_average ? parseFloat(p.batting_average.toFixed(2)) : undefined,
+    runs: p.runs || undefined,
     wickets: p.wickets || undefined,
     economy: p.economy ? parseFloat(p.economy.toFixed(2)) : undefined,
     image: '', // will be handled dynamically or generated via SVG/Canvas
@@ -303,6 +304,7 @@ export interface Player {
   rating: number; // 50 to 99 scale
   strike_rate?: number;
   batting_average?: number;
+  runs?: number;
   wickets?: number;
   economy?: number;
   image?: string;

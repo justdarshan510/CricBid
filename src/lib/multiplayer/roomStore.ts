@@ -1,4 +1,4 @@
-import { get, ref, remove, set } from 'firebase/database';
+import { get, ref, remove, runTransaction, set } from 'firebase/database';
 import { Player } from '../../data/players';
 import { Team } from '../../data/teams';
 import {
@@ -175,19 +175,27 @@ export async function roomStoreStartAuction(roomCode: string, clientId: string) 
 
 export async function roomStorePause(roomCode: string, clientId: string) {
   assertFirebase();
+  const dbRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/game`);
+  await runTransaction(dbRef, (game) => {
+    if (!game) return;
+    if (game.hostId !== clientId) throw new Error('Only host');
+    game.isPaused = true;
+    return sanitizeForFirebase(game);
+  });
   const record = await load(roomCode);
-  if (record.game.hostId !== clientId) throw new Error('Only host');
-  record.game.isPaused = true;
-  await save(roomCode, record);
   return toRoomSnapshot(record);
 }
 
 export async function roomStoreResume(roomCode: string, clientId: string) {
   assertFirebase();
+  const dbRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/game`);
+  await runTransaction(dbRef, (game) => {
+    if (!game) return;
+    if (game.hostId !== clientId) throw new Error('Only host');
+    game.isPaused = false;
+    return sanitizeForFirebase(game);
+  });
   const record = await load(roomCode);
-  if (record.game.hostId !== clientId) throw new Error('Only host');
-  record.game.isPaused = false;
-  await save(roomCode, record);
   return toRoomSnapshot(record);
 }
 
@@ -201,12 +209,19 @@ export async function roomStorePlaceBid(
   const me = record.clients[clientId];
   if (!me) throw new Error('Not in room');
 
-  const validation = validateBid(record.game, teamId, me.teamId);
-  if (!validation.ok) throw new Error(validation.error);
+  const dbRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/game`);
+  await runTransaction(dbRef, (game) => {
+    if (!game) return;
+    const normalized = normalizeGame(game);
+    const validation = validateBid(normalized, teamId, me.teamId);
+    if (!validation.ok) throw new Error(validation.error);
 
-  record.game = applyBid(record.game, teamId, validation.nextBid, me.name);
-  await save(roomCode, record);
-  return toRoomSnapshot(record);
+    const nextGame = applyBid(normalized, teamId, validation.nextBid, me.name);
+    return sanitizeForFirebase(nextGame);
+  });
+
+  const updatedRecord = await load(roomCode);
+  return toRoomSnapshot(updatedRecord);
 }
 
 export async function roomStoreSkip(roomCode: string, clientId: string) {
@@ -279,19 +294,25 @@ export async function roomStoreReset(
 
 export async function roomStoreTick(roomCode: string, clientId: string) {
   assertFirebase();
-  const record = await load(roomCode);
-  if (record.game.hostId !== clientId) throw new Error('Only host');
-  const { game } = record;
-  if (!game.started || game.isPaused || game.auctionStatus !== 'bidding') {
-    return toRoomSnapshot(record);
-  }
+  const dbRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/game`);
+  await runTransaction(dbRef, (game) => {
+    if (!game) return;
+    if (game.hostId !== clientId) throw new Error('Only host');
+    if (!game.started || game.isPaused || game.auctionStatus !== 'bidding') {
+      return;
+    }
 
-  if (game.timer > 0) {
-    record.game = { ...game, timer: game.timer - 1 };
-  } else {
-    record.game = handleTimerEnd(game);
-  }
-  await save(roomCode, record);
+    const normalized = normalizeGame(game);
+    if (normalized.timer > 0) {
+      normalized.timer = normalized.timer - 1;
+    } else {
+      const ended = handleTimerEnd(normalized);
+      Object.assign(normalized, ended);
+    }
+    return sanitizeForFirebase(normalized);
+  });
+
+  const record = await load(roomCode);
   return toRoomSnapshot(record);
 }
 

@@ -469,6 +469,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, showBidOverlay =
                 <StatRow label="Batting Style" value={player.batting_style} />
                 <StatRow label="Bowling Style" value={player.bowling_style} />
                 <StatRow label="Wicketkeeper" value={player.is_wicketkeeper ? 'Yes' : 'No'} />
+                {player.runs !== undefined && <StatRow label="Runs" value={player.runs} />}
                 {player.strike_rate !== undefined && <StatRow label="Strike Rate" value={player.strike_rate} accent="#A88558" />}
                 {player.batting_average !== undefined && <StatRow label="Batting Avg" value={player.batting_average} />}
                 {player.wickets !== undefined && <StatRow label="Wickets" value={player.wickets} accent="#8C7355" />}

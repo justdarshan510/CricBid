@@ -4,6 +4,7 @@ import {
   onValue,
   ref,
   remove,
+  runTransaction,
   set,
   update,
   type Unsubscribe,
@@ -23,7 +24,7 @@ import {
 import { getFirebaseDatabase, isFirebaseConfigured } from '../firebaseApp';
 import { getClientId } from '../../utils/clientId';
 import { compactPlayersForRoom, compactTeamsForRoom } from './compactPlayers';
-import { sanitizeForFirebase } from './sanitizeForFirebase';
+import { asFirebaseArray, sanitizeForFirebase } from './sanitizeForFirebase';
 import {
   ClientPlayer,
   FirebaseRoomRecord,
@@ -50,6 +51,19 @@ function roomRef(roomCode: string) {
 
 function clientsRecord(clients: ClientPlayer[]): Record<string, ClientPlayer> {
   return Object.fromEntries(clients.map((c) => [c.id, c]));
+}
+
+function normalizeGame(game: any): RoomGameState {
+  if (!game) return game;
+  return {
+    ...game,
+    players: asFirebaseArray(game.players),
+    teams: asFirebaseArray(game.teams).map((t: any) => ({
+      ...t,
+      players: asFirebaseArray(t?.players),
+    })),
+    logs: asFirebaseArray(game.logs),
+  };
 }
 
 async function generateUniqueRoomCode(): Promise<string> {
@@ -178,21 +192,27 @@ class FirebaseMultiplayerService implements IMultiplayerService {
   }
 
   private async tickTimer(roomCode: string): Promise<void> {
-    const record = await this.readRoom(roomCode);
-    if (!record) return;
+    try {
+      const dbRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/game`);
+      await runTransaction(dbRef, (game) => {
+        if (!game) return;
+        if (game.hostId !== this.clientId) return;
+        if (!game.started || game.isPaused || game.auctionStatus !== 'bidding') {
+          return;
+        }
 
-    const { game } = record;
-    if (game.hostId !== this.clientId) return;
-    if (!game.started || game.isPaused || game.auctionStatus !== 'bidding') return;
-
-    if (game.timer > 0) {
-      const nextGame = { ...game, timer: game.timer - 1 };
-      await this.writeGame(roomCode, nextGame);
-      return;
+        const normalized = normalizeGame(game);
+        if (normalized.timer > 0) {
+          normalized.timer = normalized.timer - 1;
+        } else {
+          const ended = handleTimerEnd(normalized);
+          Object.assign(normalized, ended);
+        }
+        return sanitizeForFirebase(normalized);
+      });
+    } catch (err) {
+      console.error('[multiplayer] tickTimer failed:', err);
     }
-
-    const ended = handleTimerEnd(game);
-    await this.writeGame(roomCode, ended);
   }
 
   private subscribeRoom(roomCode: string, initialEvent: 'room_created' | 'room_joined'): void {
@@ -487,18 +507,19 @@ class FirebaseMultiplayerService implements IMultiplayerService {
   }
 
   async pauseAuction(roomCode: string): Promise<void> {
-    const record = await this.readRoom(roomCode);
-    if (!record || record.game.hostId !== this.clientId) return;
-    await this.writeGame(roomCode, { ...record.game, isPaused: true });
-    this.stopHostTimer();
+    try {
+      await update(ref(getFirebaseDatabase(), `rooms/${roomCode}/game`), { isPaused: true });
+      this.stopHostTimer();
+    } catch (err) {
+      console.error('[multiplayer] pauseAuction failed:', err);
+    }
   }
 
   async resumeAuction(roomCode: string): Promise<void> {
-    const record = await this.readRoom(roomCode);
-    if (!record || record.game.hostId !== this.clientId) return;
-    await this.writeGame(roomCode, { ...record.game, isPaused: false });
-    if (record.game.auctionStatus === 'bidding') {
-      this.startHostTimer(roomCode);
+    try {
+      await update(ref(getFirebaseDatabase(), `rooms/${roomCode}/game`), { isPaused: false });
+    } catch (err) {
+      console.error('[multiplayer] resumeAuction failed:', err);
     }
   }
 
@@ -523,35 +544,21 @@ class FirebaseMultiplayerService implements IMultiplayerService {
         return;
       }
 
-      // Debug: log bid attempt details to help diagnose raise issues
-      try {
-        // eslint-disable-next-line no-console
-        console.debug('[multiplayer] placeBid attempt', {
-          room: roomCode,
-          clientId: this.clientId,
-          me: { id: me.id, name: me.name, teamId: me.teamId },
-          bidTeamId,
-          currentBid: record.game.currentBid,
-          auctionStatus: record.game.auctionStatus,
-        });
-      } catch (e) {
-        /* ignore logging errors */
-      }
+      const dbRef = ref(getFirebaseDatabase(), `rooms/${roomCode}/game`);
+      await runTransaction(dbRef, (game) => {
+        if (!game) return;
+        const normalized = normalizeGame(game);
+        const validation = validateBid(normalized, bidTeamId, bidTeamId);
+        if (!validation.ok) {
+          throw new Error(validation.error);
+        }
 
-      const validation = validateBid(record.game, bidTeamId, bidTeamId);
-      if (!validation.ok) {
-        // Emit detailed error and log for diagnostics
-        // eslint-disable-next-line no-console
-        console.debug('[multiplayer] placeBid validation failed', { room: roomCode, error: validation.error });
-        this.emit('bid_error', validation.error);
-        return;
-      }
-
-      const game = applyBid(record.game, bidTeamId, validation.nextBid, me.name);
-      await this.writeGame(roomCode, game);
+        const nextGame = applyBid(normalized, bidTeamId, validation.nextBid, me.name);
+        return sanitizeForFirebase(nextGame);
+      });
     } catch (err) {
       console.error('[multiplayer] placeBid failed:', err);
-      this.emit('bid_error', firebaseErrorMessage(err));
+      this.emit('bid_error', err instanceof Error ? err.message : firebaseErrorMessage(err));
     }
   }
 

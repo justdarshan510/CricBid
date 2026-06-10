@@ -4,7 +4,40 @@ import React, { useState, useMemo } from 'react';
 import { useAuction } from '../../context/AuctionContext';
 import { useMultiplayer } from '../../context/MultiplayerContext';
 import { PlayerCard } from '../../components/PlayerCard';
+import { GlassSelect } from '../../components/GlassSelect';
 import { Player } from '../../data/players';
+
+const roleOptions = [
+  { value: 'all', label: 'All Roles' },
+  { value: 'opener', label: 'Openers' },
+  { value: 'middle_order', label: 'Middle Order' },
+  { value: 'finisher', label: 'Finishers' },
+  { value: 'all_rounder', label: 'All Rounders' },
+  { value: 'spinner', label: 'Spinners' },
+  { value: 'powerplay_bowler', label: 'Powerplay Bowlers' },
+  { value: 'death_bowler', label: 'Death Bowlers' },
+];
+
+const nationalityOptions = [
+  { value: 'all', label: 'All Players' },
+  { value: 'domestic', label: 'Indian (Domestic)' },
+  { value: 'overseas', label: 'Overseas (Star)' },
+];
+
+const statusOptions = [
+  { value: 'all', label: 'All States' },
+  { value: 'pool', label: 'Available in Pool' },
+  { value: 'sold', label: 'Sold' },
+  { value: 'unsold', label: 'Unsold' },
+];
+
+const sortOptions = [
+  { value: 'rating-desc', label: 'Rating: High to Low' },
+  { value: 'rating-asc', label: 'Rating: Low to High' },
+  { value: 'price-desc', label: 'Base Price: High to Low' },
+  { value: 'price-asc', label: 'Base Price: Low to High' },
+  { value: 'name-asc', label: 'Alphabetical: A to Z' },
+];
 
 export default function PlayerAnalyticsPage() {
   const localAuction = useAuction();
@@ -111,90 +144,55 @@ export default function PlayerAnalyticsPage() {
               setCurrentPage(1);
             }}
             placeholder="Search e.g. Kohli, Bumrah..."
-            className="glass-input w-full text-xs px-3 py-2"
+            className="glass-input w-full text-xs px-3.5 py-2.5"
+            style={{ borderRadius: '12px' }}
           />
         </div>
 
         {/* Filter Role */}
-        <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-white/40 font-bold mb-1">
-            Specialist Role
-          </label>
-          <select
-            value={selectedRole}
-            onChange={(e) => {
-              setSelectedRole(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="glass-select w-full text-xs px-2 py-2"
-          >
-            <option value="all">All Roles</option>
-            <option value="opener">Openers</option>
-            <option value="middle_order">Middle Order</option>
-            <option value="finisher">Finishers</option>
-            <option value="all_rounder">All Rounders</option>
-            <option value="spinner">Spinners</option>
-            <option value="powerplay_bowler">Powerplay Bowlers</option>
-            <option value="death_bowler">Death Bowlers</option>
-          </select>
-        </div>
+        <GlassSelect
+          label="Specialist Role"
+          value={selectedRole}
+          onChange={(val) => {
+            setSelectedRole(val);
+            setCurrentPage(1);
+          }}
+          options={roleOptions}
+          className="md:col-span-2"
+        />
 
         {/* Filter Nationality */}
-        <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-white/40 font-bold mb-1">
-            Nationality
-          </label>
-          <select
-            value={selectedNationality}
-            onChange={(e) => {
-              setSelectedNationality(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="glass-select w-full text-xs px-2 py-2"
-          >
-            <option value="all">All Players</option>
-            <option value="domestic">Indian (Domestic)</option>
-            <option value="overseas">Overseas (Star)</option>
-          </select>
-        </div>
+        <GlassSelect
+          label="Nationality"
+          value={selectedNationality}
+          onChange={(val) => {
+            setSelectedNationality(val);
+            setCurrentPage(1);
+          }}
+          options={nationalityOptions}
+          className="md:col-span-2"
+        />
 
         {/* Filter Status */}
-        <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-white/40 font-bold mb-1">
-            Draft Status
-          </label>
-          <select
-            value={selectedStatus}
-            onChange={(e) => {
-              setSelectedStatus(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="glass-select w-full text-xs px-2 py-2"
-          >
-            <option value="all">All States</option>
-            <option value="pool">Available in Pool</option>
-            <option value="sold">Sold</option>
-            <option value="unsold">Unsold</option>
-          </select>
-        </div>
+        <GlassSelect
+          label="Draft Status"
+          value={selectedStatus}
+          onChange={(val) => {
+            setSelectedStatus(val);
+            setCurrentPage(1);
+          }}
+          options={statusOptions}
+          className="md:col-span-2"
+        />
 
         {/* Sort By */}
-        <div className="md:col-span-2">
-          <label className="block text-[8px] uppercase tracking-wider text-white/40 font-bold mb-1">
-            Sort Order
-          </label>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="glass-select w-full text-xs px-2 py-2"
-          >
-            <option value="rating-desc">Rating: High to Low</option>
-            <option value="rating-asc">Rating: Low to High</option>
-            <option value="price-desc">Base Price: High to Low</option>
-            <option value="price-asc">Base Price: Low to High</option>
-            <option value="name-asc">Alphabetical: A to Z</option>
-          </select>
-        </div>
+        <GlassSelect
+          label="Sort Order"
+          value={sortBy}
+          onChange={(val) => setSortBy(val)}
+          options={sortOptions}
+          className="md:col-span-2"
+        />
 
         {/* View Switcher */}
         <div className="md:col-span-1 flex justify-end self-end">

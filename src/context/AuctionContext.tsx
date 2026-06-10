@@ -124,11 +124,28 @@ export const AuctionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       try {
         const parsed = JSON.parse(saved);
         
-        // Merge latest image URLs from initialPlayers to prevent cache staleness
+        // Merge latest static fields from initialPlayers to prevent cache staleness (e.g. runs, image updates)
         const mergedPlayers = (parsed.players || initialPlayers).map((p: Player) => {
           const freshPlayer = initialPlayers.find(ip => ip.id === p.id);
-          if (freshPlayer && freshPlayer.image) {
-            return { ...p, image: freshPlayer.image };
+          if (freshPlayer) {
+            return {
+              ...p,
+              name: freshPlayer.name,
+              role: freshPlayer.role,
+              batting_style: freshPlayer.batting_style,
+              bowling_style: freshPlayer.bowling_style,
+              nationality: freshPlayer.nationality,
+              overseas: freshPlayer.overseas,
+              base_price: freshPlayer.base_price,
+              rating: freshPlayer.rating,
+              runs: freshPlayer.runs,
+              wickets: freshPlayer.wickets,
+              strike_rate: freshPlayer.strike_rate,
+              batting_average: freshPlayer.batting_average,
+              economy: freshPlayer.economy,
+              image: freshPlayer.image,
+              is_wicketkeeper: freshPlayer.is_wicketkeeper
+            };
           }
           return p;
         });

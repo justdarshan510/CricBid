@@ -14,9 +14,11 @@ const handle = app.getRequestHandler();
 // Standard bidding increment rules
 function getNextBidAmount(currentBid, basePrice) {
   if (currentBid === 0) return basePrice;
-  if (currentBid < 2.0) return parseFloat((currentBid + 0.20).toFixed(2));
-  if (currentBid < 5.0) return parseFloat((currentBid + 0.50).toFixed(2));
-  return parseFloat((currentBid + 1.00).toFixed(2));
+  if (currentBid < 2.0) return parseFloat((currentBid + 0.10).toFixed(2));
+  if (currentBid < 5.0) return parseFloat((currentBid + 0.20).toFixed(2));
+  if (currentBid < 10.0) return parseFloat((currentBid + 0.50).toFixed(2));
+  if (currentBid < 20.0) return parseFloat((currentBid + 1.00).toFixed(2));
+  return parseFloat((currentBid + 2.00).toFixed(2));
 }
 
 // Analyze squad composition (used for bid validation)

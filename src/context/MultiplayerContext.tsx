@@ -26,10 +26,30 @@ initialPlayers.forEach(p => {
 });
 
 const enrichPlayers = (playersList?: Player[] | Record<string, Player>): Player[] => {
-  return asFirebaseArray(playersList).map(p => ({
-    ...p,
-    image: p.image || playerImageMap[p.id] || playerImageMap[p.name.toLowerCase().trim()] || ''
-  }));
+  return asFirebaseArray(playersList).map(p => {
+    const freshPlayer = initialPlayers.find(ip => ip.id === p.id || ip.name.toLowerCase().trim() === p.name?.toLowerCase().trim());
+    if (freshPlayer) {
+      return {
+        ...p,
+        name: freshPlayer.name,
+        role: freshPlayer.role,
+        batting_style: freshPlayer.batting_style,
+        bowling_style: freshPlayer.bowling_style,
+        nationality: freshPlayer.nationality,
+        overseas: freshPlayer.overseas,
+        base_price: freshPlayer.base_price,
+        rating: freshPlayer.rating,
+        runs: freshPlayer.runs,
+        wickets: freshPlayer.wickets,
+        strike_rate: freshPlayer.strike_rate,
+        batting_average: freshPlayer.batting_average,
+        economy: freshPlayer.economy,
+        image: freshPlayer.image,
+        is_wicketkeeper: freshPlayer.is_wicketkeeper
+      };
+    }
+    return p;
+  });
 };
 
 const enrichTeams = (teamsList?: Team[]): Team[] => {
