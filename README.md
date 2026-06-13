@@ -268,3 +268,12 @@ Distributed under the MIT License. See `LICENSE` for more information.
 *Built with ❤️ for cricket fans worldwide.*
 
 </div>
+## Why CricBid?
+
+Unlike fantasy apps, CricBid recreates the IPL auction experience in real-time multiplayer mode.
+## ⚡ Performance
+
+- Lighthouse Performance: 95+
+- Mobile Friendly
+- SEO Optimized
+- Fast Firebase Synchronization
