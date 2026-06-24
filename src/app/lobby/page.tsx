@@ -331,7 +331,7 @@ export default function LobbyPage() {
                           color: 'var(--text-primary)' 
                         }}
                       >
-                        {c.name.slice(0, 2).toUpperCase()}
+                        {(c.name || '?').slice(0, 2).toUpperCase()}
                       </div>
                       <div>
                         <span className="text-xs font-bold block" style={{ color: 'var(--text-primary)' }}>
