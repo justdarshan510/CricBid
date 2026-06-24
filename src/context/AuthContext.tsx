@@ -35,9 +35,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Verify Firebase config
   useEffect(() => {
-    console.log("Firebase API Key:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
     if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
-      console.error("Firebase config missing: NEXT_PUBLIC_FIREBASE_API_KEY is not defined");
+      console.warn("Firebase config missing: NEXT_PUBLIC_FIREBASE_API_KEY is not defined. Using default configuration.");
     }
   }, []);
 

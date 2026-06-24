@@ -27,7 +27,7 @@ initialPlayers.forEach(p => {
 
 const enrichPlayers = (playersList?: Player[] | Record<string, Player>): Player[] => {
   return asFirebaseArray(playersList).map(p => {
-    const freshPlayer = initialPlayers.find(ip => ip.id === p.id || ip.name.toLowerCase().trim() === p.name?.toLowerCase().trim());
+    const freshPlayer = initialPlayers.find(ip => ip.id === p.id || (p.name && ip.name.toLowerCase().trim() === p.name.toLowerCase().trim()));
     if (freshPlayer) {
       return {
         ...p,
