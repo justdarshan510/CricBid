@@ -29,7 +29,7 @@ export const Navbar: React.FC = () => {
   return (
     <div className="fixed top-4 left-0 right-0 z-50 px-4 md:px-8 w-full pointer-events-none">
       <nav
-        className="w-full max-w-7xl mx-auto rounded-full pointer-events-auto"
+        className={`w-full max-w-7xl mx-auto pointer-events-auto transition-all duration-300 ${isOpen ? 'rounded-[24px]' : 'rounded-full'}`}
         style={{
           background: 'rgba(103, 79, 45, 0.80)',
           backdropFilter: 'blur(40px) saturate(1.8)',

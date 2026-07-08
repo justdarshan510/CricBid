@@ -227,7 +227,7 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
 
       {/* SOLD CELEBRATION MODAL */}
       {status === 'sold' && (
-        <div className="relative max-w-md w-full mx-4 flex flex-col items-center glass-elevated p-8 rounded-3xl text-center shadow-lg overflow-hidden scale-in-animation">
+        <div className="relative max-w-md w-full mx-4 flex flex-col items-center glass-elevated p-6 sm:p-8 rounded-3xl text-center shadow-lg overflow-hidden scale-in-animation">
           {/* Elegant background halo glow matching team's brand color */}
           <div 
             className="absolute -top-32 w-72 h-72 rounded-full blur-[80px] opacity-20 pointer-events-none transition-all duration-700" 
@@ -276,15 +276,15 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
           </div>
 
           {/* Luxury purchase slip badge */}
-          <div className="w-full bg-white/10 border border-white/15 rounded-2xl p-5 mb-6 text-left flex flex-col gap-3">
-            <div className="flex justify-between items-center text-xs">
+          <div className="w-full bg-white/10 border border-white/15 rounded-2xl p-4 sm:p-5 mb-6 text-left flex flex-col gap-3">
+            <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 text-xs">
               <span className="text-[var(--text-secondary)] font-semibold uppercase tracking-wider font-mono">Purchasing Franchise</span>
               <span className="font-bold tracking-wide" style={{ color: getLegibleTeamTextColor(teamColor) }}>{teamName}</span>
             </div>
             <div className="h-[1px] bg-[rgba(0,0,0,0.08)]" />
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1">
               <span className="text-[var(--text-secondary)] text-xs font-semibold uppercase tracking-wider font-mono">Final Bid Amount</span>
-              <span className="text-2xl font-black font-mono" style={{ color: '#C8A96E' }}>
+              <span className="text-xl sm:text-2xl font-black font-mono" style={{ color: '#C8A96E' }}>
                 ₹{amountStr}
               </span>
             </div>
@@ -301,7 +301,7 @@ export const BiddingEffectsOverlay: React.FC<BiddingEffectsOverlayProps> = ({
 
       {/* UNSOLD SOMBER OVERLAY */}
       {status === 'unsold' && (
-        <div className="relative max-w-sm w-full mx-4 flex flex-col items-center glass-elevated p-8 rounded-3xl text-center shadow-lg scale-in-animation">
+        <div className="relative max-w-sm w-full mx-4 flex flex-col items-center glass-elevated p-6 sm:p-8 rounded-3xl text-center shadow-lg scale-in-animation">
           <div className="absolute -top-32 w-64 h-64 rounded-full blur-[80px] opacity-10 pointer-events-none" style={{ backgroundColor: 'rgba(200,180,140,0.4)' }} />
 
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--text-secondary)] mb-2">
