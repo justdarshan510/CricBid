@@ -203,26 +203,6 @@ Follow these steps to run a local copy of CricBid on your development machine:
 
 ---
 
-## 🔑 Environment Variables
-
-To run the application, create a `.env.local` file at the root of the project and supply the following variables:
-
-```env
-# Client-side Firebase Configuration (Exposed to Browser)
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://your_project_id-default-rtdb.firebaseio.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-```
-
-> [!IMPORTANT]
-> All environment variables used in the frontend must be prefixed with `NEXT_PUBLIC_` so they are bundled into the client build. Ensure `.env.local` is listed in your `.gitignore` to avoid exposing API keys.
-
----
-
 ## 🗺️ Future Roadmap
 
 CricBid is actively maintained. Here are the core features planned for future updates:
